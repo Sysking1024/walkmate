@@ -18,19 +18,19 @@
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
 - [x] All acceptance scenarios are defined
-- [x] Edge cases are identified
+- [x] Edge cases are identified (including motion state filtering and camera tilt)
 - [x] Scope is clearly bounded (decoupled from feedback presentation, dedicated to spatial data)
 - [x] Dependencies and assumptions identified
 
 ## Feature Readiness
 
 - [x] All functional requirements have clear acceptance criteria
-- [x] User scenarios cover primary flows
+- [x] User scenarios cover primary flows (including dynamic backward motion and rear-view radar)
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
 ## Notes
 
 - All checklist items pass validation.
-- Scope explicitly excludes specific feedback presentation and focuses on 3D spatial perception data contracts directly consumable by downstream spatial audio.
+- Scope explicitly incorporates user motion state estimation (forward, stationary, backward) and dynamic rear-view radar mode for rear collision and drop-off protection.
 - The specification is ready for the planning phase (`/speckit-plan`).
