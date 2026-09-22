@@ -50,6 +50,20 @@ struct QwenSceneNarrator: SceneNarrator {
     6. 总共不超过 60 个字。这段文字会被朗读出来，太长会让人听不住。
     """
 
+    /// 追问阶段的系统提示词。
+    ///
+    /// 与首次描述共享同样的事实与方位约束，但允许更自然的对话语气：
+    /// 此时是使用者主动开口在问，不再是系统单向播报。
+    private static let followUpSystemPrompt = """
+    你是视障者随身的出行伙伴，正和他站在同一个地方聊天。你能看见他周围的环境，他看不见。
+    【方位规则】用他的身体方位说话：正前方、左手边、右手边、身后、头顶。绝对禁止出现『画面』『图像』『照片』『镜头』这类描述图片本身的词。
+    【内容规则】
+    1. 只说你确实看到的。看不清或画面里没有，就直说「这我看不清」，绝不编造。
+    2. 绝对不做安全判断，不说『可以走』『很安全』『注意避开』。
+    3. 只回答他问的，不要主动扯开话题，也不要反过来考他。
+    4. 像朋友说话那样自然，两句话以内。这段文字会被朗读出来。
+    """
+
     /// 从被版本库忽略的 Secrets.plist 读取凭据。
     /// 凭据缺失时返回 nil，由上层切换到离线兜底描述器。
     init?(bundle: Bundle = .main) {
@@ -91,6 +105,56 @@ struct QwenSceneNarrator: SceneNarrator {
         let text = try parseContent(from: data)
         Log.info(.narration, "已生成场景描述，偏移 \(offsetMs) 毫秒，长度 \(text.count) 字")
         return SceneNarration(offsetMs: offsetMs, frameFileName: frameFileName, text: text, source: .model)
+    }
+
+    /// 回答使用者针对同一处环境提出的追问。
+    ///
+    /// 把此前的对话原样带上，并重新附上同一帧画面：追问往往需要画面里的细节
+    /// （「那家店叫什么」「那个人在做什么」），只靠先前的文字描述答不上来。
+    ///
+    /// - Parameters:
+    ///   - question: 使用者的追问
+    ///   - history: 本次驻足期间已经发生的对话
+    ///   - frameData: 当时那一帧画面，与首次描述用的是同一张
+    func answer(question: String, history: [ConversationTurn], frameData: Data) async throws -> String {
+        var request = URLRequest(url: baseURL.appendingPathComponent("chat/completions"))
+        request.httpMethod = "POST"
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let payload = compressForUpload(frameData) ?? frameData
+        let dataURI = "data:image/jpeg;base64,\(payload.base64EncodedString())"
+
+        // 首条用户消息携带画面，其后按原顺序还原对话
+        var messages: [[String: Any]] = [
+            ["role": "system", "content": Self.followUpSystemPrompt],
+            ["role": "user", "content": [
+                ["type": "image_url", "image_url": ["url": dataURI]],
+                ["type": "text", "text": "描述我周围的环境。"],
+            ]],
+        ]
+        for turn in history {
+            messages.append([
+                "role": turn.speaker == .companion ? "assistant" : "user",
+                "content": turn.text,
+            ])
+        }
+        messages.append(["role": "user", "content": question])
+
+        request.httpBody = try JSONSerialization.data(withJSONObject: [
+            "model": model,
+            "messages": messages,
+        ])
+
+        let (data, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
+            let code = (response as? HTTPURLResponse)?.statusCode ?? -1
+            Log.error(.narration, "追问接口返回异常状态码 \(code)")
+            throw NarrationError.badStatus(code)
+        }
+        let text = try parseContent(from: data)
+        Log.info(.narration, "已回答追问，长度 \(text.count) 字")
+        return text
     }
 
     /// 构造 OpenAI 兼容格式的请求体，图片以 base64 data URI 内联
