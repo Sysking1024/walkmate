@@ -25,12 +25,12 @@
 ## Feature Readiness
 
 - [x] All functional requirements have clear acceptance criteria
-- [x] User scenarios cover primary flows (including dynamic backward motion, rear-view radar, and real camera hardware stream)
+- [x] User scenarios cover primary flows (camera pipeline prioritized as P1, followed by passage corridor, obstacle perception, drop-off hazard, and dynamic rear radar)
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
 ## Notes
 
 - All checklist items pass validation.
-- Scope explicitly focuses on direct physical Insta360 camera stream integration without offline mock simulators, strictly adhering to Constitution YAGNI principles.
+- User Story 1 is prioritized as Camera connection, lifecycle management, and real-time streaming pipeline as the foundational prerequisite.
 - The specification is ready for the planning phase (`/speckit-plan`).
