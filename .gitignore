@@ -27,7 +27,9 @@ xcuserdata/
 Packages/
 Package.pins
 
-# 临时文件
+# 临时文件与二进制依赖
 *.swp
 *~
 *.orig
+tmp/
+WalkMate/Frameworks/

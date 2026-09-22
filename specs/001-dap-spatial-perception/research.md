@@ -21,9 +21,12 @@
 ### 决策 1：相机连接与视频流解码架构
 
 - **技术选型**：采用 Insta360 官方 iOS SDK 的 `INSCameraManager.socket()` 配合 `INSCameraSessionPlayer` 硬件解码器。
-- **决策理由**：
-  - `INSCameraSessionPlayer` 内部封装了基于 VideoToolbox 的 H.264/H.265 硬件解码，能以最低 CPU 占用输出系统原生的 `CVPixelBuffer`；
-  - 挂载 `INSCameraSessionGyroDelegate` 协议，可在同一播放会话中以微秒级时间戳同步获取相机的 `INSGyroRawItem`（三轴角速度与三轴加速度）。
+- **决策理由与 X5 核心适配点**：
+  - **Wi-Fi Socket 通信**：全景视频流（15~30 Mbps）必须通过 Wi-Fi Socket 传输，通过 `INSCameraManager.socket().setup()` 握手建连；蓝牙仅作为低功耗发现与辅助获取 Wi-Fi 信息的辅助通道；
+  - **X5 H.265/H.264 动态预协商**：官方 SDK 示例验证表明，X5 全景预览流默认为 H.265 编码，启动播放器前必须通过 `commandManager.getOptionsWithTypes([videoEncode, videoResolution])` 获取相机实际参数并赋值给 `player.videoStreamEncode` 与 `player.expectedVideoResolution`，彻底杜绝以默认 H.264 解码导致黑屏的严重隐患；
+  - **X5 V6 标定参数绑定**：通过实现 `INSCameraSessionPlayerDataSource` 的 `updateOffsetToPlayer(_:)`，优先返回 `settings.mediaOffsetV6`（X5 专有标定数据，老版本 `mediaOffset` 为空），确保全景球面拼接无缝；
+  - **硬件加速解码与点云帧提取**：在 `INSCameraSessionPlayerDelegate` 的 `playerPrepared(_:sampleGroup:)` 中，直接通过 `sampleGroup.getPlayerImage().pixelBuffer` 毫秒级提取系统原生 `CVPixelBuffer` 与时间戳；
+  - **微秒级 IMU 同步**：挂载 `INSCameraSessionGyroDelegate` 协议，通过 `onParsedGyroData(_:timestampMs:)` 接收包含 `accelX/Y/Z` 与 `rotX/Y/Z` 的 `INSGyroRawItem`，为重力对齐与步态分析提供时间戳严格对齐的传感器源。
 - **备选方案及否定原因**：
   - *备选方案 A：通用 RTSP/FFmpeg 拉流库*：否定原因：无法获取 Insta360 私有协议封装的六轴 IMU 姿态元数据，且第三方 FFmpeg 引入体积大、解码延迟高，违反宪章原则七。
   - *备选方案 B：USB 有线专用通道*：保留为后备方案，首期优先使用 Wi-Fi 连接，满足视障用户随身携带无连接线缠绕的穿戴要求。

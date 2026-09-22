@@ -1,0 +1,549 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */; };
+		16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */; };
+		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
+		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
+		3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; };
+		4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */; };
+		6A01649963AB2BEAAD6845EC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5498756E59D2F84A66C26DF /* Log.swift */; };
+		70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */; };
+		8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */; };
+		8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
+		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
+		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
+		BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */; };
+		BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93BE0730790922553537549 /* CameraPipeline.swift */; };
+		C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EA861847E607B54465C201DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044702FEF2781A714A52AF5 /* ContentView.swift */; };
+		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F41A89E7295550BF433AAB7B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */,
+				239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */,
+				C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */,
+				8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
+		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
+		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		64F024C8A3562A552B6792C3 /* FrameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModels.swift; sourceTree = "<group>"; };
+		68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramicStreamView.swift; sourceTree = "<group>"; };
+		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorTelemetryCard.swift; sourceTree = "<group>"; };
+		A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCoreMedia.xcframework; path = Frameworks/INSCoreMedia.xcframework; sourceTree = "<group>"; };
+		AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPlayerBridge.swift; sourceTree = "<group>"; };
+		C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SSZipArchive.xcframework; path = Frameworks/SSZipArchive.xcframework; sourceTree = "<group>"; };
+		C044702FEF2781A714A52AF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C5498756E59D2F84A66C26DF /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraServiceSDK.xcframework; path = Frameworks/INSCameraServiceSDK.xcframework; sourceTree = "<group>"; };
+		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
+		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
+		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
+		E93BE0730790922553537549 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3F805AF8623FBC4D80E25ACC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */,
+				AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */,
+				BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */,
+				222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00227ACEB3AF1A3A6B6E77A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */,
+				C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */,
+				A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */,
+				C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */ = {
+			isa = PBXGroup;
+			children = (
+				E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */,
+			);
+			name = CameraTests;
+			path = ../Tests/CameraTests;
+			sourceTree = "<group>";
+		};
+		1C515E871D527533E2088E72 = {
+			isa = PBXGroup;
+			children = (
+				61A2FE2B02E2517228A5EA90 /* App */,
+				0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */,
+				67A8893A47EE14F9AD376867 /* Core */,
+				AC713B0EB62E8D8D8F024473 /* Models */,
+				00227ACEB3AF1A3A6B6E77A4 /* Frameworks */,
+				C227948D0FFA03756AB7F7D0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		61A2FE2B02E2517228A5EA90 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C044702FEF2781A714A52AF5 /* ContentView.swift */,
+				2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */,
+				8D93F230C575814EA9D06F11 /* Views */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		6764D7282FA491C1EDB1EE12 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C5498756E59D2F84A66C26DF /* Log.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		67A8893A47EE14F9AD376867 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				69A8918F85B5A915D5308FCE /* Camera */,
+				6764D7282FA491C1EDB1EE12 /* Utils */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		69A8918F85B5A915D5308FCE /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				E93BE0730790922553537549 /* CameraPipeline.swift */,
+				6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */,
+				AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		8D93F230C575814EA9D06F11 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */,
+				9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		AC713B0EB62E8D8D8F024473 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				64F024C8A3562A552B6792C3 /* FrameModels.swift */,
+				DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */,
+				26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C227948D0FFA03756AB7F7D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3534C926737FFE25F9FB5992 /* CameraTests.xctest */,
+				72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D0C10D6348A3309AC5F5EA63 /* WalkMate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */;
+			buildPhases = (
+				BB22D4CD7749D6A467348B14 /* Sources */,
+				3F805AF8623FBC4D80E25ACC /* Frameworks */,
+				F41A89E7295550BF433AAB7B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WalkMate;
+			packageProductDependencies = (
+			);
+			productName = WalkMate;
+			productReference = 72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D8A983DE875364D7AFB1F969 /* CameraTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 931196D64D76B501812751CC /* Build configuration list for PBXNativeTarget "CameraTests" */;
+			buildPhases = (
+				9E89F8804D7B03C4ADA2BD97 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0868554269CC0D12342596F6 /* PBXTargetDependency */,
+			);
+			name = CameraTests;
+			packageProductDependencies = (
+			);
+			productName = CameraTests;
+			productReference = 3534C926737FFE25F9FB5992 /* CameraTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		43A9DE64FF371701BF1D23DD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					D0C10D6348A3309AC5F5EA63 = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					D8A983DE875364D7AFB1F969 = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2667789BBEA365B27EE48FEF /* Build configuration list for PBXProject "WalkMate" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 1C515E871D527533E2088E72;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C227948D0FFA03756AB7F7D0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D0C10D6348A3309AC5F5EA63 /* WalkMate */,
+				D8A983DE875364D7AFB1F969 /* CameraTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9E89F8804D7B03C4ADA2BD97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB22D4CD7749D6A467348B14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
+				EA861847E607B54465C201DB /* ContentView.swift in Sources */,
+				F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */,
+				16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */,
+				6A01649963AB2BEAAD6845EC /* Log.swift in Sources */,
+				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
+				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,
+				70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */,
+				8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */,
+				0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */,
+				4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0868554269CC0D12342596F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		02B0EB5786552DCF7D7DBDEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/Frameworks",
+					"\"Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.walkmate;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		039DA21F72795A5DEB711681 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/Frameworks",
+					"\"Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.walkmate;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		14B0EB34B99386006416E14E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = X2SP6R5LL3;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		3CFA52B84A47505A493FE059 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = X2SP6R5LL3;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		C885A89B331082503469E71A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.CameraTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		D586FE602A7D1EE27BA0CE9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.CameraTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2667789BBEA365B27EE48FEF /* Build configuration list for PBXProject "WalkMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CFA52B84A47505A493FE059 /* Debug */,
+				14B0EB34B99386006416E14E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02B0EB5786552DCF7D7DBDEF /* Debug */,
+				039DA21F72795A5DEB711681 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		931196D64D76B501812751CC /* Build configuration list for PBXNativeTarget "CameraTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C885A89B331082503469E71A /* Debug */,
+				D586FE602A7D1EE27BA0CE9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 43A9DE64FF371701BF1D23DD /* Project object */;
+}

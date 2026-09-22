@@ -18,9 +18,9 @@
 
 **目标**: 建立符合 xcodegen 规范的原生工程架构与通用基础库配置
 
-- [ ] T001 创建工程声明式配置文件 `WalkMate/project.yml`（定义 Bundle ID `accera.insta.dap`、iOS 17.0+、框架依赖与签名配置）并执行 `xcodegen generate` 生成初始 `WalkMate.xcodeproj`，确保后续开发具备原生工程与编译环境
-- [ ] T002 [P] 创建应用程序主入口 `WalkMate/App/WalkMateApp.swift`
-- [ ] T003 [P] 创建符合宪章原则八/九的统一日志工具 `WalkMate/Core/Utils/Log.swift`，封装结构化全中文日志与标准英文级别
+- [x] T001 创建工程声明式配置文件 `WalkMate/project.yml`（定义 Bundle ID `accera.world.walkmate`、iOS 17.0+、框架依赖与签名配置）并执行 `xcodegen generate` 生成初始 `WalkMate.xcodeproj`，确保后续开发具备原生工程与编译环境
+- [x] T002 [P] 创建应用程序主入口 `WalkMate/App/WalkMateApp.swift`
+- [x] T003 [P] 创建符合宪章原则八/九的统一日志工具 `WalkMate/Core/Utils/Log.swift`，封装结构化全中文日志与标准英文级别
 
 ---
 
@@ -28,9 +28,9 @@
 
 **目标**: 实现核心数据模型与深度推理基础组件，**阻塞所有后续用户故事的执行**
 
-- [ ] T004 实现数据模型实体 `WalkMate/Models/FrameModels.swift`（包含 `PanoramicFrame` 与 `DepthMatrix`）
-- [ ] T005 [P] 实现数据模型实体 `WalkMate/Models/PerceptionModels.swift`（包含 `SpatialObstacleItem`, `PassageCorridorGeometry`, `DropOffHazardEvent`, `SpatialPerceptionResult`）
-- [ ] T006 [P] 实现数据模型实体 `WalkMate/Models/TelemetryModels.swift`（包含 `SensorTelemetry`, `CameraConnectionState`, `UserMotionState`, `ThreatLevel`）
+- [x] T004 实现数据模型实体 `WalkMate/Models/FrameModels.swift`（包含 `PanoramicFrame` 与 `DepthMatrix`）
+- [x] T005 [P] 实现数据模型实体 `WalkMate/Models/PerceptionModels.swift`（包含 `SpatialObstacleItem`, `PassageCorridorGeometry`, `DropOffHazardEvent`, `SpatialPerceptionResult`）
+- [x] T006 [P] 实现数据模型实体 `WalkMate/Models/TelemetryModels.swift`（包含 `SensorTelemetry`, `CameraConnectionState`, `UserMotionState`, `ThreatLevel`）
 - [ ] T007 导入 ANE 原生 CoreML INT8 模型至 `WalkMate/Resources/Models/dap_256x512_int8.mlpackage`
 - [ ] T008 [P] 实现 Accelerate 硬件向量化预处理器 `WalkMate/Core/Inference/AcceleratePreprocessor.swift`（vImage 缩放 + vDSP 归一化）
 - [ ] T009 实现 ANE 纯硬件深度推理引擎 `WalkMate/Core/Inference/DAPEngine.swift`（CoreML INT8 模型加载、Float16 内存安全绑定与执行）
@@ -47,13 +47,13 @@
 
 **独立测试验证**: 启动应用，点击“连接设备”，2 秒内连上相机，界面流畅渲染全景实时画面（>= 15 FPS），传感器面板实时刷新三轴姿态与加速度；点击“断开设备”安全退出。
 
-- [ ] T011 [P] [US1] 基于 `docs/insta_x.md` 实现视频流解码桥接器 `WalkMate/Core/Camera/StreamPlayerBridge.swift`（封装 `INSCameraSessionPlayer` 硬件解码与 `CVPixelBuffer` 回调）
-- [ ] T012 [P] [US1] 基于 `docs/insta_x.md` 实现六轴传感器同步器 `WalkMate/Core/Camera/GyroDataHandler.swift`（挂载 `INSCameraSessionGyroDelegate` 实时解析 `INSGyroRawItem`）
-- [ ] T013 [US1] 实现相机连接与生命周期管理管道 `WalkMate/Core/Camera/CameraPipeline.swift`（实现 `CameraPipelineProtocol`，管理握手、推流与断线重连，推流帧率基于 1 秒滑动窗口平滑计算）
-- [ ] T014 [P] [US1] 实现全景视频流实时渲染视图 `WalkMate/App/Views/PanoramicStreamView.swift`
-- [ ] T015 [P] [US1] 实现六轴传感器遥测数据 HUD 视图 `WalkMate/App/Views/SensorTelemetryCard.swift`（严格遵循宪章原则四 4.c 合并与阻断规则，将整张卡片封装为独立语义容器 `.accessibilityElement(children: .combine)`，利用中文逗号平铺拼接连接状态、FPS、三轴角度与加速度，防止读屏焦点碎片化与高频噪点；确保文本与卡片背景对比度 >= 4.5:1；仅供被动读屏查询，严禁向 VoiceOver 发送实时主动高频播报通知）
-- [ ] T016 [US1] 实现主控制界面 `WalkMate/App/ContentView.swift`（整合连接/断开控制按钮、全景画面与传感器卡片，确保触控尺寸 >= 48x48pt，按钮与文本对比度 >= 4.5:1，并在连接断开/异常时触发 VoiceOver 语音播报）
-- [ ] T016b [US1] 编写相机管道脱机逻辑测试 `Tests/CameraTests/CameraPipelineTests.swift`（基于 Mock 数据测试连接生命周期状态机流转、断线重连退避与时间戳匹配封装，无需连接物理相机）
+- [x] T011 [P] [US1] 基于官方 SDK 与 `docs/insta_x.md` 实现视频流解码桥接器 `WalkMate/Core/Camera/StreamPlayerBridge.swift`（实现 `INSCameraSessionPlayerDelegate` 与 `INSCameraSessionPlayerDataSource`，动态同步 X5 H.265/H.264 编码与分辨率、挂载 `settings.mediaOffsetV6` 标定参数，并在 `playerPrepared` 中通过 `sampleGroup.getPlayerImage().pixelBuffer` 提取全景帧与毫秒时间戳）
+- [x] T012 [P] [US1] 基于官方 SDK 与 `docs/insta_x.md` 实现六轴传感器同步器 `WalkMate/Core/Camera/GyroDataHandler.swift`（实现 `INSCameraSessionGyroDelegate`，通过 `onParsedGyroData` 实时解析 `INSGyroRawItem` 的 `timestamp`、`accelX/Y/Z` 与 `rotX/Y/Z` 数据并派发）
+- [x] T013 [US1] 实现相机连接与生命周期管理管道 `WalkMate/Core/Camera/CameraPipeline.swift`（实现 `CameraPipelineProtocol`，基于 `INSCameraManager.socket()` 管理 Wi-Fi Socket 连接、握手、KVO 与断线自动重连，推流帧率基于 1 秒滑动窗口平滑计算）
+- [x] T014 [P] [US1] 实现全景视频流实时渲染视图 `WalkMate/App/Views/PanoramicStreamView.swift`
+- [x] T015 [P] [US1] 实现六轴传感器遥测数据 HUD 视图 `WalkMate/App/Views/SensorTelemetryCard.swift`（严格遵循宪章原则四 4.c 合并与阻断规则，将整张卡片封装为独立语义容器 `.accessibilityElement(children: .combine)`，利用中文逗号平铺拼接连接状态、FPS、三轴角度与加速度，防止读屏焦点碎片化与高频噪点；确保文本与卡片背景对比度 >= 4.5:1；仅供被动读屏查询，严禁向 VoiceOver 发送实时主动高频播报通知）
+- [x] T016 [US1] 实现主控制界面 `WalkMate/App/ContentView.swift`（整合连接/断开控制按钮、全景画面与传感器卡片，确保触控尺寸 >= 48x48pt，按钮与文本对比度 >= 4.5:1，并在连接断开/异常时触发 VoiceOver 语音播报）
+- [x] T016b [US1] 编写相机管道脱机逻辑测试 `Tests/CameraTests/CameraPipelineTests.swift`（基于 Mock 数据测试连接生命周期状态机流转、断线重连退避与时间戳匹配封装，无需连接物理相机）
 
 **检查点 (Checkpoint)**: 用户故事 1 独立可运行验证！真机连上相机，屏幕展示实时全景流与姿态，完成首个核心增量。
 

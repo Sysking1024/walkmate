@@ -20,7 +20,7 @@
   - `Accelerate`（`vImage` 零拷贝图像缩放，`vDSP` 向量化浮点运算与矩阵计算）；
   - `simd`（硬件级三维向量与四元数运算）；
   - `SwiftUI`（符合无障碍规范的极简控制与遥测预览界面）；
-  - `Insta360 Camera SDK`（官方 iOS 框架，用于 Wi-Fi 连接、硬件解码推流与 IMU 回调）。
+  - `Insta360 Camera SDK`（官方 iOS 框架，用于 Wi-Fi Socket 连接、H.265/H.264 编码自适应、V6 标定参数绑定、硬件解码推流与 IMU 回调）。
 - **数据存储方式**: 纯内存环形缓冲区（In-memory Ring Buffer，零磁盘 I/O，确保极速低延迟）。
 - **测试框架**: `XCTest`（针对几何反投影、RANSAC 平面拟合、EDT 走廊规划与运动状态机的单元与性能测试）。
 - **目标硬件平台**: iPhone 15 / iPhone 15 Pro / iPhone 16 系列物理真机（必须配备 Apple 神经引擎 ANE）。
@@ -85,9 +85,9 @@ WalkMate/
 │       └── SensorTelemetryCard.swift # 六轴传感器与推流遥测普通文本卡片 (静态被动展示)
 ├── Core/
 │   ├── Camera/                      # 第 1 层：相机连接与视频流管道
-│   │   ├── CameraPipeline.swift     # 基于 INSCameraManager 的连接与生命周期管理
-│   │   ├── StreamPlayerBridge.swift # INSCameraSessionPlayer 硬件解码与帧回调
-│   │   └── GyroDataHandler.swift    # INSCameraSessionGyroDelegate 六轴数据同步
+│   │   ├── CameraPipeline.swift     # 基于 INSCameraManager.socket() 的连接、状态监听与生命周期管理
+│   │   ├── StreamPlayerBridge.swift # 基于 INSCameraSessionPlayer 的 H.265 自适应、V6 标定提供与 sampleGroup 帧提取
+│   │   └── GyroDataHandler.swift    # 基于 INSCameraSessionGyroDelegate 的 INSGyroRawItem 六轴数据同步解析
 │   ├── Inference/                   # 第 2 层：DAP 深度推理引擎
 │   │   ├── DAPEngine.swift          # CoreML INT8 ANE 硬件执行器 (Float16 安全绑定)
 │   │   └── AcceleratePreprocessor.swift # vImage+vDSP 硬件向量化预处理 (11ms)
