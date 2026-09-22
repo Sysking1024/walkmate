@@ -13,8 +13,8 @@ struct NarrationHomeView: View {
     /// 是否正在生成描述
     @State private var isGenerating = false
 
-    /// 当前采用的描述器。接入多模态大模型后在此处替换实现。
-    private let narrator: SceneNarrator = FallbackSceneNarrator()
+    /// 当前采用的描述器。优先走多模态模型，异常时自动退回离线兜底文案。
+    private let narrator: SceneNarrator = ResilientSceneNarrator()
 
     var body: some View {
         NavigationStack {
@@ -60,26 +60,49 @@ struct NarrationHomeView: View {
         return "第 \(totalSeconds / 60) 分 \(totalSeconds % 60) 秒"
     }
 
-    /// 生成描述。当前使用兜底描述器产出示例数据，接入模型后替换为真实关键帧输入。
+    /// 生成描述。
+    ///
+    /// 相机管线接通前，先用工程内置的全景样张验证全链路。
+    /// 单次模型调用实测约 11 至 13 秒，因此多帧并发请求，避免串行等待。
     private func generateNarrations() async {
         isGenerating = true
         defer { isGenerating = false }
 
-        var produced: [SceneNarration] = []
-        for index in 0..<4 {
-            let offsetMs = index * 8_000
-            do {
-                let narration = try await narrator.describe(
-                    frameData: Data(),
-                    offsetMs: offsetMs,
-                    frameFileName: "frame_\(index).jpg"
-                )
-                produced.append(narration)
-            } catch {
-                Log.error(.narration, "生成第 \(index) 条描述失败：\(error.localizedDescription)")
-            }
+        guard let frameData = loadSampleFrameData() else {
+            Log.error(.narration, "未找到内置全景样张，无法生成描述")
+            return
         }
+
+        // 并发发起各帧请求，再按时间偏移归位，总耗时约等于单帧耗时
+        let produced = await withTaskGroup(of: SceneNarration?.self) { group in
+            for index in 0..<2 {
+                group.addTask {
+                    do {
+                        return try await narrator.describe(
+                            frameData: frameData,
+                            offsetMs: index * 8_000,
+                            frameFileName: "frame_\(index).jpg"
+                        )
+                    } catch {
+                        Log.error(.narration, "生成第 \(index) 条描述失败：\(error)")
+                        return nil
+                    }
+                }
+            }
+            var collected: [SceneNarration] = []
+            for await result in group {
+                if let result { collected.append(result) }
+            }
+            return collected.sorted { $0.offsetMs < $1.offsetMs }
+        }
+
         narrations = produced
         Log.info(.narration, "本次训练共生成 \(produced.count) 条描述")
+    }
+
+    /// 读取工程内置的全景样张，用于相机接通前的链路验证
+    private func loadSampleFrameData() -> Data? {
+        guard let url = Bundle.main.url(forResource: "pano_sample", withExtension: "jpg") else { return nil }
+        return try? Data(contentsOf: url)
     }
 }

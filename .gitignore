@@ -34,3 +34,6 @@ Package.pins
 
 # xcodegen 生成物（由 project.yml 声明式重建）
 WalkMate/WalkMate.xcodeproj/
+
+# 密钥文件，严禁提交
+WalkMate/Resources/Secrets.plist

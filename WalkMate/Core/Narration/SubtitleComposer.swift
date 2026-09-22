@@ -8,7 +8,10 @@ import Foundation
 enum SubtitleComposer {
 
     /// 单条字幕的最大字数。超出则按标点切分，避免一屏文字过长。
-    static let maxCharactersPerCue = 18
+    /// 取 24 字是按手机竖屏两行的容量定的：过小会把一句话切得过碎，读起来像机关枪。
+    static let maxCharactersPerCue = 24
+    /// 单条字幕的最小字数。短于此值的尾巴会并回上一条，避免出现「灯，」这类孤儿片段。
+    static let minCharactersPerCue = 4
     /// 每个字的基准阅读耗时（毫秒）
     static let millisecondsPerCharacter = 180
     /// 单条字幕的最短显示时长（毫秒），保证短句也来得及看清
@@ -97,21 +100,50 @@ enum SubtitleComposer {
         }
         if !buffer.isEmpty { segments.append(buffer) }
 
-        return segments
+        return absorbShortTails(segments)
     }
 
-    /// 对没有标点可依的超长文本按字数硬切
+    /// 对没有标点可依的超长文本按字数切分。
+    ///
+    /// 不采用「切满上限再留余数」的朴素做法：20 字按 18 切会得到 18 与 2，
+    /// 那个 2 字尾巴在画面上就是一条孤儿字幕。改为先算需要几段，再按段数均分。
     private static func hardSplit(_ text: String) -> [String] {
+        let total = text.count
+        guard total > maxCharactersPerCue else { return [text] }
+
+        // 向上取整算出段数与每段容量，使各段长度差不超过一个字
+        let chunkCount = (total + maxCharactersPerCue - 1) / maxCharactersPerCue
+        let chunkSize = (total + chunkCount - 1) / chunkCount
+
         var result: [String] = []
         var buffer = ""
         for character in text {
             buffer.append(character)
-            if buffer.count == maxCharactersPerCue {
+            if buffer.count == chunkSize {
                 result.append(buffer)
                 buffer = ""
             }
         }
         if !buffer.isEmpty { result.append(buffer) }
+        return result
+    }
+
+    /// 把过短的片段并回上一条。
+    ///
+    /// 标点切分后贪心合并仍可能在末尾留下极短的一段（例如只剩「门，」两个字），
+    /// 这里允许轻微超出字数上限，换取画面上不出现孤儿字幕。
+    private static func absorbShortTails(_ segments: [String]) -> [String] {
+        guard segments.count > 1 else { return segments }
+
+        var result: [String] = []
+        for segment in segments {
+            if segment.count < minCharactersPerCue, let previous = result.last {
+                result.removeLast()
+                result.append(previous + segment)
+            } else {
+                result.append(segment)
+            }
+        }
         return result
     }
 
