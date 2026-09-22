@@ -23,33 +23,44 @@ enum TrainingClipComposer {
         let durationMs: Int
     }
 
+    /// 一段配音：音频文件及其在成片时间轴上的起点
+    struct SpeechTrack {
+        let audioURL: URL
+        let startMs: Int
+    }
+
+    /// 背景音乐相对语音的音量。语音是主体，音乐只做衬底，压到两成避免盖住朗读。
+    static let musicVolume: Float = 0.2
+
     /// 合成短片。
     ///
     /// - Parameters:
     ///   - segments: 按时间顺序排列的关键帧片段
     ///   - cues: 已排布好的字幕时间轴
-    ///   - musicURL: 背景音乐，传 nil 则输出无声视频
+    ///   - speeches: 场景描述的配音轨。成片必须带朗读，否则视障受众拿到的等于空白
+    ///   - musicURL: 背景音乐，传 nil 则只有语音
     ///   - outputURL: 输出文件路径，若已存在会被覆盖
     static func compose(
         segments: [FrameSegment],
         cues: [SubtitleCue],
+        speeches: [SpeechTrack],
         musicURL: URL?,
         outputURL: URL
     ) async throws {
         guard !segments.isEmpty else { throw ClipComposeError.emptyInput }
 
-        // 先渲染出无声视频，再按需混入音乐，两步分离便于定位问题
+        // 先渲染出无声视频，再混入音轨，两步分离便于定位问题
         let silentURL = outputURL.deletingLastPathComponent()
             .appendingPathComponent("silent_\(UUID().uuidString).mp4")
         defer { try? FileManager.default.removeItem(at: silentURL) }
 
         try await renderVideo(segments: segments, cues: cues, to: silentURL)
 
-        guard let musicURL else {
+        guard !speeches.isEmpty || musicURL != nil else {
             try replaceItem(at: outputURL, with: silentURL)
             return
         }
-        try await mux(videoURL: silentURL, musicURL: musicURL, to: outputURL)
+        try await mux(videoURL: silentURL, speeches: speeches, musicURL: musicURL, to: outputURL)
     }
 
     // MARK: - 视频渲染
@@ -210,12 +221,13 @@ enum TrainingClipComposer {
 
     // MARK: - 音轨混合
 
-    /// 把背景音乐混入无声视频。音乐短于视频时保持原长，长于视频时按视频时长截断。
-    private static func mux(videoURL: URL, musicURL: URL, to outputURL: URL) async throws {
+    /// 把配音与背景音乐混入无声视频。
+    ///
+    /// 语音各段按各自起点插入同一条音轨；音乐单独占一条轨并通过 `AVMutableAudioMix`
+    /// 压低音量，确保朗读始终清晰。音乐短于视频时保持原长，不做循环。
+    private static func mux(videoURL: URL, speeches: [SpeechTrack], musicURL: URL?, to outputURL: URL) async throws {
         let composition = AVMutableComposition()
         let videoAsset = AVURLAsset(url: videoURL)
-        let musicAsset = AVURLAsset(url: musicURL)
-
         let videoDuration = try await videoAsset.load(.duration)
 
         guard
@@ -224,11 +236,37 @@ enum TrainingClipComposer {
         else { throw ClipComposeError.writerSetupFailed }
         try compositionVideo.insertTimeRange(CMTimeRange(start: .zero, duration: videoDuration), of: videoTrack, at: .zero)
 
-        if let musicTrack = try await musicAsset.loadTracks(withMediaType: .audio).first,
-           let compositionAudio = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
-            let musicDuration = try await musicAsset.load(.duration)
-            let usable = CMTimeMinimum(musicDuration, videoDuration)
-            try compositionAudio.insertTimeRange(CMTimeRange(start: .zero, duration: usable), of: musicTrack, at: .zero)
+        // 配音轨：各段语音按起点依次插入同一条轨道
+        if !speeches.isEmpty,
+           let speechTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
+            for speech in speeches.sorted(by: { $0.startMs < $1.startMs }) {
+                let asset = AVURLAsset(url: speech.audioURL)
+                guard let source = try await asset.loadTracks(withMediaType: .audio).first else { continue }
+                let duration = try await asset.load(.duration)
+                let startTime = CMTime(value: CMTimeValue(speech.startMs), timescale: 1_000)
+                // 超出视频末尾的片段直接跳过，避免成片被音轨拉长
+                guard startTime < videoDuration else { continue }
+                let usable = CMTimeMinimum(duration, CMTimeSubtract(videoDuration, startTime))
+                try speechTrack.insertTimeRange(CMTimeRange(start: .zero, duration: usable), of: source, at: startTime)
+            }
+        }
+
+        // 音乐轨：单独一条，便于用 audioMix 单独压低音量
+        var audioMix: AVMutableAudioMix?
+        if let musicURL,
+           let musicTrack = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) {
+            let musicAsset = AVURLAsset(url: musicURL)
+            if let source = try await musicAsset.loadTracks(withMediaType: .audio).first {
+                let musicDuration = try await musicAsset.load(.duration)
+                let usable = CMTimeMinimum(musicDuration, videoDuration)
+                try musicTrack.insertTimeRange(CMTimeRange(start: .zero, duration: usable), of: source, at: .zero)
+
+                let parameters = AVMutableAudioMixInputParameters(track: musicTrack)
+                parameters.setVolume(musicVolume, at: .zero)
+                let mix = AVMutableAudioMix()
+                mix.inputParameters = [parameters]
+                audioMix = mix
+            }
         }
 
         guard let export = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetHighestQuality) else {
@@ -237,6 +275,7 @@ enum TrainingClipComposer {
         try? FileManager.default.removeItem(at: outputURL)
         export.outputURL = outputURL
         export.outputFileType = .mp4
+        export.audioMix = audioMix
         await export.export()
 
         if export.status != .completed { throw export.error ?? ClipComposeError.exportSetupFailed }

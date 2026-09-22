@@ -3,8 +3,13 @@ import Foundation
 /// 字幕合成器：把场景描述列表转换为不重叠的字幕时间轴。
 ///
 /// 纯计算逻辑，不依赖任何 iOS 框架，可独立单元测试。
-/// 设计取舍：视障用户本人听语音即可，字幕服务的是分享出去之后的明眼观众，
-/// 因此按明眼人的中文阅读速度排版，而非按语音播报节奏。
+///
+/// 提供两个入口：
+/// - `compose(forSpeech:startMs:speechDurationMs:)` 按实际语音时长排布，配音短片走这条；
+/// - `compose(from:totalDurationMs:)` 按中文阅读速度估算，仅用于无语音的纯字幕场景。
+///
+/// 成片一律带语音朗读，因此前者才是常规路径：字幕服务的是明眼观众，
+/// 但它必须跟着朗读走，否则声音与文字会渐行渐远。
 enum SubtitleComposer {
 
     /// 单条字幕的最大字数。超出则按标点切分，避免一屏文字过长。
@@ -55,6 +60,36 @@ enum SubtitleComposer {
         }
 
         return resolveOverlaps(cues)
+    }
+
+    /// 依据实际语音时长排布字幕。
+    ///
+    /// 这是配音短片的首选入口：按字数估算时长只能保证「看得完」，
+    /// 而字幕必须与朗读同步，否则声音和文字会渐行渐远。
+    /// 做法是把整段语音时长按各短句的字数占比切分。
+    ///
+    /// - Parameters:
+    ///   - text: 描述正文
+    ///   - startMs: 该段语音在成片时间轴上的起点
+    ///   - speechDurationMs: 该段语音的实际时长
+    static func compose(forSpeech text: String, startMs: Int, speechDurationMs: Int) -> [SubtitleCue] {
+        let segments = splitIntoSegments(text)
+        let totalCharacters = segments.reduce(0) { $0 + $1.count }
+        guard totalCharacters > 0, speechDurationMs > 0 else { return [] }
+
+        var cues: [SubtitleCue] = []
+        var cursorMs = startMs
+        for (index, segment) in segments.enumerated() {
+            // 末段直接吃掉余量，避免整数除法累积误差导致尾部留白
+            let isLast = index == segments.count - 1
+            let endMs = isLast
+                ? startMs + speechDurationMs
+                : cursorMs + segment.count * speechDurationMs / totalCharacters
+            guard endMs > cursorMs else { continue }
+            cues.append(SubtitleCue(startMs: cursorMs, endMs: endMs, text: segment))
+            cursorMs = endMs
+        }
+        return cues
     }
 
     /// 估算一段文字的显示时长，并钳制在上下限之间

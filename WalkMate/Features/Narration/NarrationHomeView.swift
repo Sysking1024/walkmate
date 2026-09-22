@@ -1,108 +1,88 @@
 import SwiftUI
 
-/// 场景描述首页：展示本次训练的图文时间线。
+/// 训练记录首页：走完「识别环境 → 朗读 → 生成短片 → 分享」的完整流程。
 ///
 /// 无障碍要点（宪章原则四）：
 /// - 按钮使用原生 `Button` 并直接携带文本，不额外嵌套语义包装（原生内聚）；
 /// - 每条描述合并为单一语义容器，用中文逗号平铺朗读，防止焦点碎片化（边界阻断）；
-/// - 交互控件触控目标不小于 48 点。
+/// - 交互控件触控目标不小于 48 点；
+/// - 状态变化只更新文本内容，不做会打断读屏焦点的结构重排。
 struct NarrationHomeView: View {
 
-    /// 本次训练已生成的描述列表
-    @State private var narrations: [SceneNarration] = []
-    /// 是否正在生成描述
-    @State private var isGenerating = false
-
-    /// 当前采用的描述器。优先走多模态模型，异常时自动退回离线兜底文案。
-    private let narrator: SceneNarrator = ResilientSceneNarrator()
+    @State private var model = TrainingRecordViewModel()
 
     var body: some View {
         NavigationStack {
             List {
-                if narrations.isEmpty {
-                    Text("还没有记录。点击下方按钮生成本次训练的描述。")
+                Section {
+                    Text(model.phase.statusText)
+                        .font(.headline)
+                        .foregroundStyle(model.phase.isBusy ? .secondary : .primary)
+                }
+
+                if model.narrations.isEmpty {
+                    Text("点击下方按钮，识别本次训练走过的环境并生成可分享的记录。")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(narrations) { narration in
-                        narrationRow(narration)
+                    Section("环境描述") {
+                        ForEach(model.narrations) { narration in
+                            narrationRow(narration)
+                        }
                     }
                 }
             }
             .navigationTitle("训练记录")
-            .safeAreaInset(edge: .bottom) {
-                Button(isGenerating ? "正在生成描述" : "生成本次训练描述") {
-                    Task { await generateNarrations() }
-                }
-                .disabled(isGenerating)
-                .frame(maxWidth: .infinity, minHeight: 48)
-                .buttonStyle(.borderedProminent)
-                .padding()
-            }
+            .safeAreaInset(edge: .bottom) { bottomControls }
         }
     }
 
-    /// 单条描述行。整行合并为一个无障碍元素，按「时间，正文」的顺序平铺朗读。
+    /// 底部操作区。生成完成后才出现朗读与分享入口，避免无效控件占据读屏焦点。
+    private var bottomControls: some View {
+        VStack(spacing: 12) {
+            Button(model.phase.isBusy ? model.phase.statusText : "生成训练记录") {
+                Task { await model.generateRecord() }
+            }
+            .disabled(model.phase.isBusy)
+            .frame(maxWidth: .infinity, minHeight: 48)
+            .buttonStyle(.borderedProminent)
+
+            if !model.narrations.isEmpty {
+                Button("朗读全部描述") { model.speakAll() }
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .buttonStyle(.bordered)
+            }
+
+            if let clipURL = model.clipURL {
+                ShareLink(item: clipURL) {
+                    Text("分享这段记录")
+                        .frame(maxWidth: .infinity, minHeight: 48)
+                }
+                .buttonStyle(.bordered)
+                .accessibilityHint("把带语音朗读的短片分享给朋友")
+            }
+        }
+        .padding()
+        .background(.bar)
+    }
+
+    /// 单条描述行。整行合并为一个无障碍元素，按「序号，正文」的顺序平铺朗读。
     private func narrationRow(_ narration: SceneNarration) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(formattedOffset(narration.offsetMs))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            Text(narration.text)
-                .font(.body)
+        Button {
+            model.speak(narration)
+        } label: {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(narration.source == .fallback ? "离线文案" : "环境描述")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Text(narration.text)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+                    .multilineTextAlignment(.leading)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(minHeight: 48)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(formattedOffset(narration.offsetMs))，\(narration.text)")
-    }
-
-    /// 把毫秒偏移格式化为「第 X 分 Y 秒」，便于读屏顺畅朗读
-    private func formattedOffset(_ offsetMs: Int) -> String {
-        let totalSeconds = offsetMs / 1_000
-        return "第 \(totalSeconds / 60) 分 \(totalSeconds % 60) 秒"
-    }
-
-    /// 生成描述。
-    ///
-    /// 相机管线接通前，先用工程内置的全景样张验证全链路。
-    /// 单次模型调用实测约 11 至 13 秒，因此多帧并发请求，避免串行等待。
-    private func generateNarrations() async {
-        isGenerating = true
-        defer { isGenerating = false }
-
-        guard let frameData = loadSampleFrameData() else {
-            Log.error(.narration, "未找到内置全景样张，无法生成描述")
-            return
-        }
-
-        // 并发发起各帧请求，再按时间偏移归位，总耗时约等于单帧耗时
-        let produced = await withTaskGroup(of: SceneNarration?.self) { group in
-            for index in 0..<2 {
-                group.addTask {
-                    do {
-                        return try await narrator.describe(
-                            frameData: frameData,
-                            offsetMs: index * 8_000,
-                            frameFileName: "frame_\(index).jpg"
-                        )
-                    } catch {
-                        Log.error(.narration, "生成第 \(index) 条描述失败：\(error)")
-                        return nil
-                    }
-                }
-            }
-            var collected: [SceneNarration] = []
-            for await result in group {
-                if let result { collected.append(result) }
-            }
-            return collected.sorted { $0.offsetMs < $1.offsetMs }
-        }
-
-        narrations = produced
-        Log.info(.narration, "本次训练共生成 \(produced.count) 条描述")
-    }
-
-    /// 读取工程内置的全景样张，用于相机接通前的链路验证
-    private func loadSampleFrameData() -> Data? {
-        guard let url = Bundle.main.url(forResource: "pano_sample", withExtension: "jpg") else { return nil }
-        return try? Data(contentsOf: url)
+        .accessibilityHint("轻点两下朗读这段描述")
     }
 }
