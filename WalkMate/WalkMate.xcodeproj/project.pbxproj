@@ -63,7 +63,7 @@
 		64F024C8A3562A552B6792C3 /* FrameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModels.swift; sourceTree = "<group>"; };
 		68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramicStreamView.swift; sourceTree = "<group>"; };
 		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
-		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorTelemetryCard.swift; sourceTree = "<group>"; };
 		A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCoreMedia.xcframework; path = Frameworks/INSCoreMedia.xcframework; sourceTree = "<group>"; };
 		AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPlayerBridge.swift; sourceTree = "<group>"; };
@@ -239,7 +239,6 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					D0C10D6348A3309AC5F5EA63 = {
-						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
 					};
 					D8A983DE875364D7AFB1F969 = {
@@ -312,6 +311,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",
@@ -336,6 +336,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",

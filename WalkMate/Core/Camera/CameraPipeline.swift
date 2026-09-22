@@ -104,6 +104,9 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
     
     /// 建立桥接器内部回调
     private func setupBridgeCallbacks() {
+        // 将陀螺仪处理器注入播放器桥接器，使 player.gyroDelegate 指向 GyroDataHandler
+        playerBridge.gyroDelegate = gyroHandler as? INSCameraSessionGyroDelegate
+        
         // 视频帧解码到达
         playerBridge.onFrameDecoded = { [weak self] pixelBuffer, ptsMs in
             self?.handleDecodedFrame(pixelBuffer: pixelBuffer, timestampMs: ptsMs)
