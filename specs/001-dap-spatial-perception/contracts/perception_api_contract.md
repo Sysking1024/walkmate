@@ -25,7 +25,7 @@ public protocol SpatialPerceptionDelegate: AnyObject {
         didProduceResult result: SpatialPerceptionResult
     )
     
-    /// 紧急安全告警快速通道 (当发生后退碰撞或前方/后方跌落踩空危险时触发)
+    /// 紧急跌落告警快速通道 (当前方或后方检测到严重跌落/台阶踩空危险时触发，供上层立即切断引导并播放防踩空告警)
     func perceptionEngine(
         _ engine: SpatialPerceptionEngineProtocol,
         didTriggerImmediateHazard hazard: DropOffHazardEvent

@@ -71,7 +71,7 @@ import simd
 
 /// 单次采集的完整全景数据帧
 public struct PanoramicFrame {
-    /// 图像像素缓存 (512x256 原生全景格式)
+    /// 图像像素缓存 (由相机硬件解码输出的 1080P 原生全景帧，随后由 Accelerate 预处理器降采样至 512x256)
     public let pixelBuffer: CVPixelBuffer
     /// 采集毫秒时间戳
     public let timestampMs: Int64
@@ -93,7 +93,7 @@ public struct DepthMatrix {
     public static let width = 512
     public static let height = 256
     
-    /// 连续内存深度数组 (单位: 米, 范围 0.3m ~ 10.0m; 无效点、盲区或超出量程标记为 Float.nan 或 <= 0.0)
+    /// 连续内存深度数组 (单位: 米, 有效感知范围 0.3m ~ 5.0m，原始模型物理量程上限 10.0m; 无效点、超出量程标记为 Float.nan 或 <= 0.0；小于 0.3m 盲区在几何层兜底为极近危险)
     public let values: ContiguousArray<Float>
     /// 当前帧测得的最小物理距离 (米)
     public let minDepth: Float
@@ -116,14 +116,14 @@ public enum UserMotionState: String, Codable {
     case forward = "前行"
     /// 静止 / 驻足观察
     case stationary = "静止"
-    /// 正在后退 / 有后退起步倾向 (触发倒车雷达模式)
+    /// 正在后退 / 有后退起步倾向 (触发倒车雷达模式，判定条件: az < -0.3 m/s² 且 Δd_rear/Δt < -0.2 m/s 持续 2 帧)
     case backward = "后退"
 }
 ```
 
 #### `ThreatLevel`（威胁级别枚举）
 ```swift
-/// 障碍物威胁级别
+/// 障碍物威胁级别 (判定规则: d < 1.0m 或 (d < 1.5m 且 v >= 0.5m/s) 为 danger; 1.0m <= d <= 2.0m 或 v > 0.2m/s 为 warning; 其余为 safe)
 public enum ThreatLevel: String, Codable {
     case safe    = "安全"
     case warning = "警告"
@@ -146,7 +146,7 @@ public struct SpatialObstacleItem: Codable {
     public let azimuth: Float
     /// 垂直仰角 (度, 负值为低矮, 正值为悬挂)
     public let elevation: Float
-    /// 动态相对接近速率 (米/秒, 正值表示正在靠近)
+    /// 动态相对接近速率 (米/秒, 计算公式 v_approach = (d_{t-1} - d_t) / Δt, 正值表示正在靠近, 负值表示远离)
     public let approachRate: Float
     /// 综合威胁优先级评分 (综合距离与接近速度计算得出)
     public let priorityScore: Float
@@ -171,7 +171,7 @@ public struct PassageCorridorGeometry: Codable {
     public let clearanceWidth: Float
     /// 安全可行进纵深距离 (米)
     public let passableDepth: Float
-    /// 通道中心的三维空间导向锚点坐标 (严格遵循 iOS 空间音频坐标系: targetAnchor.z <= 0, 直接供空间音频绑定引导声源)
+    /// 通道中心的三维空间导向锚点坐标 (严格遵循 iOS 空间音频坐标系: targetAnchor.z = -min(passableDepth, 2.0) <= 0, 直接供空间音频绑定引导声源; 若 isPassable == false 则统一返回 SIMD3<Float>.zero)
     public let targetAnchor: SIMD3<Float>
 }
 ```

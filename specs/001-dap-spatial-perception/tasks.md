@@ -34,9 +34,10 @@
 - [ ] T007 导入 ANE 原生 CoreML INT8 模型至 `WalkMate/Resources/Models/dap_256x512_int8.mlpackage`
 - [ ] T008 [P] 实现 Accelerate 硬件向量化预处理器 `WalkMate/Core/Inference/AcceleratePreprocessor.swift`（vImage 缩放 + vDSP 归一化）
 - [ ] T009 实现 ANE 纯硬件深度推理引擎 `WalkMate/Core/Inference/DAPEngine.swift`（CoreML INT8 模型加载、Float16 内存安全绑定与执行）
+- [ ] T009b [P] 编写推理预处理与张量绑定单元测试 `Tests/InferenceTests/InferenceTests.swift`（基于 Mock 全景图像测试 vImage 缩放尺寸、vDSP 归一化输出范围与 Float16 内存绑定安全）
 - [ ] T010 实现空间感知对外服务中枢骨架 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`（实现 `SpatialPerceptionEngineProtocol`）
 
-**检查点 (Checkpoint)**: 核心数据模型与 DAP ANE 推理引擎就绪，用户故事阶段可基于此并行推进
+**检查点 (Checkpoint)**: 核心数据模型与 DAP ANE 推理引擎就绪，单元测试验证通过，用户故事阶段可基于此并行推进
 
 ---
 
@@ -48,10 +49,10 @@
 
 - [ ] T011 [P] [US1] 基于 `docs/insta_x.md` 实现视频流解码桥接器 `WalkMate/Core/Camera/StreamPlayerBridge.swift`（封装 `INSCameraSessionPlayer` 硬件解码与 `CVPixelBuffer` 回调）
 - [ ] T012 [P] [US1] 基于 `docs/insta_x.md` 实现六轴传感器同步器 `WalkMate/Core/Camera/GyroDataHandler.swift`（挂载 `INSCameraSessionGyroDelegate` 实时解析 `INSGyroRawItem`）
-- [ ] T013 [US1] 实现相机连接与生命周期管理管道 `WalkMate/Core/Camera/CameraPipeline.swift`（实现 `CameraPipelineProtocol`，管理握手、推流与断线重连）
+- [ ] T013 [US1] 实现相机连接与生命周期管理管道 `WalkMate/Core/Camera/CameraPipeline.swift`（实现 `CameraPipelineProtocol`，管理握手、推流与断线重连，推流帧率基于 1 秒滑动窗口平滑计算）
 - [ ] T014 [P] [US1] 实现全景视频流实时渲染视图 `WalkMate/App/Views/PanoramicStreamView.swift`
-- [ ] T015 [P] [US1] 实现六轴传感器遥测数据 HUD 视图 `WalkMate/App/Views/SensorTelemetryCard.swift`（采用原生 Text 元素展示状态、FPS、姿态与加速度）
-- [ ] T016 [US1] 实现主控制界面 `WalkMate/App/ContentView.swift`（整合连接/断开控制按钮、全景画面与传感器卡片，确保触控尺寸 >= 48x48pt，并在连接断开/异常时触发 VoiceOver 语音播报）
+- [ ] T015 [P] [US1] 实现六轴传感器遥测数据 HUD 视图 `WalkMate/App/Views/SensorTelemetryCard.swift`（严格遵循宪章原则四 4.c 合并与阻断规则，将整张卡片封装为独立语义容器 `.accessibilityElement(children: .combine)`，利用中文逗号平铺拼接连接状态、FPS、三轴角度与加速度，防止读屏焦点碎片化与高频噪点；确保文本与卡片背景对比度 >= 4.5:1；仅供被动读屏查询，严禁向 VoiceOver 发送实时主动高频播报通知）
+- [ ] T016 [US1] 实现主控制界面 `WalkMate/App/ContentView.swift`（整合连接/断开控制按钮、全景画面与传感器卡片，确保触控尺寸 >= 48x48pt，按钮与文本对比度 >= 4.5:1，并在连接断开/异常时触发 VoiceOver 语音播报）
 - [ ] T016b [US1] 编写相机管道脱机逻辑测试 `Tests/CameraTests/CameraPipelineTests.swift`（基于 Mock 数据测试连接生命周期状态机流转、断线重连退避与时间戳匹配封装，无需连接物理相机）
 
 **检查点 (Checkpoint)**: 用户故事 1 独立可运行验证！真机连上相机，屏幕展示实时全景流与姿态，完成首个核心增量。
@@ -64,10 +65,10 @@
 
 **独立测试验证**: 相机正对 2 米外开启的 0.9 米房门，系统正确输出 `corridor.isPassable == true`，偏转角误差 < 5°，净宽测量误差 < 0.05 米，中心导向锚点指向门洞。
 
-- [ ] T017 [P] [US2] 实现球面反投影器 `WalkMate/Core/Geometry/SphericalProjector.swift`（预计算 1.57MB 单位向量表 LUT，利用 `vDSP_vmul` 实现毫秒级 13 万点反投影）
+- [ ] T017 [P] [US2] 实现球面反投影器 `WalkMate/Core/Geometry/SphericalProjector.swift`（预计算 1.57MB 单位向量表 LUT，利用 `vDSP_vmul` 实现毫秒级 13 万点反投影；统一集成平滑系数 $\alpha = 0.7$ 的指数滑动平均 EMA 滤波，平滑帧间深度抖动并剔除低纹理白墙/镜面单帧孤立噪点）
 - [ ] T018 [P] [US2] 实现重力对齐器 `WalkMate/Core/Geometry/GravityAligner.swift`（根据 IMU 姿态四元数旋转点云，使 Y 轴平行于重力反向向上，X-Z 轴构成水平地平面）
-- [ ] T019 [US2] 实现纯动态地面估计器 `WalkMate/Core/Geometry/GroundPlaneEstimator.swift`（下半球点云 RANSAC 快速平面拟合，动态计算离地高度与地面剥离）
-- [ ] T020 [US2] 实现 BEV 栅格与通行走廊规划器 `WalkMate/Core/Analysis/PassageCorridorPlanner.swift`（300x300 鸟瞰栅格构建 + EDT 欧氏距离变换，按 0.6 米人体宽度提取中心中轴线与 `targetAnchor`，确保 $z \le 0$）
+- [ ] T019 [US2] 实现纯动态地面估计器 `WalkMate/Core/Geometry/GroundPlaneEstimator.swift`（下半球点云 RANSAC 快速平面拟合，点到候选平面距离容差 $\epsilon \le 0.05\text{m}$，动态计算离地高度与地面剥离）
+- [ ] T020 [US2] 实现 BEV 栅格与通行走廊规划器 `WalkMate/Core/Analysis/PassageCorridorPlanner.swift`（构建 300x300 鸟瞰栅格，分辨率取 0.02m/cell，覆盖左右 $\pm 3.0\text{m}$ 与前向 $0 \sim 6.0\text{m}$；应用 EDT 欧氏距离变换，按 0.6 米人体宽度提取中心中轴线与 `targetAnchor`，确保 $z \le 0$）
 - [ ] T021 [US2] 将通行走廊解算接入 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，填充 `SpatialPerceptionResult.corridor`
 - [ ] T021b [US2] 编写几何与走廊算法测试 `Tests/GeometryTests/GeometryTests.swift`（测试 1.57MB LUT 反投影精度、RANSAC 地面拟合误差 < 5cm 与 EDT 走廊提取 targetAnchor.z <= 0）
 
@@ -81,8 +82,8 @@
 
 **独立测试验证**: 在前方 1.5 米放置静止椅子，左前方 2.5 米有行人迎面走来，系统稳定输出两处障碍物坐标，并将迎面走来的行人动态提升为 Top 1。
 
-- [ ] T022 [P] [US3] 实现前向生理视角空间滤波器 `WalkMate/Core/Analysis/ObstacleSectorDetector.swift`（提取水平前向正负 60°~70°、高度 0.1m~2.0m 的障碍物点云聚类）
-- [ ] T023 [US3] 在 `WalkMate/Core/Analysis/ObstacleSectorDetector.swift` 中实现动态接近速率 ($\Delta d / \Delta t$) 计算与加权评分排序算法，截断输出 Top 3 障碍物列表
+- [ ] T022 [P] [US3] 实现前向生理视角空间滤波器 `WalkMate/Core/Analysis/ObstacleSectorDetector.swift`（提取水平前向正负 60°~70°、高度 0.1m~2.0m 的障碍物点云聚类；对小于 0.3 米的近距盲区/噪点进行安全兜底，转换为 0.3 米极近距离并标记为最高危险级别 `threatLevel = .danger` 输出）
+- [ ] T023 [US3] 在 `WalkMate/Core/Analysis/ObstacleSectorDetector.swift` 中实现动态接近速率（计算公式 $v_{approach} = (d_{t-1} - d_t)/\Delta t$，正值表示迎面逼近，负值表示远离）计算与加权评分排序算法，截断输出 Top 3 障碍物列表
 - [ ] T024 [US3] 将 Top 3 障碍物输出接入 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，填充 `SpatialPerceptionResult.obstacles`
 - [ ] T024b [US3] 编写前向避障与排序测试 `Tests/PerceptionTests/ObstacleSectorTests.swift`（测试 120°~140° 生理视角过滤与动态逼近 Top 3 加权排序逻辑）
 
@@ -98,6 +99,7 @@
 
 - [ ] T025 [US4] 实现地面跌落与下行阶梯检测器 `WalkMate/Core/Analysis/DropOffDetector.swift`（检测前方地面深度突变向下落差 > 0.15 米）
 - [ ] T026 [US4] 将跌落危险事件接入 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，填充 `SpatialPerceptionResult.dropOff` 并在高危时触发快速代理回调
+- [ ] T026b [US4] 编写地面跌落与台阶防踩空算法测试 `Tests/PerceptionTests/DropOffDetectorTests.swift`（基于合成地面深度点云测试平地连续性与落差 > 0.15m 台阶检测，验证提前 1.2m 预警时机与 SC-009 指标）
 
 **检查点 (Checkpoint)**: 增加防踩空安全底线防护，满足完整前向安全性。
 
@@ -124,7 +126,7 @@
 
 - [ ] T030 执行 `xcodegen generate` 重新同步工程配置，并执行 `xcodebuild` 验证全项目静态分析与零警告编译 (Zero Warnings)
 - [ ] T031 [P] 审查并验证全工程代码注释符合宪章原则五（全中文注释先于核心逻辑），日志采用 Swift `Log` 工具且无 `print()`
-- [ ] T032 [P] 审查全界面 VoiceOver 读屏与触控尺寸无障碍合规性（所有按钮触控目标 >= 48x48pt）
+- [ ] T032 [P] 审查全界面 VoiceOver 读屏、触控尺寸与视觉对比度无障碍合规性（所有按钮触控目标 >= 48x48pt，所有前景色/背景色对比度严格 >= 4.5:1）
 - [ ] T033 执行 `specs/001-dap-spatial-perception/quickstart.md` 场景 5 进行 60 秒持续推流压测，验证全链路单帧端到端延迟严格小于 130 毫秒
 
 ---
@@ -142,14 +144,14 @@ Phase 4: User Story 2 (T017 ~ T021b) [空间通道导向]
   ↓
 Phase 5: User Story 3 (T022 ~ T024b) [前向避障]
   ↓
-Phase 6: User Story 4 (T025 ~ T026) [防踩空] & Phase 7: User Story 5 (T027 ~ T029b) [后退雷达]
+Phase 6: User Story 4 (T025 ~ T026b) [防踩空] & Phase 7: User Story 5 (T027 ~ T029b) [后退雷达]
   ↓
 Phase 8: Polish (T030 ~ T033) [构建、无障碍与延迟验收]
 ```
 
 ### 并行开发机会
 - **Phase 1**: T002 与 T003 可并行；
-- **Phase 2**: T005, T006, T008 可并行开发；
+- **Phase 2**: T005, T006, T008, T009b 可并行开发；
 - **Phase 3**: T011（解码）与 T012（IMU）可并行，T014 与 T015 界面组件可并行；
 - **Phase 4**: T017（反投影 LUT）与 T018（重力对齐）可并行；
 - **Phase 5 & 6 & 7**: 几何底层就绪后，避障聚类（US3）、跌落检测（US4）与运动意图（US5）的算法实现可并行开发。

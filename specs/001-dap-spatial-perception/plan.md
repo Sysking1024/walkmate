@@ -79,7 +79,10 @@ specs/001-dap-spatial-perception/
 WalkMate/
 ├── App/
 │   ├── WalkMateApp.swift            # 应用程序入口
-│   └── ContentView.swift            # 主界面：极简设备控制与画面/传感器预览 HUD
+│   ├── ContentView.swift            # 主界面：极简设备控制与画面/传感器预览 HUD
+│   └── Views/                       # 界面子组件
+│       ├── PanoramicStreamView.swift # 1080P 全景实时视频流渲染视图
+│       └── SensorTelemetryCard.swift # 六轴传感器与推流遥测普通文本卡片 (静态被动展示)
 ├── Core/
 │   ├── Camera/                      # 第 1 层：相机连接与视频流管道
 │   │   ├── CameraPipeline.swift     # 基于 INSCameraManager 的连接与生命周期管理
@@ -94,15 +97,17 @@ WalkMate/
 │   │   └── GroundPlaneEstimator.swift # 纯动态 RANSAC 下半球地面拟合 (2.5ms)
 │   ├── Analysis/                    # 第 4 层：避障、走廊与运动状态解算
 │   │   ├── MotionIntentEstimator.swift # IMU 纵向加速度脉冲 + 深度差分状态机
-│   │   ├── PassageCorridorPlanner.swift# 300x300 BEV 栅格 + EDT 人体通行走廊提取
+│   │   ├── PassageCorridorPlanner.swift# 300x300 BEV 栅格 (分辨率 0.02m，覆盖左右 ±3m 与纵深 0~6m) + EDT 人体通行走廊提取
 │   │   ├── ObstacleSectorDetector.swift# 生理视角 120°~140° Top 3 动态避障
 │   │   └── DropOffDetector.swift     # 前后双向 15cm 下行台阶防踩空检测
-│   └── Engine/                      # 空间感知对外服务中枢
-│       └── SpatialPerceptionEngine.swift # 协调全链路管道，向外广播 SpatialPerceptionResult
+│   ├── Engine/                      # 空间感知对外服务中枢
+│   │   └── SpatialPerceptionEngine.swift # 协调全链路管道，向外广播 SpatialPerceptionResult
+│   └── Utils/                       # 通用工具
+│       └── Log.swift                # 统一业务结构化日志工具 (遵循宪章原则八/九)
 ├── Models/                          # 数据实体模型 (data-model.md)
 │   ├── FrameModels.swift            # PanoramicFrame, DepthMatrix
 │   ├── PerceptionModels.swift       # SpatialObstacleItem, PassageCorridorGeometry, DropOffHazardEvent
-│   └── TelemetryModels.swift        # SensorTelemetry, CameraConnectionState, UserMotionState
+│   └── TelemetryModels.swift        # SensorTelemetry, CameraConnectionState, UserMotionState, ThreatLevel
 ├── Resources/
 │   └── Models/
 │       └── dap_256x512_int8.mlpackage # ANE 原生 INT8 量化模型包 (319 MB)
@@ -110,6 +115,7 @@ WalkMate/
 
 Tests/
 ├── CameraTests/                     # 相机连接与数据解析单元测试
+├── InferenceTests/                  # 预处理与 CoreML 张量绑定测试
 ├── GeometryTests/                   # 反投影与地面拟合精度测试
 └── PerceptionTests/                 # 走廊规划与避障排序逻辑测试
 ```

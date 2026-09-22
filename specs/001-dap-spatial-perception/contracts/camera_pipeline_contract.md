@@ -62,7 +62,7 @@ public protocol CameraPipelineProtocol: AnyObject {
    - 挂载 `INSCameraSessionGyroDelegate` 接收传感器数据。
 2. **实时数据输出流程**：
    - 每收到一帧解码后的画面与时间戳匹配的 IMU 数据，打包为 `PanoramicFrame` 并调用 `didReceiveFrame(frame)`；
-   - 以约 10Hz 频率聚合推流状态与姿态角度，调用 `didUpdateTelemetry(telemetry)` 供 UI 刷新。
+   - 以约 10Hz 频率聚合推流状态与姿态角度（推流帧率 fps 采用 1 秒滑动窗口均值计算），调用 `didUpdateTelemetry(telemetry)` 供 UI 刷新。
 3. **断开与异常处理**：
    - 调用 `disconnect()`：停止播放器，关闭 Socket 连接，触发 `didUpdateState(.noConnection)`；
    - 意外断线：若收到相机掉线通知，在 1 秒内触发 `didUpdateState(.failed)` 并启动退避重连。
