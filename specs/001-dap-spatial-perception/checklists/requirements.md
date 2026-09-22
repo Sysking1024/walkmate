@@ -25,12 +25,12 @@
 ## Feature Readiness
 
 - [x] All functional requirements have clear acceptance criteria
-- [x] User scenarios cover primary flows (camera pipeline prioritized as P1, followed by passage corridor, obstacle perception, drop-off hazard, and dynamic rear radar)
+- [x] User scenarios cover primary flows (camera pipeline & control/preview UI prioritized as P1, followed by passage corridor, obstacle perception, drop-off hazard, and dynamic rear radar)
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
 ## Notes
 
 - All checklist items pass validation.
-- User Story 1 is prioritized as Camera connection, lifecycle management, and real-time streaming pipeline as the foundational prerequisite.
+- User Scenario 1 includes minimal accessible UI (connect/disconnect buttons >= 48x48pt with VoiceOver, live video preview, and real-time sensor telemetry HUD).
 - The specification is ready for the planning phase (`/speckit-plan`).
