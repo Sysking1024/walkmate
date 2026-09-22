@@ -1,0 +1,33 @@
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Xcode 与构建产物
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-builder
+*.xcuserstate
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+Packages/
+Package.pins
+
+# 临时文件
+*.swp
+*~
+*.orig
