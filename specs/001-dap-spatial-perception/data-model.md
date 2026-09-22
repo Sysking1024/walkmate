@@ -93,7 +93,7 @@ public struct DepthMatrix {
     public static let width = 512
     public static let height = 256
     
-    /// 连续内存深度数组 (单位: 米, 范围 0.3m ~ 10.0m)
+    /// 连续内存深度数组 (单位: 米, 范围 0.3m ~ 10.0m; 无效点、盲区或超出量程标记为 Float.nan 或 <= 0.0)
     public let values: ContiguousArray<Float>
     /// 当前帧测得的最小物理距离 (米)
     public let minDepth: Float
@@ -138,7 +138,7 @@ import simd
 /// 单个障碍物在使用者相对坐标系中的空间位置
 public struct SpatialObstacleItem: Codable {
     /// 三维相对坐标 (x:水平左右, y:垂直高度, z:前后纵深, 单位: 米)
-    /// 严格遵循 iOS 空间音频坐标系: +X为右, -X为左, +Y为上, -Z为前 (或 +Z 为后)
+    /// 严格遵循 iOS 空间音频右手坐标系: +X 为右, -X 为左, +Y 为上 (垂直高度, 反向重力), -Z 为正前 (前向为负), +Z 为正后 (后向为正)
     public let position: SIMD3<Float>
     /// 空间直线距离 (米)
     public let distance: Float
@@ -171,7 +171,7 @@ public struct PassageCorridorGeometry: Codable {
     public let clearanceWidth: Float
     /// 安全可行进纵深距离 (米)
     public let passableDepth: Float
-    /// 通道中心的三维空间导向锚点坐标 (直接供空间音频绑定引导声源)
+    /// 通道中心的三维空间导向锚点坐标 (严格遵循 iOS 空间音频坐标系: targetAnchor.z <= 0, 直接供空间音频绑定引导声源)
     public let targetAnchor: SIMD3<Float>
 }
 ```

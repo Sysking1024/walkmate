@@ -21,7 +21,7 @@
 
 ```bash
 # 1. 进入工作空间根目录
-cd /Users/wuyiming/Code/walkmate
+cd "$(git rev-parse --show-toplevel)"
 
 # 2. 通过 xcodegen 自动生成原生 Xcode 工程
 xcodegen generate
