@@ -44,27 +44,38 @@ final class TrainingRecordViewModel {
     private(set) var clipURL: URL?
 
     private let narrator: SceneNarrator = ResilientSceneNarrator()
-    private let speechRenderer = SpeechRenderer()
+    /// 云端语音合成器。音色自然，是成片的首选；凭据缺失时为 nil。
+    private let cloudSpeechRenderer = QwenSpeechRenderer()
+    /// 系统语音合成器。音色机械，仅在云端不可用时兜底。
+    private let systemSpeechRenderer = SpeechRenderer()
+    /// 各条描述对应的已渲染音频，用于界面上即时播放
+    private var renderedAudio: [UUID: URL] = [:]
+    /// 播放器需持有，否则声音会在播放前被回收
+    private var audioPlayer: AVAudioPlayer?
 
     /// 关键帧之间的留白，让听者在两段描述之间有停顿
     private let paddingMs = 700
 
-    /// 朗读指定描述
+    /// 朗读指定描述。
+    ///
+    /// 优先播放生成阶段已渲染好的音频：音色自然且瞬时响应，不必等网络。
+    /// 尚未渲染时才退回系统合成器现场朗读。
     func speak(_ narration: SceneNarration) {
         configureAudioSessionForPlayback()
-        speechRenderer.speak(narration.text)
-    }
 
-    /// 依次朗读全部描述
-    func speakAll() {
-        configureAudioSessionForPlayback()
-        for narration in narrations {
-            speechRenderer.speak(narration.text)
+        guard let audioURL = renderedAudio[narration.id],
+              let player = try? AVAudioPlayer(contentsOf: audioURL) else {
+            systemSpeechRenderer.speak(narration.text)
+            return
         }
+        audioPlayer = player
+        player.play()
+        Log.info(.narration, "播放已渲染语音，长度 \(narration.text.count) 字")
     }
 
     func stopSpeaking() {
-        speechRenderer.stopSpeaking()
+        audioPlayer?.stop()
+        systemSpeechRenderer.stopSpeaking()
     }
 
     /// 跑完整条流水线。
@@ -154,11 +165,10 @@ final class TrainingRecordViewModel {
         var cursorMs = 0
 
         for (index, narration) in narrations.enumerated() {
-            let audioURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("speech_\(index).caf")
-            let speech = try await speechRenderer.render(narration.text, to: audioURL)
+            let speech = try await renderSpeech(narration.text, index: index)
+            renderedAudio[narration.id] = speech.audioURL
 
-            speeches.append(.init(audioURL: audioURL, startMs: cursorMs))
+            speeches.append(.init(audioURL: speech.audioURL, startMs: cursorMs))
             cues += SubtitleComposer.compose(
                 forSpeech: narration.text,
                 startMs: cursorMs,
@@ -172,6 +182,21 @@ final class TrainingRecordViewModel {
         }
 
         return Timeline(segments: segments, cues: cues, speeches: speeches)
+    }
+
+    /// 渲染一段语音。云端音色自然，失败时退回系统音色保证流程不中断。
+    private func renderSpeech(_ text: String, index: Int) async throws -> SpeechRenderer.RenderedSpeech {
+        let directory = FileManager.default.temporaryDirectory
+        if let cloudSpeechRenderer {
+            do {
+                return try await cloudSpeechRenderer.render(
+                    text, to: directory.appendingPathComponent("speech_\(index).wav"))
+            } catch {
+                Log.warning(.narration, "云端语音合成失败，退回系统音色：\(error)")
+            }
+        }
+        return try await systemSpeechRenderer.render(
+            text, to: directory.appendingPathComponent("speech_\(index).caf"))
     }
 
     /// 工程内置的等矩形全景样张，用于相机管线接通前的完整流程验证

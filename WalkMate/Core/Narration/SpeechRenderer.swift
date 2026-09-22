@@ -99,4 +99,10 @@ final class SpeechRenderer {
 enum SpeechRenderError: Error {
     /// 合成器没有产出任何音频数据
     case emptyOutput
+    /// 云端接口返回了非 200 状态码
+    case badStatus(Int)
+    /// 响应结构与预期不符
+    case malformedResponse
+    /// 音频文件下载失败
+    case downloadFailed
 }

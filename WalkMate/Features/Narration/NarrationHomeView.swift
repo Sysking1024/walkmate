@@ -47,7 +47,7 @@ struct NarrationHomeView: View {
             .buttonStyle(.borderedProminent)
 
             if !model.narrations.isEmpty {
-                Button("朗读全部描述") { model.speakAll() }
+                Button("停止朗读") { model.stopSpeaking() }
                     .frame(maxWidth: .infinity, minHeight: 48)
                     .buttonStyle(.bordered)
             }
