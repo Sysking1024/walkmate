@@ -135,13 +135,7 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
             context: nil
         )
         
-        // 监听通知中心
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleCameraDidConnect),
-            name: .INSCameraDidConnect,
-            object: nil
-        )
+        // 监听断开与重连通知
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleCameraDidDisconnect),
@@ -161,6 +155,9 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
             object: nil
         )
     }
+    
+    // 推流协商并发保护锁
+    private var isNegotiatingStream: Bool = false
     
     // MARK: - 控制接口
     
@@ -182,6 +179,7 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
     public func disconnect() {
         Log.info("正在主动断开相机连接并释放推流资源...", category: .camera)
         stopTelemetryTimer()
+        isNegotiatingStream = false
         
         playerBridge.stopRunning { _ in }
         INSCameraManager.socket().shutdown()
@@ -195,38 +193,61 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
     
     /// 相机连接成功处理流程
     private func startStreamingAfterConnected() {
+        guard !isNegotiatingStream else {
+            Log.info("当前正在与相机协商推流，忽略重复请求", category: .camera)
+            return
+        }
+        isNegotiatingStream = true
         currentState = .connected
         startTelemetryTimer()
         
-        // 动态查询 X5 编码与分辨率参数，杜绝默认 H.264 解 H.265 黑屏隐患
-        let encodeType = NSNumber(value: INSCameraOptionsType.videoEncode.rawValue)
-        let resType = NSNumber(value: INSCameraOptionsType.videoResolution.rawValue)
+        Log.info("关闭机内拼接，确保相机输出双鱼眼原始流...", category: .camera)
+        let cameraOptions = INSCameraOptions()
+        cameraOptions.enableInternalSplicing = false
+        let internalSplicingType = NSNumber(value: INSCameraOptionsType.internalSplicing.rawValue)
         
-        Log.info("正在向相机预协商推流编码格式与分辨率参数...", category: .camera)
-        
-        INSCameraManager.shared().commandManager.getOptionsWithTypes([encodeType, resType]) { [weak self] error, options, _ in
+        INSCameraManager.shared().commandManager.setOptions(cameraOptions, forTypes: [internalSplicingType]) { [weak self] error, _ in
             guard let self = self else { return }
-            
-            var videoEncode: INSVideoEncode = .H264
-            var resolution = INSVideoResolution2560x1280x30
-            
-            if let options = options {
-                videoEncode = options.videoEncode
-                resolution = options.videoResolution
-                Log.info("成功获取相机配置：编码=\(videoEncode.rawValue)，分辨率=\(resolution.width)x\(resolution.height)@\(resolution.fps)fps", category: .camera)
-            } else {
-                Log.warning("未能获取相机配置，降级使用默认参数", category: .camera)
+            if let error = error {
+                Log.warning("关闭机内拼接返回（可能未开或无需关闭）: \(error.localizedDescription)", category: .camera)
             }
             
-            // 启动播放器与推流
-            self.playerBridge.startRunning(videoEncode: videoEncode, resolution: resolution) { startError in
-                if let startError = startError {
-                    Log.error("播放器推流启动失败", error: startError, category: .camera)
-                    DispatchQueue.main.async {
-                        self.delegate?.cameraPipeline(self, didEncounterError: startError)
-                    }
+            // 动态查询 X5 编码、分辨率与窗口裁剪参数
+            let encodeType = NSNumber(value: INSCameraOptionsType.videoEncode.rawValue)
+            let resType = NSNumber(value: INSCameraOptionsType.videoResolution.rawValue)
+            let cropType = NSNumber(value: INSCameraOptionsType.windowCropInfo.rawValue)
+            
+            Log.info("正在向相机预协商推流编码格式与分辨率参数...", category: .camera)
+            
+            INSCameraManager.shared().commandManager.getOptionsWithTypes([encodeType, resType, cropType]) { [weak self] getErr, options, _ in
+                guard let self = self else { return }
+                
+                var videoEncode: INSVideoEncode = .H264
+                var resolution = INSVideoResolution2560x1280x30
+                var windowCropInfo: INSWindowCropInfo? = nil
+                
+                if let options = options {
+                    videoEncode = options.videoEncode
+                    resolution = options.videoResolution
+                    windowCropInfo = options.windowCropInfo
+                    Log.info("成功获取相机配置：编码=\(videoEncode.rawValue)，分辨率=\(resolution.width)x\(resolution.height)@\(resolution.fps)fps", category: .camera)
                 } else {
-                    Log.info("相机推流链路全面贯通！", category: .camera)
+                    Log.warning("未能获取相机配置，降级使用默认参数", category: .camera)
+                }
+                
+                // 启动播放器与推流
+                self.playerBridge.startRunning(videoEncode: videoEncode, resolution: resolution, windowCropInfo: windowCropInfo) { [weak self] startError in
+                    guard let self = self else { return }
+                    self.isNegotiatingStream = false
+                    
+                    if let startError = startError {
+                        Log.error("播放器推流启动失败", error: startError, category: .camera)
+                        DispatchQueue.main.async {
+                            self.delegate?.cameraPipeline(self, didEncounterError: startError)
+                        }
+                    } else {
+                        Log.info("相机推流链路全面贯通！", category: .camera)
+                    }
                 }
             }
         }
@@ -315,13 +336,6 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
             default:
                 break
             }
-        }
-    }
-    
-    @objc private func handleCameraDidConnect(_ notification: Notification) {
-        Log.info("收到 INSCameraDidConnect 通知", category: .camera)
-        if currentState != .connected {
-            startStreamingAfterConnected()
         }
     }
     

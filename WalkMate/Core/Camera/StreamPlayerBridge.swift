@@ -5,10 +5,6 @@
 //  Created by Antigravity on 2026-09-22.
 //
 
-// 视频流帧提取与硬件解码桥接器
-// 架构：先启动 INSCameraMediaSession（建立相机推流管道），再启动 INSCameraSessionPlayer（解码与渲染）
-// 这与官方 SDK Sample RecordViewController 保持一致
-
 import CoreVideo
 import Foundation
 import INSCameraSDK
@@ -29,7 +25,7 @@ public protocol StreamPlayerBridgeProtocol: AnyObject {
     /// 播放器是否正在运行
     var isRunning: Bool { get }
     
-    /// 外部注入的陀螺仪代理（由 CameraPipeline 将 GyroDataHandler 注入 player.gyroDelegate）
+    /// 外部注入的陀螺仪代理（绑定至 player.gyroDelegate）
     var gyroDelegate: INSCameraSessionGyroDelegate? { get set }
     
     /// 配置并启动流播放器
@@ -39,20 +35,26 @@ public protocol StreamPlayerBridgeProtocol: AnyObject {
     ///   - completion: 启动结果回调
     func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void)
     
+    /// 配置并启动流播放器（含裁剪参数）
+    func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, windowCropInfo: INSWindowCropInfo?, completion: @escaping (Error?) -> Void)
+    
     /// 停止流播放器并释放资源
     func stopRunning(completion: ((Error?) -> Void)?)
 }
 
+public extension StreamPlayerBridgeProtocol {
+    func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void) {
+        startRunning(videoEncode: videoEncode, resolution: resolution, windowCropInfo: nil, completion: completion)
+    }
+}
+
 /// 基于 Insta360 官方 INSCameraSessionPlayer 实现的视频解码与渲染桥接器
-/// 负责 X5 的 H.265 硬件解码、V6 标定参数绑定与 CVPixelBuffer 帧提取
-/// 必须先运行 INSCameraMediaSession 才能调用 INSCameraSessionPlayer.startRunning
+/// 负责 X5 的 H.265 硬件解码、球面动态拼接渲染与 CVPixelBuffer 帧提取
+/// 严格采用官方 Sample (RecordViewController) 架构：持单例 Player，杜绝底层 session 重入冲突
 public final class StreamPlayerBridge: NSObject, StreamPlayerBridgeProtocol {
     
-    // 官方媒体会话（负责建立相机推流管道）
-    private let mediaSession = INSCameraMediaSession()
-    
-    // 官方会话播放器实例（负责解码与渲染）
-    private var player: INSCameraSessionPlayer?
+    // 官方会话播放器实例（单例持久持有，杜绝重复创建导致的底层 _renderSession 冲突）
+    public let player: INSCameraSessionPlayer
     
     // 帧回调闭包
     public var onFrameDecoded: ((CVPixelBuffer, Int64) -> Void)?
@@ -60,105 +62,76 @@ public final class StreamPlayerBridge: NSObject, StreamPlayerBridgeProtocol {
     // 错误回调闭包
     public var onError: ((Error) -> Void)?
     
+    // 窗口裁剪信息缓存（用于实时球面几何计算与拼接）
+    public var windowCropInfo: INSWindowCropInfo?
+    
     // 外部注入的陀螺仪代理
-    public var gyroDelegate: INSCameraSessionGyroDelegate?
+    public var gyroDelegate: INSCameraSessionGyroDelegate? {
+        didSet {
+            player.gyroDelegate = gyroDelegate
+        }
+    }
     
     // 是否正在推流播放
     public var isRunning: Bool {
-        return player?.isRunning() ?? false
+        return player.isRunning()
     }
     
     // 提供给 SwiftUI 渲染的画面视图
     public var previewView: UIView? {
-        return player?.renderView
+        return player.renderView
     }
     
     public override init() {
+        let sessionPlayer = INSCameraSessionPlayer()
+        self.player = sessionPlayer
         super.init()
+        
+        sessionPlayer.delegate = self
+        sessionPlayer.dataSource = self
+        sessionPlayer.needCameraPreviewStreamAutoRotate = true
+        sessionPlayer.render.renderModelType.displayType = .sphereStitch
     }
     
     deinit {
-        // 析构时安全停止 mediaSession
-        player?.stopRunning()
-        mediaSession.stopRunning { _ in }
+        player.stopRunning()
     }
     
-    /// 配置并启动播放器（先启动 mediaSession，再启动 player）
-    public func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void) {
-        // 停止旧 player（若有）
-        if let existingPlayer = player, existingPlayer.isRunning() {
-            existingPlayer.stopRunning()
-        }
+    /// 启动播放器推流
+    public func startRunning(
+        videoEncode: INSVideoEncode,
+        resolution: INSVideoResolution,
+        windowCropInfo: INSWindowCropInfo?,
+        completion: @escaping (Error?) -> Void
+    ) {
+        self.windowCropInfo = windowCropInfo
+        self.player.videoStreamEncode = videoEncode
+        self.player.expectedVideoResolution = resolution
         
-        // 停止旧 mediaSession（若有）
-        if mediaSession.running {
-            mediaSession.stopRunning { [weak self] _ in
-                self?.startMediaSessionThenPlayer(videoEncode: videoEncode, resolution: resolution, completion: completion)
+        Log.info("配置 INSCameraSessionPlayer，编码: \(videoEncode.rawValue)，分辨率宽: \(resolution.width) 高: \(resolution.height)", category: .camera)
+        
+        // 若当前已在运行，先停止旧 session 再启动
+        if player.isRunning() {
+            Log.info("播放器已处于运行中，先停止旧推流再重新启动...", category: .camera)
+            player.stopRunning { [weak self] _ in
+                self?.doStartPlayer(completion: completion)
             }
         } else {
-            startMediaSessionThenPlayer(videoEncode: videoEncode, resolution: resolution, completion: completion)
+            doStartPlayer(completion: completion)
         }
     }
     
-    /// 第一步：启动 INSCameraMediaSession
-    private func startMediaSessionThenPlayer(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void) {
-        Log.info("第一步：配置并启动 INSCameraMediaSession 推流管道，编码=\(videoEncode.rawValue)，分辨率=\(resolution.width)x\(resolution.height)", category: .camera)
-        
-        // 配置推流参数（与官方 Sample updateConfiguration() 对应）
-        mediaSession.expectedVideoResolution = resolution
-        mediaSession.videoStreamEncode = videoEncode
-        // X5 双目全景：使用主码流（Main Stream）作为预览（对应 INSPreviewStreamTypeMain = 0）
-        mediaSession.previewStreamType = INSPreviewStreamType(rawValue: 0)!
-        
-        // 启动 mediaSession
-        mediaSession.startRunning { [weak self] error in
-            guard let self = self else { return }
-            
+    private func doStartPlayer(completion: @escaping (Error?) -> Void) {
+        Log.info("开始调用 INSCameraSessionPlayer.startRunning...", category: .camera)
+        player.startRunning { error in
             if let error = error {
-                Log.error("INSCameraMediaSession 启动失败", error: error, category: .camera)
-                completion(error)
-                return
-            }
-            
-            Log.info("INSCameraMediaSession 启动成功，开始初始化解码播放器", category: .camera)
-            // 第二步：mediaSession 就绪后，再启动 player
-            self.initAndStartPlayer(videoEncode: videoEncode, resolution: resolution, completion: completion)
-        }
-    }
-    
-    /// 第二步：初始化播放器属性并启动硬件解码
-    private func initAndStartPlayer(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void) {
-        Log.info("第二步：初始化 INSCameraSessionPlayer，编码=\(videoEncode.rawValue)", category: .camera)
-        
-        let newPlayer = INSCameraSessionPlayer()
-        newPlayer.delegate = self
-        newPlayer.dataSource = self
-        // gyroDelegate 由外部注入（由 CameraPipeline 绑定 GyroDataHandler）
-        if let gyroDelegate = gyroDelegate {
-            newPlayer.gyroDelegate = gyroDelegate
-        }
-        newPlayer.needCameraPreviewStreamAutoRotate = true
-        newPlayer.videoStreamEncode = videoEncode
-        newPlayer.expectedVideoResolution = resolution
-        
-        // 配置全景球形拼接渲染模式
-        newPlayer.render.renderModelType.displayType = .sphereStitch
-        newPlayer.render.renderModelType.imageLayout = .horizontalMerged
-        newPlayer.render.renderModelType.cameraType = INSCameraManager.shared().currentCamera?.cameraType ?? ""
-        
-        self.player = newPlayer
-        
-        // 启动播放器（此时 mediaSession 已在运行，player 能正常接收推流）
-        newPlayer.startRunning { error in
-            if let error = error {
-                Log.error("INSCameraSessionPlayer 启动失败", error: error, category: .camera)
+                Log.error("INSCameraSessionPlayer.startRunning 失败", error: error, category: .camera)
                 completion(error)
             } else {
-                Log.info("INSCameraSessionPlayer 启动成功，全景画面推流链路贯通！", category: .camera)
-                // 启动后主动请求 IFrame 防止首帧等待过长
-                INSCameraManager.shared().commandManager.requestIFrame { iFrameErr in
-                    if let iFrameErr = iFrameErr {
-                        Log.warning("requestIFrame 请求失败（非致命）: \(iFrameErr.localizedDescription)", category: .camera)
+                Log.info("INSCameraSessionPlayer.startRunning 成功，请求首帧 I-Frame...", category: .camera)
+                INSCameraManager.shared().commandManager.requestIFrame { reqError in
+                    if let reqError = reqError {
+                        Log.warning("requestIFrame 失败（非致命）: \(reqError.localizedDescription)", category: .camera)
                     }
                 }
                 completion(nil)
@@ -166,19 +139,19 @@ public final class StreamPlayerBridge: NSObject, StreamPlayerBridgeProtocol {
         }
     }
     
-    /// 停止播放器与媒体会话并清理
+    /// 停止播放器并清理
     public func stopRunning(completion: ((Error?) -> Void)?) {
-        Log.info("正在停止 INSCameraSessionPlayer 与 INSCameraMediaSession...", category: .camera)
+        guard player.isRunning() else {
+            completion?(nil)
+            return
+        }
         
-        // 先停止播放器
-        player?.stopRunning()
-        
-        // 再停止 mediaSession
-        mediaSession.stopRunning { error in
+        Log.info("正在停止 INSCameraSessionPlayer...", category: .camera)
+        player.stopRunning { error in
             if let error = error {
-                Log.error("停止 INSCameraMediaSession 出现异常", error: error, category: .camera)
+                Log.error("停止 INSCameraSessionPlayer 出现异常", error: error, category: .camera)
             } else {
-                Log.info("INSCameraMediaSession 已安全停止", category: .camera)
+                Log.info("INSCameraSessionPlayer 已安全停止", category: .camera)
             }
             completion?(error)
         }
@@ -190,7 +163,7 @@ extension StreamPlayerBridge: INSCameraSessionPlayerDelegate {
     
     /// 解码完成第一帧画面
     public func playerDidSetup(_ player: INSCameraSessionPlayer) {
-        Log.info("INSCameraSessionPlayer 走完初始化流程，首帧已就绪", category: .camera)
+        Log.info("INSCameraSessionPlayer 首帧已就绪并开始渲染", category: .camera)
     }
     
     /// 核心视频帧渲染回调：获取解码后的 CVPixelBuffer
@@ -213,12 +186,88 @@ extension StreamPlayerBridge: INSCameraSessionPlayerDelegate {
 // MARK: - INSCameraSessionPlayerDataSource 标定参数数据源
 extension StreamPlayerBridge: INSCameraSessionPlayerDataSource {
     
-    /// 为全景播放器提供精确拼接 Offset（X5 专有 mediaOffsetV6）
+    /// 为全景播放器提供精确拼接 Offset（优先 X5 专有 mediaOffsetV6）
     public func updateOffset(to player: INSCameraSessionPlayer) -> String? {
-        let settings = INSCameraManager.shared().currentCamera?.settings
-        if let v6 = settings?.mediaOffsetV6, !v6.isEmpty {
-            return v6
+        return getMediaOffset()
+    }
+    
+    /// 配置全景拼接渲染模型参数（对齐官方 SDK RecordViewController 实现）
+    public func updateRenderModelType(to player: INSCameraSessionPlayer, renderModelType: INSRenderModelType) -> INSRenderModelType {
+        renderModelType.displayType = .sphereStitch
+        renderModelType.imageLayout = .horizontalMerged
+        renderModelType.isHalfFisheye = false
+        renderModelType.isSelfieVideo = false
+        renderModelType.touchMode = false
+        renderModelType.opticalFlowType = .disflow
+        renderModelType.isHalfFisheyeBulletTime = false
+        renderModelType.contentMode = .fitScreen
+        renderModelType.preferDynamicVertex = false
+        renderModelType.aiFlowBottomPercision = .unknown
+        renderModelType.dynamicAlphaFlag = false
+        renderModelType.usingFisheyeMask = false
+        
+        if let windowCropInfo = self.windowCropInfo {
+            renderModelType.cropInfo = INSCropInfo()
+            renderModelType.cropInfo.srcWidth = Int32(windowCropInfo.srcWidth)
+            renderModelType.cropInfo.srcHeight = Int32(windowCropInfo.srcHeight)
+            renderModelType.cropInfo.dstWidth = Int32(windowCropInfo.dstWidth)
+            renderModelType.cropInfo.dstHeight = Int32(windowCropInfo.dstHeight)
         }
-        return settings?.mediaOffset
+        
+        renderModelType.aiFlowVersion = 1
+        renderModelType.expandFlowWorkRegion = true
+        renderModelType.aiFlowFrameInterval = 2
+        renderModelType.colorFusion = true
+        renderModelType.dynamicStitchType = .dynamicVideo
+        renderModelType.cameraType = INSCameraManager.shared().currentCamera?.cameraType ?? ""
+        return renderModelType
+    }
+    
+    /// 配置实时防抖与水平校准参数
+    public func updateStabilizerParam(to player: INSCameraSessionPlayer) -> INSRealtimeStabilizerParam {
+        let param = INSRealtimeStabilizerParam()
+        if let offset = getMediaOffset() {
+            param.offset = offset
+        }
+        param.preferredStabMode = .still
+        param.maxFilterAngleDegree = 25
+        param.sweepTime = 0
+        param.windSize = 3
+        param.fps = 30.0
+        return param
+    }
+    
+    /// 配置防抖动态参数
+    public func updateStabilizerDynamicParam(to player: INSCameraSessionPlayer, dynamicParam: INSStabilizerDynamicParam) -> INSStabilizerDynamicParam {
+        let param = dynamicParam
+        param.onlineFilterType = .pathPlanSlidingWin
+        return param
+    }
+    
+    /// 计算精准的拼接偏移量 Offset
+    private func getMediaOffset() -> String? {
+        let settings = INSCameraManager.shared().currentCamera?.settings
+        var mediaOffset = settings?.mediaOffsetV6 ?? settings?.mediaOffset
+        
+        if let offset = mediaOffset, INSLensOffset.isValidOffset(offset) {
+            var converted = offset
+            if let windowCropInfo = self.windowCropInfo {
+                converted = INSOffsetCalculator.cropOffset(
+                    converted,
+                    srcWidth: Int32(windowCropInfo.srcWidth),
+                    srcHeight: Int32(windowCropInfo.srcHeight),
+                    dstWidth: Int32(windowCropInfo.dstWidth),
+                    dstHeight: Int32(windowCropInfo.dstHeight),
+                    xOffset: windowCropInfo.cropOffsetX,
+                    yOffset: windowCropInfo.cropOffsetY
+                )
+            }
+            if INSCameraManager.shared().currentCamera?.name != kInsta360CameraNameX4 {
+                mediaOffset = INSOffsetCalculator.convertOffset(converted, to: .oneX3040_2_2880)
+            } else {
+                mediaOffset = converted
+            }
+        }
+        return mediaOffset
     }
 }

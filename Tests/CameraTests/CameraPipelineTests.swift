@@ -17,11 +17,12 @@ final class MockStreamPlayerBridge: StreamPlayerBridgeProtocol {
     var onError: ((Error) -> Void)?
     var previewView: UIView? = UIView()
     var isRunning: Bool = false
+    var gyroDelegate: INSCameraSessionGyroDelegate?
     
     var startRunningCallCount = 0
     var stopRunningCallCount = 0
     
-    func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, completion: @escaping (Error?) -> Void) {
+    func startRunning(videoEncode: INSVideoEncode, resolution: INSVideoResolution, windowCropInfo: INSWindowCropInfo?, completion: @escaping (Error?) -> Void) {
         startRunningCallCount += 1
         isRunning = true
         completion(nil)

@@ -8,6 +8,26 @@
 import SwiftUI
 import UIKit
 
+/// 容器视图：确保 renderView 在 layoutSubviews 时 frame 严格与容器尺寸同步（对齐官方 SDK Demo）
+public final class PreviewContainerView: UIView {
+    private weak var currentPreview: UIView?
+    
+    public func setPreviewView(_ preview: UIView) {
+        if currentPreview != preview {
+            currentPreview?.removeFromSuperview()
+            currentPreview = preview
+            preview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            preview.frame = bounds
+            addSubview(preview)
+        }
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        currentPreview?.frame = bounds
+    }
+}
+
 /// 将底层相机播放器视图 (UIView) 桥接至 SwiftUI 的包装视图
 public struct CameraPreviewRepresentable: UIViewRepresentable {
     public let previewView: UIView?
@@ -16,34 +36,18 @@ public struct CameraPreviewRepresentable: UIViewRepresentable {
         self.previewView = previewView
     }
     
-    public func makeUIView(context: Context) -> UIView {
-        let container = UIView()
+    public func makeUIView(context: Context) -> PreviewContainerView {
+        let container = PreviewContainerView()
         container.backgroundColor = .black
         if let preview = previewView {
-            preview.translatesAutoresizingMaskIntoConstraints = false
-            container.addSubview(preview)
-            NSLayoutConstraint.activate([
-                preview.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-                preview.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-                preview.topAnchor.constraint(equalTo: container.topAnchor),
-                preview.bottomAnchor.constraint(equalTo: container.bottomAnchor)
-            ])
+            container.setPreviewView(preview)
         }
         return container
     }
     
-    public func updateUIView(_ uiView: UIView, context: Context) {
-        // 若容器内尚未挂载 previewView 则进行挂载
-        if let preview = previewView, !uiView.subviews.contains(preview) {
-            uiView.subviews.forEach { $0.removeFromSuperview() }
-            preview.translatesAutoresizingMaskIntoConstraints = false
-            uiView.addSubview(preview)
-            NSLayoutConstraint.activate([
-                preview.leadingAnchor.constraint(equalTo: uiView.leadingAnchor),
-                preview.trailingAnchor.constraint(equalTo: uiView.trailingAnchor),
-                preview.topAnchor.constraint(equalTo: uiView.topAnchor),
-                preview.bottomAnchor.constraint(equalTo: uiView.bottomAnchor)
-            ])
+    public func updateUIView(_ uiView: PreviewContainerView, context: Context) {
+        if let preview = previewView {
+            uiView.setPreviewView(preview)
         }
     }
 }
@@ -62,8 +66,8 @@ public struct PanoramicStreamView: View {
         ZStack {
             Color.black
             
-            if isConnected, previewView != nil {
-                CameraPreviewRepresentable(previewView: previewView)
+            if isConnected, let preview = previewView {
+                CameraPreviewRepresentable(previewView: preview)
             } else {
                 VStack(spacing: 12) {
                     Image(systemName: "video.slash.fill")
