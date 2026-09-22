@@ -1,0 +1,35 @@
+name: WalkMate
+options:
+  bundleIdPrefix: accera.insta
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: ""
+
+targets:
+  WalkMate:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Core
+      - path: Models
+      - path: Features
+      - path: Resources
+        optional: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: accera.insta.dap
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: 伴行
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: 用于录制训练过程中的语音，以便生成可分享的出行记录。
+        INFOPLIST_KEY_NSSpeechRecognitionUsageDescription: 用于将语音转写为文字，作为出行记录的字幕。
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: 用于将生成的训练记录短片保存到相册。
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait

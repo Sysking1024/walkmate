@@ -31,3 +31,6 @@ Package.pins
 *.swp
 *~
 *.orig
+
+# xcodegen 生成物（由 project.yml 声明式重建）
+WalkMate/WalkMate.xcodeproj/
