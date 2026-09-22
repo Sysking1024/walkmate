@@ -1,4 +1,7 @@
+import CoreGraphics
 import Foundation
+import ImageIO
+import UniformTypeIdentifiers
 
 /// 基于阿里云百炼多模态模型的场景描述器。
 ///
@@ -6,7 +9,8 @@ import Foundation
 /// 请求体与响应结构均已通过真机联调实测验证。
 ///
 /// 输入为等矩形全景图（由相机 SDK 的 FlatPanoOutput 拼接输出）。
-/// 实测数据（1280×640 全景图，qwen3-vl-plus）：单次调用约 11 至 13 秒。
+/// 实测数据（qwen3-vl-plus）：耗时几乎完全由上传体积决定。
+/// 全景图压到 768 像素长边、约 36KB 时，单次调用约 5 秒。
 /// 因此描述必须在训练结束后批量生成，不能在行走过程中实时调用。
 struct QwenSceneNarrator: SceneNarrator {
 
@@ -14,6 +18,15 @@ struct QwenSceneNarrator: SceneNarrator {
     private let model = "qwen3-vl-plus"
     /// 单张图片的请求超时。留足余量，超时后由上层降级到兜底文案。
     private let timeoutSeconds: TimeInterval = 40
+
+    /// 上传前的图片长边上限（像素）。
+    ///
+    /// 实测端到端耗时几乎完全由上传体积决定，与模型选择无关：
+    /// 同一张全景图 1564KB 耗时 44 秒，压到 36KB 只需 5 秒。
+    /// 768 像素是质量拐点——再往下压到 512 像素时，描述里开始混入英文词。
+    private let maxPixelSize = 768
+    /// 上传前的 JPEG 压缩质量
+    private let compressionQuality: CGFloat = 0.45
 
     private let apiKey: String
     private let baseURL: URL
@@ -82,7 +95,8 @@ struct QwenSceneNarrator: SceneNarrator {
 
     /// 构造 OpenAI 兼容格式的请求体，图片以 base64 data URI 内联
     private func requestBody(frameData: Data) -> [String: Any] {
-        let dataURI = "data:image/jpeg;base64,\(frameData.base64EncodedString())"
+        let payload = compressForUpload(frameData) ?? frameData
+        let dataURI = "data:image/jpeg;base64,\(payload.base64EncodedString())"
         return [
             "model": model,
             "messages": [
@@ -93,6 +107,31 @@ struct QwenSceneNarrator: SceneNarrator {
                 ]],
             ],
         ]
+    }
+
+    /// 按长边上限缩放并重新编码为 JPEG，把上传体积压到几十 KB 量级。
+    /// 压缩失败时返回 nil，由调用方退回原图，宁可慢也不能不出结果。
+    private func compressForUpload(_ data: Data) -> Data? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+        ]
+        guard let scaled = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+
+        let output = NSMutableData()
+        guard let destination = CGImageDestinationCreateWithData(
+            output, UTType.jpeg.identifier as CFString, 1, nil
+        ) else { return nil }
+        CGImageDestinationAddImage(destination, scaled, [
+            kCGImageDestinationLossyCompressionQuality: compressionQuality,
+        ] as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else { return nil }
+
+        Log.debug(.narration, "上传图片已压缩至 \(output.length / 1024) KB")
+        return output as Data
     }
 
     /// 从响应中取出描述正文
