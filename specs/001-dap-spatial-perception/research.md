@@ -9,7 +9,7 @@
 ## 一、研究背景与技术输入
 
 本研究基于以下核心技术输入进行深度推演与选型：
-1. **Insta360 官方 Camera SDK 接口文档**（[docs/insta_x.md](../../docs/insta_x.md)）：详细定义了相机 Wi-Fi/USB 连接、`INSCameraSessionPlayer` 实时全景流解码与 `INSCameraSessionGyroDelegate` 六轴 IMU 数据回调；
+1. **Insta360 官方 Camera SDK 接口文档**（[docs/insta_x.md](../../docs/insta_x.md)）：详细定义了相机 Wi-Fi/USB 连接、实时全景流解码、六轴 IMU 数据回调与心跳保活要求；
 2. **端侧部署与空间通路总结**（[docs/PROJECT_SUMMARY.md](../../docs/PROJECT_SUMMARY.md)）：验证了 DAP 512×256 CoreML INT8 模型在 iPhone 15 ANE 上可实现 97.8ms 纯硬件推理、Accelerate 预处理 11.3ms 以及 300×300 鸟瞰图（BEV）通路规划；
 3. **DAP 官方源码与反投影实现**（`../DAP/depth2point.py`）：明确了等矩形全景投影（ERP）的球面反投影数学公式；
 4. **项目宪章约束**（[.specify/memory/constitution.md](../../.specify/memory/constitution.md)）：极致低延迟（<130ms）、绝对无障碍（VoiceOver/48pt 触控）、YAGNI 极简架构、Swift 原生生态。
@@ -20,10 +20,12 @@
 
 ### 决策 1：相机连接与视频流解码架构
 
-- **技术选型**：采用 Insta360 官方 iOS SDK 的 `INSCameraManager.socket()` 配合 `INSCameraSessionPlayer` 硬件解码器。
+- **技术选型**：采用 Insta360 官方 iOS SDK 的 `INSCameraManager.socket()` 配合 `INSCameraMediaSession` 与 `INSCameraFlatPanoOutput`。
 - **决策理由**：
-  - `INSCameraSessionPlayer` 内部封装了基于 VideoToolbox 的 H.264/H.265 硬件解码，能以最低 CPU 占用输出系统原生的 `CVPixelBuffer`；
-  - 挂载 `INSCameraSessionGyroDelegate` 协议，可在同一播放会话中以微秒级时间戳同步获取相机的 `INSGyroRawItem`（三轴角速度与三轴加速度）。
+  - 相机推送的是**未拼接的双鱼眼**流，而 DAP 要求等矩形全景（ERP）输入。`INSCameraFlatPanoOutput` 由 SDK 在 GPU 上完成拼接，并可指定任意输出尺寸，一次完成拼接与缩放，直接输出 512×256 的 `CVPixelBuffer`；
+  - 屏幕预览、感知取帧、本地录制三路可同时挂载在同一个 `INSCameraMediaSession` 上，互不干扰；
+  - 传感器经 `addOutputDelegate(_:withType: .gyro)` 订阅，回调数据含重力向量，可直接用于重力对齐。
+  - **已否决 `INSCameraSessionPlayer`**：该类面向屏幕渲染，代理回调提供 `INSSampleGroup` 与 `INSProjectionInfo`，不输出 `CVPixelBuffer`，无法取得喂给模型的帧。
 - **备选方案及否定原因**：
   - *备选方案 A：通用 RTSP/FFmpeg 拉流库*：否定原因：无法获取 Insta360 私有协议封装的六轴 IMU 姿态元数据，且第三方 FFmpeg 引入体积大、解码延迟高，违反宪章原则七。
   - *备选方案 B：USB 有线专用通道*：保留为后备方案，首期优先使用 Wi-Fi 连接，满足视障用户随身携带无连接线缠绕的穿戴要求。

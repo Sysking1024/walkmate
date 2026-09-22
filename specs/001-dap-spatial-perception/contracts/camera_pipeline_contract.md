@@ -58,8 +58,9 @@ public protocol CameraPipelineProtocol: AnyObject {
    - 触发 `didUpdateState(.connecting)`；
    - 调用 `INSCameraManager.socket().setup()`；
    - 成功握手后，触发 `didUpdateState(.connected)`；
-   - 创建 `INSCameraSessionPlayer`，设置硬件解码并开始推流；
-   - 挂载 `INSCameraSessionGyroDelegate` 接收传感器数据。
+   - 创建 `INSCameraMediaSession`，挂载 `INSCameraFlatPanoOutput`（512×256，BGRA）取得等矩形全景帧，并挂载 `INSCameraPreviewPlayer` 供屏幕预览；
+   - 通过 `addOutputDelegate(_:withType: .gyro)` 接收传感器数据；
+   - 启动心跳定时器，每 0.5 秒发送一次，防止相机在 30 秒无心跳后主动断开。
 2. **实时数据输出流程**：
    - 每收到一帧解码后的画面与时间戳匹配的 IMU 数据，打包为 `PanoramicFrame` 并调用 `didReceiveFrame(frame)`；
    - 以约 10Hz 频率聚合推流状态与姿态角度（推流帧率 fps 采用 1 秒滑动窗口均值计算），调用 `didUpdateTelemetry(telemetry)` 供 UI 刷新。

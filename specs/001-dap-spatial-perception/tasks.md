@@ -47,8 +47,10 @@
 
 **独立测试验证**: 启动应用，点击“连接设备”，2 秒内连上相机，界面流畅渲染全景实时画面（>= 15 FPS），传感器面板实时刷新三轴姿态与加速度；点击“断开设备”安全退出。
 
-- [ ] T011 [P] [US1] 基于 `docs/insta_x.md` 实现视频流解码桥接器 `WalkMate/Core/Camera/StreamPlayerBridge.swift`（封装 `INSCameraSessionPlayer` 硬件解码与 `CVPixelBuffer` 回调）
-- [ ] T012 [P] [US1] 基于 `docs/insta_x.md` 实现六轴传感器同步器 `WalkMate/Core/Camera/GyroDataHandler.swift`（挂载 `INSCameraSessionGyroDelegate` 实时解析 `INSGyroRawItem`）
+- [ ] T011 [P] [US1] 实现全景帧桥接器 `WalkMate/Core/Camera/StreamPlayerBridge.swift`：向 `INSCameraMediaSession` 挂载 `INSCameraFlatPanoOutput(outputWidth: 512, outputHeight: 256)`，`outputPixelFormat` 设为 `kCVPixelFormatType_32BGRA`，由 `avOutput:didOutputVideoFrame:` 取得已拼接的等矩形全景 `CVPixelBuffer`。
+  > ⚠️ 不要使用 `INSCameraSessionPlayer`：该类只负责渲染到屏幕，其代理回调提供的是 `INSSampleGroup` 与 `INSProjectionInfo`，**没有输出 `CVPixelBuffer` 的通道**，拿不到喂给 DAP 的帧。屏幕预览另行 `plug(INSCameraPreviewPlayer)`，两者可共存于同一个 `INSCameraMediaSession`。可运行参考：SDK 示例工程 `common/AVOutputViewController.swift` 第 251 行附近。
+- [ ] T012 [P] [US1] 实现六轴传感器同步器 `WalkMate/Core/Camera/GyroDataHandler.swift`：通过 `mediaSession.addOutputDelegate(self, withType: .gyro)` 订阅，在 `onGyroData:timestamp:` 中解析原始 `NSData`（结构为 `[{timestamp, accelerate{x,y,z}, gravity{x,y,z}}, ...]`）。该路径直接给出**重力向量**，正是 T018 重力对齐所需，无需再对角速度积分。
+- [ ] T012b [US1] 按 `docs/insta_x.md` 实现心跳保活：连接期间每 0.5 秒调用一次 `commandManager.sendHeartbeats(with:)`。相机 30 秒未收到心跳会主动断开，表现为推流中途黑屏或指令失效。
 - [ ] T013 [US1] 实现相机连接与生命周期管理管道 `WalkMate/Core/Camera/CameraPipeline.swift`（实现 `CameraPipelineProtocol`，管理握手、推流与断线重连，推流帧率基于 1 秒滑动窗口平滑计算）
 - [ ] T014 [P] [US1] 实现全景视频流实时渲染视图 `WalkMate/App/Views/PanoramicStreamView.swift`
 - [ ] T015 [P] [US1] 实现六轴传感器遥测数据 HUD 视图 `WalkMate/App/Views/SensorTelemetryCard.swift`（严格遵循宪章原则四 4.c 合并与阻断规则，将整张卡片封装为独立语义容器 `.accessibilityElement(children: .combine)`，利用中文逗号平铺拼接连接状态、FPS、三轴角度与加速度，防止读屏焦点碎片化与高频噪点；确保文本与卡片背景对比度 >= 4.5:1；仅供被动读屏查询，严禁向 VoiceOver 发送实时主动高频播报通知）

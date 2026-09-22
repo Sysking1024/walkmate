@@ -86,8 +86,8 @@ WalkMate/
 ├── Core/
 │   ├── Camera/                      # 第 1 层：相机连接与视频流管道
 │   │   ├── CameraPipeline.swift     # 基于 INSCameraManager 的连接与生命周期管理
-│   │   ├── StreamPlayerBridge.swift # INSCameraSessionPlayer 硬件解码与帧回调
-│   │   └── GyroDataHandler.swift    # INSCameraSessionGyroDelegate 六轴数据同步
+│   │   ├── StreamPlayerBridge.swift # INSCameraFlatPanoOutput 拼接输出等矩形全景帧
+│   │   └── GyroDataHandler.swift    # mediaSession 的 .gyro 输出代理，解析重力与加速度
 │   ├── Inference/                   # 第 2 层：DAP 深度推理引擎
 │   │   ├── DAPEngine.swift          # CoreML INT8 ANE 硬件执行器 (Float16 安全绑定)
 │   │   └── AcceleratePreprocessor.swift # vImage+vDSP 硬件向量化预处理 (11ms)
