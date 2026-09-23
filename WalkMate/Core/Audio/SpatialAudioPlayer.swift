@@ -9,6 +9,21 @@ import AVFoundation
 import Foundation
 import simd
 
+// MARK: - 障碍物双音发声状态枚举
+/// 管理“固定 800ms 播放 2 次后自动静音”的状态机
+public enum ObstacleAlertPhase: Sendable, Equatable {
+    /// 空闲状态，未发声
+    case idle
+    /// 正在播放第 1 声金属撞击音
+    case firstPing
+    /// 等待 800ms 间隔
+    case waitingInterval
+    /// 正在播放第 2 声金属撞击音
+    case secondPing
+    /// 双响播放完成，保持静音等待业务层下一轮触发
+    case completed
+}
+
 // MARK: - 空间音频播放器接口协议
 public protocol SpatialAudioPlayerProtocol: AnyObject, Sendable {
     
@@ -48,16 +63,30 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     
     // MARK: - 串行调度队列与并发锁
     internal let audioQueue = DispatchQueue(label: "world.accera.walkmate.audioQueue", qos: .userInteractive)
+    internal let stateLock = NSLock()
     
     // MARK: - 运行状态
     private var _isRunning: Bool = false
-    private let stateLock = NSLock()
-    
     public var isRunning: Bool {
         stateLock.lock()
         defer { stateLock.unlock() }
         return _isRunning
     }
+    
+    // MARK: - 障碍物发声状态机 (US1)
+    private var _obstacleAlertPhase: ObstacleAlertPhase = .idle
+    public var obstacleAlertPhase: ObstacleAlertPhase {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return _obstacleAlertPhase
+    }
+    
+    private var obstacleAlertWorkItem: DispatchWorkItem?
+    private var obstacleTargetPosition: SIMD3<Float>?
+    
+    // MARK: - 压音调度状态 (Ducking Coordinator)
+    private var isObstacleDucking: Bool = false
+    private var isRewardDucking: Bool = false
     
     // MARK: - 初始化
     public init() {
@@ -114,7 +143,6 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         }
         stateLock.unlock()
         
-        // 配置系统音频会话 (iOS 平台生效)
         #if os(iOS)
         let session = AVAudioSession.sharedInstance()
         try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
@@ -144,6 +172,8 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         _isRunning = false
         stateLock.unlock()
         
+        cancelObstacleAlertInternal()
+        
         obstaclePlayerNode.stop()
         navigationPlayerNode.stop()
         rewardPlayerNode.stop()
@@ -156,11 +186,12 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     public func reset() {
         audioQueue.async { [weak self] in
             guard let self = self else { return }
+            self.cancelObstacleAlertInternal()
+            
             self.obstaclePlayerNode.stop()
             self.navigationPlayerNode.stop()
             self.rewardPlayerNode.stop()
             
-            // 恢复播放节点以备后续发声
             if self.isRunning {
                 self.obstaclePlayerNode.play()
                 self.navigationPlayerNode.play()
@@ -172,7 +203,7 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         }
     }
     
-    // MARK: - 内部辅助方法：声源坐标映射
+    // MARK: - 内部辅助方法：声源坐标映射与平滑更新
     
     /// 复用 SpatialAudioKit 将相对坐标直接映射至声源物理节点
     internal func apply3DPosition(node: AVAudioPlayerNode, position: SIMD3<Float>) {
@@ -187,11 +218,134 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         )
     }
     
-    // MARK: - 占位方法（由后续用户故事 Phase 3, 4, 5 分阶段实现）
-    
-    public func setObstacleTarget(position: SIMD3<Float>?) {
-        // 后续由 T006 [US1] 完整实现
+    /// 平滑更新障碍物三维声源坐标（防声相突变与爆音）
+    private func smoothUpdateObstaclePosition(to newPos: SIMD3<Float>) {
+        self.obstacleTargetPosition = newPos
+        self.apply3DPosition(node: self.obstaclePlayerNode, position: newPos)
     }
+    
+    /// 统一压音协调器：障碍物警示或康复和弦期间将脚步声压低至 30%
+    private func updateFootstepDucking() {
+        let targetVolume: Float = (isObstacleDucking || isRewardDucking) ? 0.30 : 1.0
+        navigationPlayerNode.volume = targetVolume
+    }
+    
+    // MARK: - 用户故事 1: 危险障碍物金属撞击双音确认警示 (US1)
+    
+    /// 设置危险障碍物目标坐标（触发金属撞击声双音确认警示）
+    /// - Parameter position: 障碍物相对三维坐标 (x, y, z)，单位米；传入 nil 则立即停止当前警示
+    public func setObstacleTarget(position: SIMD3<Float>?) {
+        audioQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            // 1. 若传入 nil，立即取消当前发声并恢复静音
+            guard let position = position else {
+                self.cancelObstacleAlertInternal()
+                return
+            }
+            
+            self.stateLock.lock()
+            let currentPhase = self._obstacleAlertPhase
+            self.stateLock.unlock()
+            
+            // 2. 防重入机制：若双音发声正在进行中，仅动态平滑移动声源位置，严禁打断重入
+            if currentPhase == .firstPing || currentPhase == .waitingInterval || currentPhase == .secondPing {
+                self.smoothUpdateObstaclePosition(to: position)
+                return
+            }
+            
+            // 3. 处于 idle 或 completed 状态，启动全新一轮 800ms 双音警示
+            self.startObstacleDoublePing(at: position)
+        }
+    }
+    
+    /// 启动 800ms 双音警示序列
+    private func startObstacleDoublePing(at position: SIMD3<Float>) {
+        cancelObstacleAlertInternal()
+        
+        stateLock.lock()
+        _obstacleAlertPhase = .firstPing
+        stateLock.unlock()
+        
+        smoothUpdateObstaclePosition(to: position)
+        
+        // 发声期间开启脚步声压音让位 (Ducking 至 30%)
+        isObstacleDucking = true
+        updateFootstepDucking()
+        
+        // 播放第 1 声金属撞击音
+        obstaclePlayerNode.scheduleBuffer(metallicImpactBuffer, at: nil, options: [])
+        if !obstaclePlayerNode.isPlaying && isRunning {
+            obstaclePlayerNode.play()
+        }
+        
+        Log.info("触发危险障碍物金属警示音 (第 1 声): \(position)", category: .audio)
+        
+        stateLock.lock()
+        _obstacleAlertPhase = .waitingInterval
+        stateLock.unlock()
+        
+        // 调度精确 800ms 后的第 2 声
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            
+            self.stateLock.lock()
+            guard self._obstacleAlertPhase == .waitingInterval else {
+                self.stateLock.unlock()
+                return
+            }
+            self._obstacleAlertPhase = .secondPing
+            self.stateLock.unlock()
+            
+            self.obstaclePlayerNode.scheduleBuffer(self.metallicImpactBuffer, at: nil, options: [])
+            Log.info("触发危险障碍物金属警示音 (第 2 声)", category: .audio)
+            
+            // 第 2 声音频播完后（0.1s）转入 completed 状态并自动安静
+            let completionItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                
+                self.stateLock.lock()
+                guard self._obstacleAlertPhase == .secondPing else {
+                    self.stateLock.unlock()
+                    return
+                }
+                self._obstacleAlertPhase = .completed
+                self.stateLock.unlock()
+                
+                // 恢复背景脚步声音量至 100%
+                self.isObstacleDucking = false
+                self.updateFootstepDucking()
+                
+                Log.info("障碍物双音确认完毕，自动静音转入 completed 态", category: .audio)
+            }
+            
+            self.obstacleAlertWorkItem = completionItem
+            self.audioQueue.asyncAfter(deadline: .now() + 0.1, execute: completionItem)
+        }
+        
+        self.obstacleAlertWorkItem = workItem
+        audioQueue.asyncAfter(deadline: .now() + 0.8, execute: workItem)
+    }
+    
+    /// 内部取消障碍物发声并恢复状态
+    private func cancelObstacleAlertInternal() {
+        obstacleAlertWorkItem?.cancel()
+        obstacleAlertWorkItem = nil
+        
+        obstaclePlayerNode.stop()
+        if isRunning {
+            obstaclePlayerNode.play()
+        }
+        
+        stateLock.lock()
+        _obstacleAlertPhase = .idle
+        stateLock.unlock()
+        
+        isObstacleDucking = false
+        updateFootstepDucking()
+    }
+    
+    // MARK: - 占位方法（由后续用户故事 Phase 4, 5 分阶段实现）
     
     public func setNavigationTarget(position: SIMD3<Float>?) {
         // 后续由 T008 [US2] 完整实现

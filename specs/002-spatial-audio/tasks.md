@@ -49,10 +49,10 @@
 **独立测试标准**：调用 `setObstacleTarget(position:)` 传入左侧坐标，左声道间隔 800ms 发出 2 声金属撞击音后自动静音；期间重复调用不打断重入；传入 nil 立即静音。
 
 ### 测试先行
-- [ ] T005 [P] [US1] 编写障碍物双音状态机与防重入测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 800ms 间隔双响、completed 自动静音、高频重复调用防重入平滑移动与坐标插值、双响期间脚步声 Ducking 压低至 30% 与恢复、nil 及 reset 立即停止）
+- [X] T005 [P] [US1] 编写障碍物双音状态机与防重入测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 800ms 间隔双响、completed 自动静音、高频重复调用防重入平滑移动与坐标插值、双响期间脚步声 Ducking 压低至 30% 与恢复、nil 及 reset 立即停止）
 
 ### 实现
-- [ ] T006 [US1] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setObstacleTarget(position: SIMD3<Float>?)` 与 `ObstacleAlertState` 发声状态机，以 800ms 间隔驱动播放 2 次金属撞击音并防重入，支持坐标插值平滑与发声期间对脚步声节点的自动 Ducking 压低至 30% 与恢复，使 T005 测试通过
+- [X] T006 [US1] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setObstacleTarget(position: SIMD3<Float>?)` 与 `ObstacleAlertState` 发声状态机，以 800ms 间隔驱动播放 2 次金属撞击音并防重入，支持坐标插值平滑与发声期间对脚步声节点的自动 Ducking 压低至 30% 与恢复，使 T005 测试通过
 
 **检查点**：MVP 交付达成！核心避障双音确认警示功能可独立运行与完整测试。
 
