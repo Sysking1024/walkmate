@@ -236,6 +236,8 @@ struct HomeView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("徽章，\(title)")
         .accessibilityHint("轻点两下听它的旋律")
+        // 激活后开始播放旋律，读屏不要再复述名字盖住音乐
+        .accessibilityAddTraits(.startsMediaSession)
     }
 
     private func routeRow(icon: String, title: String, detail: String) -> some View {
