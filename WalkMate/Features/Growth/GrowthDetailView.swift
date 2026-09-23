@@ -11,6 +11,7 @@ struct GrowthDetailView: View {
                 WMPageTitle(text: "成长详情")
                 weeklyChart
                 totals
+                badgeSection
                 recentSection
             }
             .wmPageInset()
@@ -20,7 +21,7 @@ struct GrowthDetailView: View {
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
         .wmDetailNavigationBar(title: "成长详情")
-        .wmAnnounce("成长详情。本周每日训练分钟数、累计数据和最近训练记录。左上角返回。")
+        .wmAnnounce("成长详情。")
     }
 
     // MARK: - 本周每日训练分钟
@@ -75,6 +76,35 @@ struct GrowthDetailView: View {
                 WMStatTile(label: "独立完成指数", value: "\(Int(history.independentRate * 100))%")
             }
         }
+    }
+
+    // MARK: - 徽章
+
+    private var badgeSection: some View {
+        VStack(spacing: 12) {
+            WMSectionHeader(title: "我的徽章")
+            HStack(spacing: 8) {
+                badgeTile("badge_obstacles_10", "成功避障十次")
+                badgeTile("badge_first_step", "首次完成训练")
+                badgeTile("badge_meet_friend", "成功和朋友会面")
+            }
+        }
+    }
+
+    private func badgeTile(_ image: String, _ title: String) -> some View {
+        VStack(spacing: 4) {
+            Image(image).resizable().scaledToFit().frame(height: 66)
+            Text(title)
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .padding(.horizontal, 6)
+        .frame(maxWidth: .infinity, minHeight: 110)
+        .wmCard(WalkMateTheme.Gradients.badgeTile)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("徽章，\(title)")
     }
 
     // MARK: - 最近记录

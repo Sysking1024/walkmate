@@ -7,6 +7,11 @@ struct RouteDetailView: View {
     let route: RouteInfo
     /// 本人走过的次数，探店路线没有这个数据
     var completedCount: Int? = nil
+    /// 探店路线对应的店铺，走完后可在页底打分
+    var store: StoreSummary? = nil
+
+    @State private var showRating = false
+    @State private var ratingStore = StoreRatingStore.shared
 
     var body: some View {
         ScrollView {
@@ -28,6 +33,7 @@ struct RouteDetailView: View {
                     WMStatTile(label: "已完成", value: "\(completedCount) 次")
                 }
                 stepsSection
+                if let store { ratingSection(for: store) }
             }
             .wmPageInset()
             .padding(.top, 12)
@@ -35,8 +41,31 @@ struct RouteDetailView: View {
         }
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
+        .sheet(isPresented: $showRating) {
+            if let store { StoreRatingView(store: store) { showRating = false } }
+        }
         .wmDetailNavigationBar(title: title)
-        .wmAnnounce("\(title)，从\(route.start)到\(route.end)，\(distanceText)，平均 \(route.averageObstacles) 处障碍。下面是分步说明。左上角返回。")
+        .wmAnnounce("\(title)，\(distanceText)，\(route.averageObstacles) 处障碍。")
+    }
+
+    /// 店铺评分：实时均分与人数；评过就只显示自己的评分
+    private func ratingSection(for store: StoreSummary) -> some View {
+        let live = ratingStore.store(id: store.id) ?? store
+        return VStack(alignment: .leading, spacing: 12) {
+            WMSectionHeader(title: "无障碍评分")
+            HStack(spacing: 14) {
+                WMStatTile(label: "平均评分", value: String(format: "%.1f", live.averageScore))
+                WMStatTile(label: "去过的视障用户", value: "\(live.visitorCount) 位")
+            }
+            if let mine = ratingStore.myRating(for: store.id) {
+                Text("你已评 \(mine.score) 星，谢谢")
+                    .font(WalkMateTheme.Fonts.body)
+                    .foregroundStyle(WalkMateTheme.Colors.accentSoft)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+            } else {
+                WMButton(title: "给这家店打分", height: 61) { showRating = true }
+            }
+        }
     }
 
     private var distanceText: String {

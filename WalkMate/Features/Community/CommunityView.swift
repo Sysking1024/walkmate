@@ -7,7 +7,6 @@ import SwiftUI
 struct CommunityView: View {
     @State private var ratingStore = StoreRatingStore.shared
     @State private var communityStore = CommunityStore.shared
-    @State private var ratingTarget: StoreSummary?
     @State private var latestReel: URL?
 
     var body: some View {
@@ -15,7 +14,7 @@ struct CommunityView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     WMLogoHeader().padding(.top, 8)
-                    WMPageTitle(text: "好友今日成就榜")
+                    WMPageTitle(text: "好友成就")
                     achievementCard
 
                     WMPageTitle(text: "无障碍探店")
@@ -37,13 +36,10 @@ struct CommunityView: View {
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: StoreSummary.self) { store in
-                RouteDetailView(title: "去\(store.name)", route: store.route)
+                RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
             }
         }
         .tint(WalkMateTheme.Colors.textPrimary)
-        .sheet(item: $ratingTarget) { store in
-            StoreRatingView(store: store) { ratingTarget = nil }
-        }
         .task {
             latestReel = TrainingHistoryStore.latestReelURL
             await communityStore.refresh()
@@ -56,12 +52,6 @@ struct CommunityView: View {
     private var achievementCard: some View {
         let items = communityStore.feed.achievements
         return VStack(alignment: .leading, spacing: 18) {
-            HStack(spacing: 8) {
-                Text("今日成就"); Text("·"); Text("Today’s  Achievement")
-            }
-            .font(WalkMateTheme.Fonts.body)
-            .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-
             // 设计稿：金冠居中放大，银、铜分列两侧
             let gold = items.first { $0.crown == "crown_gold" }
             let others = items.filter { $0.crown != "crown_gold" }
@@ -130,14 +120,10 @@ struct CommunityView: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel("\(store.name)，\(store.category)，距离 \(String(format: "%.1f", store.distanceKm)) 公里，无障碍评分 \(String(format: "%.1f", store.averageScore))，\(store.visitorCount) 位视障用户去过，\(store.tags.joined(separator: "，"))")
 
-            HStack(spacing: 14) {
-                NavigationLink(value: store) {
-                    Text("查看路线")
-                }
-                .buttonStyle(WhitePillButtonStyle())
-                Button("去评分") { ratingTarget = store }
-                    .buttonStyle(GreenPillButtonStyle())
+            NavigationLink(value: store) {
+                Text("查看路线")
             }
+            .buttonStyle(WhitePillButtonStyle())
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)
@@ -217,7 +203,7 @@ struct CommunityView: View {
                     Text(journey.title)
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    Text("360 旅程 · \(journey.duration)")
+                    Text("\(journey.duration)")
                     Text("步行\(Int(journey.distanceKm))km     解锁新区域")
                     if let note = journey.note {
                         Text(note)

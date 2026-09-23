@@ -185,6 +185,6 @@ struct InfoPageView: View {
             OnboardingView { showGuide = false }.preferredColorScheme(.dark)
         }
         .wmDetailNavigationBar(title: page.title)
-        .wmAnnounce(page.sections.map { "\($0.0)。\($0.1)" }.joined(separator: " "))
+        .wmAnnounce(page.title)
     }
 }

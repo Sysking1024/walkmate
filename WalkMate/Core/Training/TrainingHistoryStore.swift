@@ -27,7 +27,7 @@ struct TrainingRecord: Codable, Identifiable {
     let obstaclesAvoided: Int
     let moments: [Moment]
     let finishedAt: Date
-    /// 使用者点了「记录路线」后标记为一条路线记录
+    /// 早期版本由「记录路线」按钮标记，现在每次训练都记为路线，字段保留以兼容旧数据
     var savedAsRoute: Bool
 
     init(id: UUID, kind: TrainingKind, durationSeconds: Int, distanceMeters: Int, obstaclesAvoided: Int,
@@ -122,7 +122,7 @@ final class TrainingHistoryStore {
             id: UUID(), kind: result.kind, durationSeconds: result.durationSeconds, distanceMeters: result.distanceMeters,
             obstaclesAvoided: result.obstaclesAvoided,
             moments: result.moments.map { .init(frameFileName: $0.frameURL.lastPathComponent, text: $0.narration.text) },
-            finishedAt: result.finishedAt, savedAsRoute: false
+            finishedAt: result.finishedAt, savedAsRoute: true
         )
         records.insert(record, at: 0)
         persist()
@@ -131,12 +131,6 @@ final class TrainingHistoryStore {
             catch { Log.warning("训练记录上传失败，已保存在本地：\(error)", category: .general) }
         }
         return record
-    }
-
-    func markAsRoute(_ id: UUID) {
-        guard let index = records.firstIndex(where: { $0.id == id }) else { return }
-        records[index].savedAsRoute = true
-        persist()
     }
 
     // MARK: - 统计
@@ -170,8 +164,6 @@ final class TrainingHistoryStore {
         }
     }
 
-    var routeRecords: [TrainingRecord] { records.filter(\.savedAsRoute) }
-
     func records(of kind: TrainingKind) -> [TrainingRecord] { records.filter { $0.kind == kind } }
 
     // MARK: - 档位解锁
@@ -182,10 +174,8 @@ final class TrainingHistoryStore {
         return indoor.count >= 5 && indoor.filter { $0.obstaclesAvoided >= 10 }.count >= 3
     }
 
-    /// 户外独立出行：完成 5 次半开放训练，并在小区路线上走完 3 次
-    var isOutdoorUnlocked: Bool {
-        records(of: .neighborhood).count >= 5 && routeRecords.filter { $0.kind == .neighborhood }.count >= 3
-    }
+    /// 户外独立出行：完成 5 次小区路线
+    var isOutdoorUnlocked: Bool { records(of: .neighborhood).count >= 5 }
 
     /// 下一目标的文案，供进度页里程碑展示
     var nextGoalText: (title: String, detail: String) {

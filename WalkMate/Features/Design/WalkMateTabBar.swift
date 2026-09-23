@@ -2,7 +2,7 @@ import SwiftUI
 
 /// 应用的五个主栏目
 enum WalkMateTab: CaseIterable, Identifiable {
-    case home, training, progress, community, profile
+    case home, training, community, profile
 
     var id: Self { self }
 
@@ -10,7 +10,6 @@ enum WalkMateTab: CaseIterable, Identifiable {
         switch self {
         case .home: return "首页"
         case .training: return "训练"
-        case .progress: return "进度"
         case .community: return "社群"
         case .profile: return "个人"
         }
@@ -61,7 +60,7 @@ struct WalkMateTabBar: View {
         .padding(.horizontal, 10)
     }
 
-    /// 设计稿里训练与进度两栏用的是字符图形，其余为矢量图标
+    /// 设计稿里训练栏用的是字符图形，其余为矢量图标
     @ViewBuilder
     private func icon(for tab: WalkMateTab) -> some View {
         switch tab {
@@ -69,8 +68,6 @@ struct WalkMateTabBar: View {
             Image("tab_home").resizable().scaledToFit()
         case .training:
             Text("◎").font(.system(size: 18, weight: .bold))
-        case .progress:
-            Text("◔").font(.system(size: 18, weight: .bold))
         case .community:
             Image("tab_community").resizable().scaledToFit()
         case .profile:

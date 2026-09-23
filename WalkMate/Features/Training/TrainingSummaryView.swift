@@ -5,14 +5,11 @@ import SwiftUI
 struct TrainingSummaryView: View {
     let result: TrainingResult
     let onDone: () -> Void
-    /// 「查看我的成长」：收起流程并切到进度栏目
-    let onViewGrowth: () -> Void
 
     @State private var reel = HighlightReelBuilder()
     @State private var player: AVPlayer?
     @State private var speech = SpeechRenderer()
     @State private var history = TrainingHistoryStore.shared
-    @State private var routeSaved = false
 
     var body: some View {
         ScrollView {
@@ -28,13 +25,9 @@ struct TrainingSummaryView: View {
                 statGrid
                 reelSection
                 momentsSection
-                achievementSection
+                if history.records(of: result.kind).count == 1 { achievementSection }
 
-                HStack(spacing: 14) {
-                    WMButton(title: "查看我的成长", height: 61, action: onViewGrowth)
-                    WMButton(title: routeSaved ? "已记录路线" : "记录路线", style: routeSaved ? .subdued : .primary, height: 61, action: saveRoute)
-                        .disabled(routeSaved)
-                }
+                WMButton(title: "完成", height: 61, action: onDone)
                 shareButton
             }
             .wmPageInset()
@@ -42,9 +35,8 @@ struct TrainingSummaryView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .wmAnnounce("训练结束。用时 \(result.durationSeconds / 60) 分 \(result.durationSeconds % 60) 秒，避障 \(result.obstaclesAvoided) 次，留下 \(result.moments.count) 个时刻。下面可以查看成长、记录路线，集锦好了可以分享。")
+        .wmAnnounce("训练结束，\(result.durationSeconds / 60) 分钟，避障 \(result.obstaclesAvoided) 次。按完成返回。")
         .task {
-            routeSaved = currentRecord?.savedAsRoute ?? false
             await reel.build(from: result.moments)
             if case .ready(let url) = reel.state { TrainingHistoryStore.keepAsLatestReel(url) }
         }
@@ -190,10 +182,10 @@ struct TrainingSummaryView: View {
             HStack(spacing: 16) {
                 Image("badge_first_step").resizable().scaledToFit().frame(width: 86, height: 86)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("第一步 · FIRST STEP")
+                    Text("第一步")
                         .font(WalkMateTheme.Fonts.body)
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.7))
-                    Text("首次完成任务")
+                    Text("首次完成\(result.kind.title)")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
                 }
@@ -203,7 +195,7 @@ struct TrainingSummaryView: View {
             .frame(maxWidth: .infinity, minHeight: 102, alignment: .leading)
             .wmCard()
             .accessibilityElement(children: .combine)
-            .accessibilityLabel("新成就，第一步，首次完成任务")
+            .accessibilityLabel("新成就，第一步，首次完成\(result.kind.title)")
         }
     }
 
@@ -219,24 +211,7 @@ struct TrainingSummaryView: View {
                     .wmCard(WalkMateTheme.Gradients.card, radius: WalkMateTheme.Radius.button, dimmed: true)
             }
             .accessibilityHint("把带语音朗读的集锦发给同伴")
-        } else {
-            WMButton(title: "分享到同伴社群", style: .subdued, height: 61) {}
-                .disabled(true)
-                .opacity(0.6)
         }
-    }
-
-    /// 训练结束时已写入的记录，按结束时间对上
-    private var currentRecord: TrainingRecord? {
-        history.records.first { $0.finishedAt == result.finishedAt }
-    }
-
-    /// 把这次训练标记为一条路线记录，进度页「室内训练路线」会列出
-    private func saveRoute() {
-        guard let record = currentRecord else { return }
-        history.markAsRoute(record.id)
-        routeSaved = true
-        Log.info("已把训练记录为路线", category: .ui)
     }
 
     private static func dateText(_ date: Date, style: DateFormatter.Style = .long) -> String {

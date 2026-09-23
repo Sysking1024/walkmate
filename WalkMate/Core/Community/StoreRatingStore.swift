@@ -24,9 +24,12 @@ final class StoreRatingStore {
 
     private(set) var stores: [StoreSummary] = SeedData.stores
     private(set) var pending: [StoreRating] = []
+    /// 本人已提交的评分，按店铺 ID
+    private(set) var mine: [String: StoreRating] = [:]
     private(set) var isSyncing = false
 
     private let pendingKey = "walkmate.pendingReviews"
+    private let mineKey = "walkmate.myReviews"
     private let backend = BackendClient.shared
 
     private init() {
@@ -34,7 +37,13 @@ final class StoreRatingStore {
            let saved = try? JSONDecoder().decode([StoreRating].self, from: data) {
             pending = saved
         }
+        if let data = UserDefaults.standard.data(forKey: mineKey),
+           let saved = try? JSONDecoder().decode([String: StoreRating].self, from: data) {
+            mine = saved
+        }
     }
+
+    func myRating(for storeID: String) -> StoreRating? { mine[storeID] }
 
     func store(id: String) -> StoreSummary? { stores.first { $0.id == id } }
 
@@ -54,7 +63,10 @@ final class StoreRatingStore {
 
     /// 提交评分：本地立即生效，随后尝试同步
     func submit(_ rating: StoreRating) async {
+        guard mine[rating.storeID] == nil else { return }
         applyLocally(rating)
+        mine[rating.storeID] = rating
+        if let data = try? JSONEncoder().encode(mine) { UserDefaults.standard.set(data, forKey: mineKey) }
         pending.append(rating)
         persistPending()
         Log.info("已记录评分：\(rating.storeID) \(rating.score) 星", category: .ui)
