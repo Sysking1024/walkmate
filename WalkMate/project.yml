@@ -90,6 +90,18 @@ targets:
     sources:
       - path: ../Tests/ToolkitTests
 
+  AudioTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/AudioTests
+
+  AppTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/AppTests
+
 schemes:
   WalkMate:
     build:
@@ -105,5 +117,8 @@ schemes:
         - GeometryTests
         - PerceptionTests
         - ToolkitTests
+        - AudioTests
+        - AppTests
+
 
 
