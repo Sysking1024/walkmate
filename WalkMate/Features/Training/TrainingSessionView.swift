@@ -24,7 +24,16 @@ struct TrainingSessionView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 18) {
-                WMLogoHeader().padding(.top, 8)
+                HStack(alignment: .center) {
+                    WMLogoHeader()
+                    Button("取消") { confirmCancel = true }
+                        .font(WalkMateTheme.Fonts.body)
+                        .foregroundStyle(Color.white.opacity(0.7))
+                        .frame(minWidth: 56, minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                        .accessibilityLabel("取消训练")
+                        .accessibilityHint("放弃这次训练，不记录")
+                }
+                .padding(.top, 8)
                 WMPageTitle(text: kind.title)
 
                 HStack(spacing: 14) {
@@ -47,8 +56,6 @@ struct TrainingSessionView: View {
                     TrainingHistoryStore.shared.record(result)
                     onFinish(result)
                 }
-                WMButton(title: "取消训练", style: .subdued, height: 48) { confirmCancel = true }
-                    .accessibilityHint("放弃这次训练，不记录")
             }
             .wmPageInset()
             .wmTabBarClearance()

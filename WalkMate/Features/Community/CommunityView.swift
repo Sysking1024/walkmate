@@ -52,9 +52,6 @@ struct CommunityView: View {
             }
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .navigationBar)
-            .navigationDestination(for: StoreSummary.self) { store in
-                RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
-            }
         }
         .tint(WalkMateTheme.Colors.textPrimary)
         .fullScreenCover(item: $player) { player in
@@ -154,7 +151,9 @@ struct CommunityView: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel("\(store.name)，\(store.category)，距离 \(String(format: "%.1f", store.distanceKm)) 公里，无障碍评分 \(String(format: "%.1f", store.averageScore))，\(store.visitorCount) 位视障用户去过，\(store.tags.joined(separator: "，"))")
 
-            NavigationLink(value: store) {
+            NavigationLink {
+                RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
+            } label: {
                 Text("查看路线")
             }
             .buttonStyle(WhitePillButtonStyle())
