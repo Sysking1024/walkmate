@@ -64,10 +64,10 @@
 **独立测试标准**：调用 `setNavigationTarget(position:)` 传入前方坐标，双耳中央以 1.1s 步速稳定传出自然脚步声；坐标右偏时声源右移；传入 nil 定时器停止。
 
 ### 测试先行
-- [ ] T007 [P] [US2] 编写导航脚步声自然步频与方位追踪测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 1.0s~1.2s 步频定时调度、声源方位平移与 nil 安全取消）
+- [X] T007 [P] [US2] 编写导航脚步声自然步频与方位追踪测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 1.0s~1.2s 步频定时调度、声源方位平移与 nil 安全取消）
 
 ### 实现
-- [ ] T008 [US2] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setNavigationTarget(position: SIMD3<Float>?)` 与后台步频调度定时器，循环播放轻快脚步声，使 T007 测试通过
+- [X] T008 [US2] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setNavigationTarget(position: SIMD3<Float>?)` 与后台步频调度定时器，循环播放轻快脚步声，使 T007 测试通过
 
 **检查点**：导航脚步声领路功能就绪，可与 US1 共同发声并各自保持独立语义。
 

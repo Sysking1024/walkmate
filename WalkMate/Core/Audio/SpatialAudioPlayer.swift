@@ -84,6 +84,27 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     private var obstacleAlertWorkItem: DispatchWorkItem?
     private var obstacleTargetPosition: SIMD3<Float>?
     
+    // MARK: - 导航脚步声调度状态机 (US2)
+    /// 导航步频间隔时间（成人自然行走步频默认 1.1 秒）
+    public var navigationCadenceInterval: TimeInterval = 1.1
+    
+    private var _isNavigationActive: Bool = false
+    public var isNavigationActive: Bool {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return _isNavigationActive
+    }
+    
+    private var _navigationStepCount: Int = 0
+    public var navigationStepCount: Int {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return _navigationStepCount
+    }
+    
+    private var navigationCadenceWorkItem: DispatchWorkItem?
+    private var navigationTargetPosition: SIMD3<Float>?
+    
     // MARK: - 压音调度状态 (Ducking Coordinator)
     private var isObstacleDucking: Bool = false
     private var isRewardDucking: Bool = false
@@ -173,6 +194,7 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         stateLock.unlock()
         
         cancelObstacleAlertInternal()
+        stopNavigationCadenceInternal()
         
         obstaclePlayerNode.stop()
         navigationPlayerNode.stop()
@@ -184,9 +206,25 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     
     /// 全局重置声学状态与激活通道
     public func reset() {
+        stateLock.lock()
+        _isNavigationActive = false
+        _navigationStepCount = 0
+        _obstacleAlertPhase = .idle
+        isObstacleDucking = false
+        isRewardDucking = false
+        stateLock.unlock()
+        
+        obstacleAlertWorkItem?.cancel()
+        obstacleAlertWorkItem = nil
+        navigationCadenceWorkItem?.cancel()
+        navigationCadenceWorkItem = nil
+        obstacleTargetPosition = nil
+        navigationTargetPosition = nil
+        
         audioQueue.async { [weak self] in
             guard let self = self else { return }
             self.cancelObstacleAlertInternal()
+            self.stopNavigationCadenceInternal()
             
             self.obstaclePlayerNode.stop()
             self.navigationPlayerNode.stop()
@@ -345,11 +383,86 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         updateFootstepDucking()
     }
     
-    // MARK: - 占位方法（由后续用户故事 Phase 4, 5 分阶段实现）
+    // MARK: - 用户故事 2: 安全可行路线前方领路脚步声 (US2)
     
+    /// 设置安全可通行航路点目标坐标（持续以人体自然步频播放领路脚步声）
+    /// - Parameter position: 前方安全通道航路点相对三维坐标 (x, y, z)，单位米；传入 nil 则停止脚步导引
     public func setNavigationTarget(position: SIMD3<Float>?) {
-        // 后续由 T008 [US2] 完整实现
+        audioQueue.async { [weak self] in
+            guard let self = self else { return }
+            
+            // 1. 若传入 nil，立即停止导航脚步声
+            guard let position = position else {
+                self.stopNavigationCadenceInternal()
+                Log.info("导航目标置空，停止领路脚步声", category: .audio)
+                return
+            }
+            
+            self.navigationTargetPosition = position
+            // 动态映射航路点三维空间声相方位
+            self.apply3DPosition(node: self.navigationPlayerNode, position: position)
+            
+            self.stateLock.lock()
+            let wasActive = self._isNavigationActive
+            self._isNavigationActive = true
+            self.stateLock.unlock()
+            
+            // 2. 若此前未激活，立即启动步频节拍循环
+            if !wasActive {
+                Log.info("激活前方领路脚步声，初始方位: \(position)", category: .audio)
+                self.scheduleNextFootstep(immediate: true)
+            }
+        }
     }
+    
+    /// 调度下一个自然步频踏步声
+    private func scheduleNextFootstep(immediate: Bool) {
+        navigationCadenceWorkItem?.cancel()
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            
+            self.stateLock.lock()
+            guard self._isNavigationActive && self._isRunning else {
+                self.stateLock.unlock()
+                return
+            }
+            self._navigationStepCount += 1
+            self.stateLock.unlock()
+            
+            // 播放单次轻快踏地音
+            self.navigationPlayerNode.scheduleBuffer(self.footstepBuffer, at: nil, options: [])
+            if !self.navigationPlayerNode.isPlaying && self.isRunning {
+                self.navigationPlayerNode.play()
+            }
+            
+            // 循环调度下一步
+            self.scheduleNextFootstep(immediate: false)
+        }
+        
+        self.navigationCadenceWorkItem = workItem
+        let delay = immediate ? 0.0 : self.navigationCadenceInterval
+        audioQueue.asyncAfter(deadline: .now() + delay, execute: workItem)
+    }
+    
+    /// 停止导航脚步声节拍循环
+    private func stopNavigationCadenceInternal() {
+        navigationCadenceWorkItem?.cancel()
+        navigationCadenceWorkItem = nil
+        navigationTargetPosition = nil
+        
+        stateLock.lock()
+        _isNavigationActive = false
+        _navigationStepCount = 0
+        stateLock.unlock()
+        
+        navigationPlayerNode.stop()
+        if isRunning {
+            navigationPlayerNode.play()
+        }
+    }
+    
+    // MARK: - 占位方法（由后续用户故事 Phase 5 实现）
     
     public func playRewardSound() {
         // 后续由 T010 [US3] 完整实现

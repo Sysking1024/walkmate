@@ -148,4 +148,71 @@ final class SpatialAudioPlayerTests: XCTestCase {
         
         player.stop()
     }
+    
+    // MARK: - 测试 5: 导航脚步声自然步频调度与方位平移追踪 (T007 - US2)
+    func testNavigationCadenceAndTracking() throws {
+        let player = SpatialAudioPlayer()
+        try player.start()
+        
+        // 1. 设置正前方导航航路点
+        let forwardPos = SIMD3<Float>(0.0, -1.4, -3.0)
+        player.setNavigationTarget(position: forwardPos)
+        
+        let expActive = expectation(description: "脚步声导引激活并正前发声")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            XCTAssertTrue(player.isNavigationActive, "设置航路点后导航导引必须处于激活状态")
+            XCTAssertEqual(player.navigationPlayerNode.position.x, 0.0, accuracy: 0.05)
+            XCTAssertEqual(player.navigationPlayerNode.position.z, -3.0, accuracy: 0.05)
+            expActive.fulfill()
+        }
+        wait(for: [expActive], timeout: 0.2)
+        
+        // 2. 模拟道路向右折转，航路点右移
+        let rightPos = SIMD3<Float>(1.5, -1.4, -2.5)
+        player.setNavigationTarget(position: rightPos)
+        
+        let expRight = expectation(description: "脚步声声源动态平移至右前方")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            XCTAssertTrue(player.isNavigationActive)
+            XCTAssertEqual(player.navigationPlayerNode.position.x, 1.5, accuracy: 0.05)
+            XCTAssertEqual(player.navigationPlayerNode.position.z, -2.5, accuracy: 0.05)
+            expRight.fulfill()
+        }
+        wait(for: [expRight], timeout: 0.2)
+        
+        // 3. 通道受阻或到达目的地，传入 nil 取消脚步声
+        player.setNavigationTarget(position: nil)
+        let expNil = expectation(description: "传入 nil 导航脚步声停止")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            XCTAssertFalse(player.isNavigationActive, "传入 nil 后导航导引必须停止")
+            expNil.fulfill()
+        }
+        wait(for: [expNil], timeout: 0.2)
+        
+        player.stop()
+    }
+    
+    // MARK: - 测试 6: 导航脚步声自然步频周期性发声验证 (T007 - US2)
+    func testNavigationCadencePeriodicPlayback() throws {
+        let player = SpatialAudioPlayer()
+        try player.start()
+        
+        // 设定步频为 0.2s 快速单测验证周期性循环
+        player.navigationCadenceInterval = 0.2
+        player.setNavigationTarget(position: SIMD3<Float>(0.0, 0.0, -2.0))
+        
+        let expPeriodic = expectation(description: "步频定时器周期循环调度")
+        // 0.45s 预期至少调度 2 次以上脚步声发声
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            XCTAssertTrue(player.navigationStepCount >= 2, "在 0.45s 内以 0.2s 步频必须至少触发 2 次踏地声，实测: \(player.navigationStepCount)")
+            expPeriodic.fulfill()
+        }
+        wait(for: [expPeriodic], timeout: 0.6)
+        
+        player.reset()
+        XCTAssertFalse(player.isNavigationActive, "reset 后脚步声必须停止")
+        XCTAssertEqual(player.navigationStepCount, 0, "reset 后踏步计数必须归零")
+        
+        player.stop()
+    }
 }
