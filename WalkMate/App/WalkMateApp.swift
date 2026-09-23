@@ -22,6 +22,8 @@ struct WalkMateApp: App {
             TabView {
                 ContentView()
                     .tabItem { Label("出行", systemImage: "figure.walk") }
+                CompanionView()
+                    .tabItem { Label("伙伴", systemImage: "bubble.left.and.bubble.right") }
                 NarrationHomeView()
                     .tabItem { Label("训练记录", systemImage: "list.bullet.rectangle") }
             }

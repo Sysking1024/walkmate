@@ -48,6 +48,14 @@ struct CompanionConversation {
         return true
     }
 
+    /// 使用者主动要求描述（按键或语音发起）。
+    /// 这是使用者自己开的口，不需要再征询，也不受冷却限制，直接进入描述。
+    mutating func handleManualRequest(nowMs: Int) -> Bool {
+        guard stage == .silent || stage == .awaitingConsent else { return false }
+        stage = .describing
+        return true
+    }
+
     /// 使用者对征询作出了答复
     mutating func handleConsent(_ reply: ConsentReply, nowMs: Int) {
         guard stage == .awaitingConsent else { return }

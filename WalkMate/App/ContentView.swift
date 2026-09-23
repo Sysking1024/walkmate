@@ -82,6 +82,8 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didReceiveFrame frame: PanoramicFrame) {
         // 实时视频与姿态对齐帧驱动空间感知引擎计算流水线
         perceptionEngine?.processFrame(frame)
+        // 同一帧投递到总线，供场景描述线订阅，避免两条线争抢管线代理
+        FrameBus.shared.publish(frame)
     }
     
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didUpdateTelemetry telemetry: SensorTelemetry) {

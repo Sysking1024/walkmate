@@ -1,0 +1,256 @@
+import AVFoundation
+import CoreImage
+import CoreVideo
+import Foundation
+import Observation
+
+/// 伙伴会话：把实时全景帧、驻足检测、对谈状态机、场景描述与朗读串成运行中的闭环。
+///
+/// 数据从 `FrameBus` 进来，每帧做两件事：留下最新一帧，喂一条加速度给驻足检测器。
+/// 检测到驻足满阈值就征询；使用者接受后，用驻足那一刻的画面生成描述并朗读，
+/// 之后在同一帧上回答追问。每次描述都会落盘为一个「时刻」，供回家后粗剪使用。
+///
+/// 实时朗读用系统音色：离线、即时、稳定；云端音色留给成片。
+@MainActor
+@Observable
+final class CompanionSession {
+
+    /// 一次驻足留下的记录：那一刻的画面与伙伴的描述
+    struct Moment: Identifiable {
+        let id = UUID()
+        let frameURL: URL
+        let narration: SceneNarration
+    }
+
+    private(set) var stage: ConversationStage = .silent
+    private(set) var transcript: [ConversationTurn] = []
+    private(set) var moments: [Moment] = []
+    /// 当前已连续静止的毫秒数，供界面展示
+    private(set) var standstillMs = 0
+    /// 是否已收到过相机帧
+    private(set) var hasFrames = false
+    /// 正在等待模型或语音时为 true
+    private(set) var isBusy = false
+    /// 最近一次调试落盘的帧路径与尺寸
+    private(set) var savedFrameNote: String?
+
+    private var conversation = CompanionConversation()
+    private var detector = StandstillDetector()
+    private let cloudNarrator = QwenSceneNarrator()
+    private let fallbackNarrator = FallbackSceneNarrator()
+    private let speech = SpeechRenderer()
+    private let ciContext = CIContext()
+
+    private var latestFrame: PanoramicFrame?
+    /// 本次对谈锁定的那一帧，征询时就截下，保证描述的是使用者停下时看到的
+    private var activeFrameJPEG: Data?
+    private var subscription: UUID?
+    private var ticker: Timer?
+
+    private static let opener = "要我说说这儿吗？"
+
+    // MARK: - 生命周期
+
+    func start() {
+        guard subscription == nil else { return }
+        subscription = FrameBus.shared.subscribe { [weak self] frame in
+            // 解码线程回调，切回主线程处理
+            Task { @MainActor in self?.handle(frame) }
+        }
+        ticker = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in
+            Task { @MainActor in self?.tick() }
+        }
+        Log.info("伙伴会话已启动，开始订阅相机帧", category: .narration)
+    }
+
+    func stop() {
+        if let subscription { FrameBus.shared.unsubscribe(subscription) }
+        subscription = nil
+        ticker?.invalidate(); ticker = nil
+        speech.stopSpeaking()
+    }
+
+    // MARK: - 帧与时钟
+
+    private func handle(_ frame: PanoramicFrame) {
+        hasFrames = true
+        latestFrame = frame
+        standstillMs = detector.ingest(acceleration: frame.acceleration, timestampMs: frame.timestampMs)
+
+        if conversation.handleStandstill(standstillDurationMs: standstillMs, nowMs: nowMs) {
+            beginAsking()
+        }
+    }
+
+    private func tick() {
+        if conversation.tick(nowMs: nowMs) {
+            Log.info("对谈阶段超时，回到静默", category: .narration)
+        }
+        syncStage()
+    }
+
+    private var nowMs: Int { Int(Date().timeIntervalSince1970 * 1_000) }
+
+    private func syncStage() { stage = conversation.stage }
+
+    // MARK: - 对谈流程
+
+    /// 驻足满阈值：截下当前画面并开口征询
+    private func beginAsking() {
+        activeFrameJPEG = latestFrame.flatMap { jpegData(from: $0.pixelBuffer) }
+        say(Self.opener)
+        syncStage()
+        Log.info("检测到驻足 \(standstillMs) 毫秒，已开口征询", category: .narration)
+    }
+
+    /// 使用者答应了
+    func accept() {
+        conversation.handleConsent(.accepted, nowMs: nowMs)
+        syncStage()
+        Task { await describeActiveFrame() }
+    }
+
+    /// 使用者拒绝了：安静下来，进入长冷却
+    func decline() {
+        conversation.handleConsent(.declined, nowMs: nowMs)
+        speech.stopSpeaking()
+        syncStage()
+    }
+
+    /// 使用者主动要求描述，不经征询
+    func describeNow() {
+        guard conversation.handleManualRequest(nowMs: nowMs) else { return }
+        activeFrameJPEG = latestFrame.flatMap { jpegData(from: $0.pixelBuffer) }
+        syncStage()
+        Task { await describeActiveFrame() }
+    }
+
+    /// 使用者提出追问
+    func ask(_ question: String) {
+        let trimmed = question.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, stage == .awaitingFollowUp else { return }
+        conversation.handleFollowUp(question: trimmed, nowMs: nowMs)
+        transcript = conversation.turns
+        syncStage()
+        Task { await answerFollowUp(trimmed) }
+    }
+
+    /// 使用者叫停
+    func dismiss() {
+        conversation.dismiss(nowMs: nowMs)
+        speech.stopSpeaking()
+        syncStage()
+    }
+
+    private func describeActiveFrame() async {
+        guard let frameJPEG = activeFrameJPEG else {
+            say("我还没拿到画面，等相机连上再试。")
+            conversation.dismiss(nowMs: nowMs); syncStage()
+            return
+        }
+        isBusy = true
+        defer { isBusy = false }
+
+        let narration = await describe(frameJPEG)
+        conversation.record(.companion, narration.text, nowMs: nowMs)
+        transcript = conversation.turns
+        say(narration.text)
+        saveMoment(frameJPEG, narration: narration)
+
+        // 朗读需要时间，估算念完再进入追问等待窗
+        try? await Task.sleep(nanoseconds: UInt64(narration.text.count) * 230_000_000)
+        conversation.finishDescribing(nowMs: nowMs)
+        syncStage()
+    }
+
+    private func answerFollowUp(_ question: String) async {
+        guard let frameJPEG = activeFrameJPEG else { return }
+        isBusy = true
+        defer { isBusy = false }
+
+        let reply: String
+        if let cloudNarrator {
+            do {
+                reply = try await cloudNarrator.answer(question: question, history: conversation.turns, frameData: frameJPEG)
+            } catch {
+                Log.warning("追问失败：\(error)", category: .narration)
+                reply = "这会儿联系不上，稍后再问我。"
+            }
+        } else {
+            reply = "这会儿联系不上，稍后再问我。"
+        }
+        conversation.record(.companion, reply, nowMs: nowMs)
+        transcript = conversation.turns
+        say(reply)
+
+        try? await Task.sleep(nanoseconds: UInt64(reply.count) * 230_000_000)
+        conversation.finishAnswering(nowMs: nowMs)
+        syncStage()
+    }
+
+    /// 云端描述优先，失败退回离线文案，保证一定出声
+    private func describe(_ frameJPEG: Data) async -> SceneNarration {
+        if let cloudNarrator {
+            do {
+                return try await cloudNarrator.describe(frameData: frameJPEG, offsetMs: nowMs, frameFileName: "live.jpg")
+            } catch {
+                Log.warning("云端描述失败，退回离线文案：\(error)", category: .narration)
+            }
+        }
+        return (try? await fallbackNarrator.describe(frameData: frameJPEG, offsetMs: nowMs, frameFileName: "live.jpg"))
+            ?? SceneNarration(offsetMs: nowMs, frameFileName: "live.jpg", text: "这会儿联系不上，稍后再试。", source: .fallback)
+    }
+
+    private func say(_ text: String) {
+        conversation.record(.companion, text, nowMs: nowMs)
+        transcript = conversation.turns
+        speech.speak(text)
+    }
+
+    // MARK: - 落盘
+
+    /// 把这一刻的画面与描述存下来，供回家后粗剪
+    private func saveMoment(_ frameJPEG: Data, narration: SceneNarration) {
+        let url = Self.momentsDirectory.appendingPathComponent("moment_\(nowMs).jpg")
+        do {
+            try frameJPEG.write(to: url)
+            moments.append(Moment(frameURL: url, narration: narration))
+        } catch {
+            Log.error("时刻落盘失败：\(error)", category: .recording)
+        }
+    }
+
+    /// 调试用：把最新一帧存成 JPEG，并记下尺寸与像素格式。
+    /// 用来核实相机送来的到底是拼好的全景还是双鱼眼原图。
+    func saveCurrentFrameForDebug() {
+        guard let frame = latestFrame, let data = jpegData(from: frame.pixelBuffer) else {
+            savedFrameNote = "还没有收到相机帧"
+            return
+        }
+        let width = CVPixelBufferGetWidth(frame.pixelBuffer)
+        let height = CVPixelBufferGetHeight(frame.pixelBuffer)
+        let format = CVPixelBufferGetPixelFormatType(frame.pixelBuffer)
+        let url = Self.momentsDirectory.appendingPathComponent("debug_\(nowMs).jpg")
+        do {
+            try data.write(to: url)
+            savedFrameNote = "已保存 \(width)x\(height)，像素格式 \(format)，\(data.count / 1024) KB：\(url.lastPathComponent)"
+            Log.info(savedFrameNote ?? "", category: .narration)
+        } catch {
+            savedFrameNote = "保存失败：\(error.localizedDescription)"
+        }
+    }
+
+    private static var momentsDirectory: URL {
+        let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("moments", isDirectory: true)
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir
+    }
+
+    /// 任意像素格式的全景帧转 JPEG；CoreImage 负责格式适配
+    private func jpegData(from buffer: CVPixelBuffer) -> Data? {
+        let image = CIImage(cvPixelBuffer: buffer)
+        let quality = CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String)
+        return ciContext.jpegRepresentation(of: image, colorSpace: CGColorSpaceCreateDeviceRGB(), options: [quality: 0.8])
+    }
+}

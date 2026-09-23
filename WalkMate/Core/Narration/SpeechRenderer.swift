@@ -29,8 +29,21 @@ final class SpeechRenderer {
         let text: String
     }
 
+    /// 把音频会话切到语音播放模式。不这么做，静音开关打开时听不到声音。
+    static func activatePlaybackSession() {
+        #if os(iOS)
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            Log.warning("音频会话配置失败：\(error)", category: .narration)
+        }
+        #endif
+    }
+
     /// 在应用内即时朗读一段文字
     func speak(_ text: String) {
+        Self.activatePlaybackSession()
         let utterance = makeUtterance(text)
         synthesizer.speak(utterance)
         Log.info("开始朗读描述，长度 \(text.count) 字", category: .narration)
