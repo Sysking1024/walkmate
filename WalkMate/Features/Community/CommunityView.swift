@@ -20,7 +20,17 @@ struct CommunityView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     WMLogoHeader().padding(.top, 8)
-                    WMPageTitle(text: "好友成就")
+                    HStack(alignment: .firstTextBaseline) {
+                        WMPageTitle(text: "好友成就")
+                        Spacer()
+                        NavigationLink { AddFriendView() } label: {
+                            Text("添加好友")
+                                .font(WalkMateTheme.Fonts.body)
+                                .foregroundStyle(Color.white.opacity(0.54))
+                                .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                        }
+                        .buttonStyle(.plain)
+                    }
                     achievementCard
 
                     WMPageTitle(text: "无障碍探店")
