@@ -87,8 +87,8 @@ struct CommunityView: View {
                 .font(WalkMateTheme.Fonts.caption).tracking(1.3)
                 .foregroundStyle(WalkMateTheme.Colors.textPrimary)
             Text(item.note)
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.8))
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: 110)
@@ -110,7 +110,7 @@ struct CommunityView: View {
                     HStack {
                         Text(store.name).font(WalkMateTheme.Fonts.body).tracking(1.6)
                         Spacer()
-                        Text(String(format: "%.1fkm", store.distanceKm)).font(.system(size: 10, weight: .medium)).tracking(1)
+                        Text(String(format: "%.1fkm", store.distanceKm)).font(WalkMateTheme.Fonts.caption)
                     }
                     .foregroundStyle(.white)
                     HStack(spacing: 6) {
@@ -118,7 +118,7 @@ struct CommunityView: View {
                         Text(String(format: "%.1f", store.averageScore))
                         Text("\(store.visitorCount)位视障用户去过")
                     }
-                    .font(.system(size: 10, weight: .medium)).tracking(1)
+                    .font(WalkMateTheme.Fonts.caption)
                     .foregroundStyle(.white)
                     chipRows(store.tags)
                 }
@@ -156,13 +156,14 @@ struct CommunityView: View {
                 WMAvatar(imageName: invitation.avatarKey, size: 64)
                 VStack(alignment: .leading, spacing: 4) {
                     (Text("\(invitation.from) ").bold() + Text("想邀请你一起去 ") + Text(invitation.place).bold())
-                        .font(WalkMateTheme.Fonts.caption).tracking(1.3)
+                        .font(WalkMateTheme.Fonts.body)
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(invitation.time)
                     if let message = invitation.message { Text("留言：\(message)") }
                 }
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.8))
             }
             .accessibilityElement(children: .combine)
 

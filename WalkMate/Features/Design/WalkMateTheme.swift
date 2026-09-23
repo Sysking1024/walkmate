@@ -133,9 +133,9 @@ enum WalkMateTheme {
         static var statValueLarge: Font { scaled(20, .bold) }
         static var body: Font { scaled(16, .medium) }
         static var caption: Font { scaled(13, .medium) }
-        static var small: Font { scaled(11, .bold) }
-        static var ringCaption: Font { scaled(10, .medium) }
-        static var chip: Font { scaled(11, .medium) }
+        static var small: Font { scaled(12, .bold) }
+        static var ringCaption: Font { scaled(12, .medium) }
+        static var chip: Font { scaled(13, .medium) }
     }
 }
 
