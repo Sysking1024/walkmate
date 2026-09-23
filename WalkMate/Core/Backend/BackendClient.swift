@@ -128,6 +128,15 @@ struct RouteInfo: Codable, Equatable, Hashable {
     let points: [[Double]]
     let obstacles: [[Double]]
     let steps: [String]
+    /// 真实目的地，有坐标才能跳高德导航；探店路线用，小区路线没有
+    var destination: Destination?
+
+    struct Destination: Codable, Equatable, Hashable {
+        let name: String
+        let address: String
+        let latitude: Double
+        let longitude: Double
+    }
 }
 
 struct CommunityFeed: Codable, Equatable {

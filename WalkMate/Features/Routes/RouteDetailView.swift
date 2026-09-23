@@ -12,6 +12,7 @@ struct RouteDetailView: View {
 
     @State private var showRating = false
     @State private var ratingStore = StoreRatingStore.shared
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         ScrollView {
@@ -22,6 +23,7 @@ struct RouteDetailView: View {
                         .font(WalkMateTheme.Fonts.caption)
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
                 }
+                if let destination = route.destination { navigationCard(destination) }
                 RouteMapView(route: route)
                     .frame(height: 260)
                     .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
@@ -64,6 +66,34 @@ struct RouteDetailView: View {
             } else {
                 WMButton(title: "给这家店打分", height: 61) { showRating = true }
             }
+        }
+    }
+
+    /// 真实地址与高德步行导航。装了高德就跳应用，没装就开高德网页版。
+    private func navigationCard(_ destination: RouteInfo.Destination) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(destination.address)
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
+            WMButton(title: "用高德步行导航", height: 61) { openInAmap(destination) }
+        }
+        .padding(WalkMateTheme.Layout.cardPadding)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .wmCard(WalkMateTheme.Gradients.activeLevel)
+    }
+
+    private func openInAmap(_ destination: RouteInfo.Destination) {
+        let name = destination.name.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? destination.name
+        // t=2 为步行；dev=0 表示坐标已是高德坐标系
+        let app = URL(string: "iosamap://path?sourceApplication=WalkMate&dlat=\(destination.latitude)&dlon=\(destination.longitude)&dname=\(name)&dev=0&t=2")
+        let web = URL(string: "https://uri.amap.com/navigation?to=\(destination.longitude),\(destination.latitude),\(name)&mode=walk&src=WalkMate")
+        if let app, UIApplication.shared.canOpenURL(app) {
+            openURL(app)
+            Log.info("已跳转高德导航：\(destination.name)", category: .ui)
+        } else if let web {
+            openURL(web)
+            Log.info("未安装高德，改开网页导航：\(destination.name)", category: .ui)
         }
     }
 
