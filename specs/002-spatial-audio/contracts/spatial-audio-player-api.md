@@ -33,7 +33,8 @@ public protocol SpatialAudioPlayerProtocol: AnyObject, Sendable {
     /// 设置危险障碍物目标坐标（触发金属撞击声双音确认警示）
     /// - Parameter position: 障碍物相对三维坐标 (x, y, z)，单位米；传入 nil 则立即停止当前警示
     /// - Note: 每次接收有效目标，固定间隔 800ms 播放 2 次即自动静音；
-    ///         双响进行中重复调用仅平滑更新空间位置，不发生重叠爆音。
+    ///         发声期间自动平滑压低背景领路脚步声至 30%（双响播完后恢复 100%）；
+    ///         双响进行中重复调用采用平滑插值滤波更新空间位置，不发生重叠爆音。
     func setObstacleTarget(position: SIMD3<Float>?)
     
     /// 设置安全可通行航路点目标坐标（持续以人体自然步频播放领路脚步声）
@@ -44,7 +45,7 @@ public protocol SpatialAudioPlayerProtocol: AnyObject, Sendable {
     // MARK: - 康复达标瞬态激励（事件驱动，单次触发）
     
     /// 单次触发播放康复达标激励音（温润上行八音盒和弦）
-    /// - Note: 播放时长约 0.4 秒，播放期间自动让位/轻微压低背景脚步声以突出表扬听感，播完后自然恢复。
+    /// - Note: 播放时长约 0.4 秒，播放期间自动让位/平滑压低背景脚步声至 30%（淡入淡出 50ms）以突出表扬听感，播完后自然恢复 100%。
     func playRewardSound()
     
     // MARK: - 声学配置与重置
@@ -67,6 +68,9 @@ public enum ProceduralAudioSynthesizer {
     
     /// 标准单声道 Float32 PCM 音频格式
     public static let audioFormat: AVAudioFormat = ...
+    
+    /// 默认点声源包围盒尺寸 (0.2m x 0.2m x 0.2m，用于 SpatialAudioKit 坐标转换)
+    public static let defaultPointSourceBoundingSize = SIMD3<Float>(0.2, 0.2, 0.2)
     
     /// 合成金属撞击音 PCM 缓存 (0.1秒, 800Hz 冲击共鸣)
     public static func generateMetallicImpactBuffer() -> AVAudioPCMBuffer

@@ -40,6 +40,23 @@ xcodebuild test \
    - 验证调用 `playRewardSound` 成功调度和弦节点发声；
    - 验证播放期间脚步声节点音量平滑压低以突出奖励和弦。
 
+### 全景图端到端联动集成测试 (E2E Integration Test)
+
+加载 `tmp/pano_indoor.jpg` 验证视觉感知流水线与空间音频中枢端到端联动：
+
+```bash
+xcodebuild test \
+  -project WalkMate/WalkMate.xcodeproj \
+  -scheme WalkMate \
+  -only-testing:PerceptionTests/PerceptionAudioIntegrationTests \
+  -destination 'platform=iOS Simulator,id=5FFE06CA-CD1E-4B1A-9410-8C95BE0071ED'
+```
+
+- **`testPanoramicVisionToAudioPipeline`**：
+  - 加载真实全景图注入 `SpatialPerceptionEngine`；
+  - 验证检出障碍物后回调触发 `SpatialAudioPlayer.setObstacleTarget`；
+  - 断言端到端数据流正常传递，零崩溃、零主线程掉帧。
+
 ---
 
 ## 三、代码集成验证示例（Smoke Test）

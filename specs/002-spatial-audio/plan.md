@@ -52,7 +52,7 @@
 - **`WalkMate/Core/Toolkits/SpatialAudioKit.swift`**：
   - **状态**：**[现有，无需改动]**
   - **已实现算法与复用说明**：
-    1. 原生 3D 空间音频坐标映射与衰减角算法：已在 `SpatialAudioKit.toSpatialAudioRenderParams(position:boundingSize:)` 中实现，将相对坐标 $(x, y, z)$ 直接转换为 `AVAudio3DPoint` 与距离倒数衰减系数（0.5m 处为 1.0, 5.0m 处衰减至 0.1）。`SpatialAudioPlayer` 将**直接调用该纯函数**，严禁另起炉灶重写坐标换算。
+    1. 原生 3D 空间音频坐标映射与衰减角算法：已在 `SpatialAudioKit.toSpatialAudioRenderParams(position:boundingSize:)` 中实现，将相对坐标 $(x, y, z)$ 直接转换为 `AVAudio3DPoint` 与距离倒数衰减系数（0.5m 处为 1.0, 5.0m 处衰减至 0.1）。`SpatialAudioPlayer` 将**直接调用该纯函数**，对于障碍物与导航点声源统一传入标准包围盒 `SIMD3<Float>(0.2, 0.2, 0.2)`，严禁另起炉灶重写坐标换算。
     2. 双声道声相平衡算法：已在 `SpatialAudioKit.toStereoFallbackParams(azimuth:distance:)` 中实现，必要时用于立体声降级。
     3. 钟表逆空间编码：已在 `SpatialAudioKit.toClockDirection` 中实现，供语音提示复用。
 - **`WalkMate/Core/Perception/ObstacleDetector.swift`**：
@@ -72,13 +72,16 @@
   - **职责**：纯数学参数化音频合成器。基于 DSP 物理建模在内存中合成金属敲击声（4410点）、轻快脚步声（3528点）、康复激励和弦音（17640点）三套标准单声道 PCM Buffer。
 - **`WalkMate/Core/Audio/SpatialAudioPlayer.swift`**：
   - **状态**：**[新增]**
-  - **职责**：空间音频播放服务中枢与对外门面。管理 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（HRTF 双耳模式），挂载 3 个专用播放节点，提供 `setObstacleTarget`（800ms 双响）、`setNavigationTarget`（自然步频领路）与 `playRewardSound`（瞬态和弦与自动压音）三大核心接口。
+  - **职责**：空间音频播放服务中枢与对外门面。管理 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（HRTF 双耳模式），挂载 3 个专用播放节点，提供 `setObstacleTarget`（800ms 双响、坐标插值平滑与发声期间脚步声自动压音至 30%）、`setNavigationTarget`（自然步频领路）、`playRewardSound`（瞬态和弦与自动压音至 30%）以及 `reset()` 全局重置四大核心接口。
 - **`Tests/AudioTests/ProceduralAudioSynthesizerTests.swift`**：
   - **状态**：**[新增]**
   - **职责**：纯代码音频合成器单元测试，验证各音效 PCM 采样点数、幅度范围（$[-1.0, 1.0]$）及有效性。
 - **`Tests/AudioTests/SpatialAudioPlayerTests.swift`**：
   - **状态**：**[新增]**
-  - **职责**：空间音频播放器状态机与调度单元测试，验证双音确认节奏、步频定时器、和弦触发让位及空值静音逻辑。
+  - **职责**：空间音频播放器状态机与调度单元测试，验证双音确认节奏、步频定时器、和弦与避障双响触发时的脚步声让位（Ducking 压低至 30% 及恢复）、声源坐标平滑插值以及空值/`reset()` 静音逻辑。
+- **`Tests/PerceptionTests/PerceptionAudioIntegrationTests.swift`**：
+  - **状态**：**[新增]**
+  - **职责**：全景图端到端联动集成测试。加载真实样本 `tmp/pano_indoor.jpg` 注入 `SpatialPerceptionEngine`，并在感知代理回调中驱动 `SpatialAudioPlayer.setObstacleTarget` 与 `setNavigationTarget`，验证真实图像输入下视觉到空间音频的完整闭环，断言零崩溃、零线程死锁与正确发声。
 
 ---
 
@@ -100,9 +103,12 @@ WalkMate/
 │   └── Engine/
 │       └── SpatialPerceptionEngine.swift               # [现有，无需改动] 感知全链路流水线总成
 └── Tests/
-    └── AudioTests/                                     # [新增目录] 空间音频单元测试套件
-        ├── ProceduralAudioSynthesizerTests.swift       # [新增] 内存声音合成算法单元测试
-        └── SpatialAudioPlayerTests.swift               # [新增] 播放器生命周期、双响状态机与防重入测试
+    ├── AudioTests/                                     # [新增目录] 空间音频单元测试套件
+    │   ├── ProceduralAudioSynthesizerTests.swift       # [新增] 内存声音合成算法单元测试
+    │   └── SpatialAudioPlayerTests.swift               # [新增] 播放器生命周期、双响状态机与防重入测试
+    └── PerceptionTests/
+        ├── PerceptionEngineTests.swift                 # [现有，无需改动] 感知引擎基础测试
+        └── PerceptionAudioIntegrationTests.swift       # [新增] 全景图驱动空间音频端到端集成测试
 ```
 
 ---

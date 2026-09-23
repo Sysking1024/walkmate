@@ -94,6 +94,17 @@
                ReferencedContainer = "container:WalkMate.xcodeproj">
             </BuildableReference>
          </TestableReference>
+               <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A06D0019B0034C2FA2DA2C26"
+               BuildableName = "AudioTests.xctest"
+               BlueprintName = "AudioTests"
+               ReferencedContainer = "container:WalkMate.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

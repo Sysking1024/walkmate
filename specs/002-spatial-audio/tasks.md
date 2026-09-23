@@ -27,7 +27,7 @@
 
 **目标**：初始化音频子系统代码与测试目录骨架，确保工程编译 Target 配置正确。
 
-- [ ] T001 在工程中创建音频模块与测试目录结构 `WalkMate/Core/Audio/` 与 `Tests/AudioTests/`
+- [X] T001 在工程中创建音频模块与测试目录结构 `WalkMate/Core/Audio/` 与 `Tests/AudioTests/`
 
 ---
 
@@ -37,7 +37,7 @@
 
 - [ ] T002 [P] [测试先行] 编写纯代码参数化音频合成器测试套件 `Tests/AudioTests/ProceduralAudioSynthesizerTests.swift`，断言金属音（4410点）、脚步音（3528点）与奖励和弦音（17640点）的 PCM 采样点数、44.1kHz 单声道格式及 $[-1.0, 1.0]$ 幅度有效性
 - [ ] T003 [P] 实现纯代码数学参数化音频合成器 `WalkMate/Core/Audio/ProceduralAudioSynthesizer.swift`，基于 DSP 物理建模在内存中实时生成三种标准 PCM Buffer，使 T002 测试通过
-- [ ] T004 实现空间音频播放器基础骨架 `WalkMate/Core/Audio/SpatialAudioPlayer.swift`，初始化 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（配置 `.HRTFHQ` 双耳模式），复用 `SpatialAudioKit.toSpatialAudioRenderParams` 实现坐标映射，挂载 3 个专用 `AVAudioPlayerNode`，提供 `start()` 与 `stop()` 生命周期
+- [ ] T004 实现空间音频播放器基础骨架 `WalkMate/Core/Audio/SpatialAudioPlayer.swift`，初始化 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（配置 `.HRTFHQ` 双耳模式），复用 `SpatialAudioKit.toSpatialAudioRenderParams` 实现坐标映射（默认点声源包围盒 `0.2m`），挂载 3 个专用 `AVAudioPlayerNode`，提供 `start()`、`stop()` 与 `reset()` 生命周期契约方法
 
 **检查点**：基础音频图与内存声音合成器就绪，全部通过基础编译与测试。
 
@@ -49,10 +49,10 @@
 **独立测试标准**：调用 `setObstacleTarget(position:)` 传入左侧坐标，左声道间隔 800ms 发出 2 声金属撞击音后自动静音；期间重复调用不打断重入；传入 nil 立即静音。
 
 ### 测试先行
-- [ ] T005 [P] [US1] 编写障碍物双音状态机与防重入测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 800ms 间隔双响、completed 自动静音、高频重复调用防重入平滑移动、nil 立即停止）
+- [ ] T005 [P] [US1] 编写障碍物双音状态机与防重入测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证 800ms 间隔双响、completed 自动静音、高频重复调用防重入平滑移动与坐标插值、双响期间脚步声 Ducking 压低至 30% 与恢复、nil 及 reset 立即停止）
 
 ### 实现
-- [ ] T006 [US1] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setObstacleTarget(position: SIMD3<Float>?)` 与 `ObstacleAlertState` 发声状态机，以 800ms 间隔驱动播放 2 次金属撞击音并防重入，使 T005 测试通过
+- [ ] T006 [US1] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `setObstacleTarget(position: SIMD3<Float>?)` 与 `ObstacleAlertState` 发声状态机，以 800ms 间隔驱动播放 2 次金属撞击音并防重入，支持坐标插值平滑与发声期间对脚步声节点的自动 Ducking 压低至 30% 与恢复，使 T005 测试通过
 
 **检查点**：MVP 交付达成！核心避障双音确认警示功能可独立运行与完整测试。
 
@@ -79,10 +79,10 @@
 **独立测试标准**：调用 `playRewardSound()`，单次播发暖心和弦；脚步声音量平滑淡出压低至 30%，和弦播完后音量平滑恢复 100%。
 
 ### 测试先行
-- [ ] T009 [P] [US3] 编写康复激励音单次触发与脚步声压音让位测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证单次和弦触发、播放期间脚步声音量压低与播完恢复）
+- [ ] T009 [P] [US3] 编写康复激励音单次触发与脚步声压音让位测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证单次和弦触发、播放期间脚步声音量平滑压低至 30% 与播完恢复 100%）
 
 ### 实现
-- [ ] T010 [US3] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `playRewardSound()`，调度和弦专用节点并在发声期间自动对脚步声节点执行音量 Ducking 压低与恢复，使 T009 测试通过
+- [ ] T010 [US3] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `playRewardSound()`，调度和弦专用节点并在发声期间自动对脚步声节点执行音量 Ducking 压低至 30% 与平滑恢复，使 T009 测试通过
 
 **检查点**：三大用户故事全量实现，具备防撞双音、领路脚步、康复激励完整体验。
 
@@ -93,7 +93,8 @@
 **目标**：补齐系统级音频打断处理，并执行全工程全量回归测试，达到交付标准。
 
 - [ ] T011 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中集成 `AVAudioSession` 中断监听（电话呼入、Siri 激活、耳机拔出断开），实现自动安全暂停与恢复
-- [ ] T012 运行全工程完整回归测试套件（执行 `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`, `AudioTests` 全量 30+ 用例），确保 100% 绿灯且零编译警告
+- [ ] T012 编写全景图驱动空间音频端到端集成测试 `Tests/PerceptionTests/PerceptionAudioIntegrationTests.swift`，加载真实样本 `tmp/pano_indoor.jpg` 注入 `SpatialPerceptionEngine`，在感知代理回调中驱动 `SpatialAudioPlayer.shared.setObstacleTarget` 与 `setNavigationTarget`，验证真实图像输入下全链路闭环，断言零崩溃、零主线程掉帧与声源坐标正确绑定
+- [ ] T013 运行全工程完整回归测试套件（执行 `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`, `AudioTests` 全量用例并断言接口时延 $\le 20\text{ms}$），确保 100% 绿灯且零编译警告
 
 ---
 
@@ -116,7 +117,7 @@ Phase 2: Foundational (T002 测试 → T003 合成器 → T004 播放器骨架)
 │ Phase 5: US3 康复和弦激励音 (T009 → T010)
 └──────────────────┬────────────────────┘
                    ↓
-Phase 6: Polish & 全量回归 (T011 → T012)
+Phase 6: Polish & 全量回归 (T011 → T012 → T013)
 ```
 
 - **并行机会**：
