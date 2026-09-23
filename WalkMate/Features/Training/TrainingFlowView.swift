@@ -34,7 +34,7 @@ struct TrainingListView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 22) {
-                WMLogoHeader().padding(.top, 8)
+                WMLogoHeader(pageName: "训练").padding(.top, 8)
                 WMPageTitle(text: "渐进式训练")
                 levelCard(title: "室内适应", detail: "静态障碍、方向判断、基础距离感", kind: .indoor, unlockHint: nil)
                 levelCard(title: "半开放环境", detail: "小区、校园等相对可控的路线",
@@ -49,6 +49,8 @@ struct TrainingListView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
+        // 两指双击：开始室内训练
+        .accessibilityAction(.magicTap) { onStart(.indoor) }
     }
 
     /// `kind` 为 nil 表示未解锁

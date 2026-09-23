@@ -25,7 +25,7 @@ struct TrainingSessionView: View {
         ScrollView {
             VStack(spacing: 18) {
                 HStack(alignment: .center) {
-                    WMLogoHeader()
+                    WMLogoHeader(pageName: "\(kind.title)训练")
                     Button { confirmCancel = true } label: {
                         Text("取消")
                             .font(WalkMateTheme.Fonts.body).tracking(1.6)
@@ -49,37 +49,19 @@ struct TrainingSessionView: View {
                 cameraCard
                 CompanionPanel(session: session.companion)
 
-                WMButton(title: "结束训练", height: 61) {
-                    let result = session.finish()
-                    if camera.connectionState == .connected { camera.toggleConnection() }
-                    // 太短的训练不记录，直接回列表
-                    guard result.durationSeconds >= TrainingHistoryStore.minimumRecordedSeconds else {
-                        AccessibilityFeedback.done("训练不足 \(TrainingHistoryStore.minimumRecordedSeconds) 秒，未记录")
-                        onCancel()
-                        return
-                    }
-                    TrainingHistoryStore.shared.record(result)
-                    onFinish(result)
-                }
+                WMButton(title: "结束训练", height: 61, action: finishTraining)
             }
             .wmPageInset()
             .wmTabBarClearance()
         }
+        // 两指双击：结束训练
+        .accessibilityAction(.magicTap, finishTraining)
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .alert("放弃这次训练？", isPresented: $confirmCancel) {
-            Button("放弃", role: .destructive) {
-                session.cancel()
-                if camera.connectionState == .connected || camera.connectionState == .connecting { camera.toggleConnection() }
-                onCancel()
-            }
-            Button("继续训练", role: .cancel) {}
-        } message: {
-            Text("这次的时长和避障不会记录。")
-        }
+        .modifier(TrainingSessionChrome(confirmCancel: $confirmCancel, session: session, camera: camera, onCancel: onCancel))
         .onAppear {
             session.start()
-            AccessibilityFeedback.screenChanged("\(kind.title)训练")
+            AccessibilityFeedback.pageSwitched()
         }
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)
@@ -89,6 +71,20 @@ struct TrainingSessionView: View {
             if state == .connected { camera.startPerception() }
             session.companion.captureView = state == .connected ? camera.previewView : nil
         }
+    }
+
+    /// 结束训练：太短不记录，否则记下并进总结
+    private func finishTraining() {
+        let result = session.finish()
+        if camera.connectionState == .connected { camera.toggleConnection() }
+        // 太短的训练不记录，直接回列表
+        guard result.durationSeconds >= TrainingHistoryStore.minimumRecordedSeconds else {
+            AccessibilityFeedback.done("训练不足 \(TrainingHistoryStore.minimumRecordedSeconds) 秒，未记录")
+            onCancel()
+            return
+        }
+        TrainingHistoryStore.shared.record(result)
+        onFinish(result)
     }
 
     /// 相机画面卡。未连接时显示示意图与连接按钮，连接后显示实时预览。
@@ -137,6 +133,27 @@ struct TrainingSessionView: View {
         case .connecting: return "正在连接相机"
         case .failed: return camera.latestError ?? "连接失败，检查是否已连上相机热点"
         case .connected: return "已连接"
+        }
+    }
+}
+
+/// 训练页的取消确认弹窗
+private struct TrainingSessionChrome: ViewModifier {
+    @Binding var confirmCancel: Bool
+    let session: TrainingSessionModel
+    let camera: CameraViewModel
+    let onCancel: () -> Void
+
+    func body(content: Content) -> some View {
+        content.alert("放弃这次训练？", isPresented: $confirmCancel) {
+            Button("放弃", role: .destructive) {
+                session.cancel()
+                if camera.connectionState == .connected || camera.connectionState == .connecting { camera.toggleConnection() }
+                onCancel()
+            }
+            Button("继续训练", role: .cancel) {}
+        } message: {
+            Text("这次的时长和避障不会记录。")
         }
     }
 }

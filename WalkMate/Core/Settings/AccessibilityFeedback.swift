@@ -21,6 +21,11 @@ enum AccessibilityFeedback {
         }
     }
 
+    /// 换了页面但页面自己会把读屏焦点落到页头：只给震动，不播报，避免焦点被甩回底栏
+    static func pageSwitched() {
+        haptic.impactOccurred()
+    }
+
     /// 动作已生效：读屏播一句结果
     static func done(_ message: String) {
         notice.notificationOccurred(.success)

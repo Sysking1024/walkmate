@@ -21,7 +21,7 @@ struct CommunityView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
-                    WMLogoHeader().padding(.top, 8)
+                    WMLogoHeader(pageName: "社群").padding(.top, 8)
                     HStack(alignment: .firstTextBaseline) {
                         WMPageTitle(text: "好友成就")
                         Spacer()

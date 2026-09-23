@@ -33,14 +33,20 @@ extension View {
         padding(.horizontal, WalkMateTheme.Layout.horizontalInset)
     }
 
-    /// 页面滚动内容的底部留白：底栏悬浮在内容之上，最后一个控件要能完整滚出底栏
+    /// 页面滚动内容的底部留白
     func wmTabBarClearance() -> some View {
-        padding(.bottom, WalkMateTheme.Layout.tabBarHeight + 36)
+        padding(.bottom, 28)
     }
 }
 
-/// 页面顶部的 logo
+/// 页面顶部的 logo。
+///
+/// 也是每页读屏的第一个元素：切换栏目后 VoiceOver 会把焦点放到这里并念出页名，
+/// 使用者不用先在屏幕上摸到某个字，三指上下滑就能滚动内容。
 struct WMLogoHeader: View {
+    /// 页名；读屏落到页头时念它，切换栏目后就知道到了哪里
+    var pageName: String? = nil
+
     var body: some View {
         Image("logo_wordmark")
             .resizable()
@@ -48,7 +54,7 @@ struct WMLogoHeader: View {
             .frame(width: 172, height: 18)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, 29)
-            .accessibilityLabel("伴行 WalkMate")
+            .accessibilityLabel(pageName.map { "\($0)页" } ?? "伴行 WalkMate")
             .accessibilityAddTraits(.isHeader)
     }
 }

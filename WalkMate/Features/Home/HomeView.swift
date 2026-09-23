@@ -17,7 +17,7 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 22) {
-                    WMLogoHeader().padding(.top, 8)
+                    WMLogoHeader(pageName: "首页").padding(.top, 8)
                     heroCard
                     todayCard
                     weekCard
@@ -29,6 +29,8 @@ struct HomeView: View {
             }
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .navigationBar)
+            // 两指双击：开始训练
+            .accessibilityAction(.magicTap) { onStartTraining() }
             .navigationDestination(isPresented: $showGrowth) { GrowthDetailView() }
         }
         .tint(WalkMateTheme.Colors.textPrimary)

@@ -8,7 +8,7 @@ struct ProfileView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    WMLogoHeader().padding(.top, 8)
+                    WMLogoHeader(pageName: "个人").padding(.top, 8)
                     WMSectionHeader(title: "个人")
                     profileCard
                     WMSectionHeader(title: "设置").padding(.top, 8)

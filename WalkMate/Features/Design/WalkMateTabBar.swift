@@ -23,8 +23,9 @@ struct WalkMateTabBar: View {
     @Binding var selection: WalkMateTab
 
     var body: some View {
+        let tabs = WalkMateTab.allCases
         HStack(spacing: 0) {
-            ForEach(WalkMateTab.allCases) { tab in
+            ForEach(Array(tabs.enumerated()), id: \.element) { index, tab in
                 Button {
                     selection = tab
                 } label: {
@@ -36,16 +37,23 @@ struct WalkMateTabBar: View {
                     }
                     .foregroundStyle(selection == tab ? Color.white : WalkMateTheme.Colors.textSecondary)
                     .frame(width: 61, height: 56)
+                    // 选中胶囊用透明度切换而不是增删视图：视图结构一变，读屏元素会被重建，
+                    // VoiceOver 丢了焦点就会跳回容器里的第一个（首页）并念一遍
                     .background {
-                        if selection == tab {
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .fill(WalkMateTheme.Gradients.tabPill)
-                        }
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(WalkMateTheme.Gradients.tabPill)
+                            .opacity(selection == tab ? 1 : 0)
                     }
-                    .frame(maxWidth: .infinity, minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                    // 整个栏目列都是触控与读屏选中区域，不只是中间的胶囊
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .id(tab)
+                .accessibilityElement(children: .ignore)
                 .accessibilityLabel(tab.title)
+                // 仿系统标签栏的播报：「四之三」
+                .accessibilityValue("\(Self.chineseNumber(tabs.count))之\(Self.chineseNumber(index + 1))")
                 .accessibilityAddTraits(selection == tab ? [.isButton, .isSelected] : .isButton)
             }
         }
@@ -58,6 +66,10 @@ struct WalkMateTabBar: View {
                     .stroke(Color.white.opacity(0.5), lineWidth: 1))
         )
         .padding(.horizontal, 10)
+    }
+
+    private static func chineseNumber(_ value: Int) -> String {
+        ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"][min(9, max(0, value))]
     }
 
     /// 设计稿里训练栏用的是字符图形，其余为矢量图标

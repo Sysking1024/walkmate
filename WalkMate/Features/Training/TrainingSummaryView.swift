@@ -19,7 +19,7 @@ struct TrainingSummaryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                WMLogoHeader().padding(.top, 8)
+                WMLogoHeader(pageName: "训练总结").padding(.top, 8)
                 VStack(alignment: .leading, spacing: 6) {
                     WMPageTitle(text: "今天又前进一步")
                     Text("你完成了\(result.kind.title)训练")
@@ -40,7 +40,7 @@ struct TrainingSummaryView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .onAppear { AccessibilityFeedback.screenChanged("训练总结") }
+        .onAppear { AccessibilityFeedback.pageSwitched() }
         .task {
             await reel.build(from: result.moments)
             if case .ready = reel.state, currentRecord?.reelFileName != nil { reelKept = true }
