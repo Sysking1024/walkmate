@@ -123,6 +123,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didUpdateState state: CameraConnectionState) {
         self.connectionState = state
         self.previewView = pipeline.previewView
+        Log.info("相机连接状态变更: \(state.rawValue)", category: .camera)
         
         // 掉线安全自愈：相机异常断开或连接失败时，若感知正在运行则强制安全停止并静音
         if state == .failed || state == .noConnection {
@@ -153,9 +154,14 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         UIAccessibility.post(notification: .announcement, argument: announcement)
     }
     
+    private var receivedFrameCounter: Int = 0
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didReceiveFrame frame: PanoramicFrame) {
         // 关键门禁：仅当感知处于开启状态时，才将视频帧送入模型流水线
         guard isPerceiving else { return }
+        receivedFrameCounter += 1
+        if receivedFrameCounter % 30 == 1 {
+            Log.info("全景视频帧持续送入模型推理流水线 (累计已投递: \(receivedFrameCounter) 帧)", category: .perception)
+        }
         perceptionEngine?.processFrame(frame)
     }
     
@@ -165,6 +171,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didEncounterError error: Error) {
         self.latestError = error.localizedDescription
+        Log.error("相机管道异常: \(error.localizedDescription)", error: error, category: .camera)
         UIAccessibility.post(notification: .announcement, argument: "相机管道遇到错误：\(error.localizedDescription)")
     }
     
@@ -182,6 +189,9 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         
         // 提取其中距离最近的一个危险障碍物
         let nearestHazard = forwardNearObstacles.min(by: { $0.distance < $1.distance })
+        if let hazard = nearestHazard {
+            Log.info("检出前向贴身障碍物: 距离=\(String(format: "%.2f", hazard.distance))m 偏角=\(String(format: "%.1f", hazard.azimuth))° 坐标=\(hazard.position)", category: .perception)
+        }
         audioPlayer.setObstacleTarget(position: nearestHazard?.position)
     }
     
@@ -192,6 +202,11 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         
         // 导航首点指引：仅提取第 1 个航路点三维相对坐标驱动自然步频领路脚步声 (FR-009)
         let firstWaypoint = data.waypoints.first?.position
+        if let wp = firstWaypoint {
+            Log.info("检出可行路线首航路点: \(wp), 深度=\(String(format: "%.1f", data.safeDepth))m, 偏角=\(String(format: "%.1f", data.recommendedHeading))°", category: .perception)
+        } else {
+            Log.warning("前方受阻，无有效可行航路点", category: .perception)
+        }
         audioPlayer.setNavigationTarget(position: firstWaypoint)
     }
     
@@ -203,6 +218,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
 /// 极简真机实测主界面 (Minimal Field Pilot)
 public struct ContentView: View {
     @StateObject private var viewModel = CameraViewModel()
+    @State private var showLogSheet: Bool = false
     
     public init() {}
     
@@ -234,6 +250,35 @@ public struct ContentView: View {
                     
                     Spacer()
                 }
+            }
+            
+            // 界面右上角：实时日志排查按钮 (点击立即拷贝全部日志到剪贴板，并展开日志抽屉)
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        let text = Log.recentLogs.joined(separator: "\n")
+                        UIPasteboard.general.string = text
+                        showLogSheet = true
+                    }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "doc.on.doc.fill")
+                                .font(.system(size: 13, weight: .bold))
+                            Text("拷贝日志")
+                                .font(.system(size: 13, weight: .bold))
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Color.black.opacity(0.75))
+                        .clipShape(Capsule())
+                        .shadow(radius: 4)
+                    }
+                    .accessibilityLabel("拷贝全部运行日志到剪贴板")
+                    .padding(.trailing, 16)
+                    .padding(.top, 16)
+                }
+                Spacer()
             }
             
             // 3. 界面底部极简双按钮主控区域 (FR-003 / FR-004 / FR-005)
@@ -285,6 +330,9 @@ public struct ContentView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 28)
             }
+        }
+        .sheet(isPresented: $showLogSheet) {
+            LogSheetView()
         }
     }
     
@@ -344,6 +392,116 @@ public struct ContentView: View {
             return Color.gray.opacity(0.4) // 禁用灰色
         }
         return viewModel.isPerceiving ? Color(red: 0.85, green: 0.25, blue: 0.2) : Color(red: 0.15, green: 0.65, blue: 0.35) // 运行红 / 启动绿
+    }
+}
+
+/// 实时调试日志抽屉视图
+public struct LogSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var logs: [String] = Log.recentLogs
+    @State private var isCopied: Bool = true
+    
+    public init() {}
+    
+    public var body: some View {
+        NavigationStack {
+            VStack(spacing: 0) {
+                // 顶部复制成功提示横幅
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                    Text("全部 \(logs.count) 条最新日志已拷贝到剪贴板，可直接粘贴！")
+                        .font(.footnote)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                }
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background(Color.green.opacity(0.25))
+                
+                // 日志展示滚动区域
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 6) {
+                            if logs.isEmpty {
+                                Text("暂无日志记录")
+                                    .foregroundColor(.gray)
+                                    .padding(20)
+                            } else {
+                                ForEach(Array(logs.enumerated()), id: \.offset) { index, line in
+                                    Text(line)
+                                        .font(.system(size: 11, design: .monospaced))
+                                        .foregroundColor(logColor(for: line))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .id(index)
+                                }
+                            }
+                        }
+                        .padding(12)
+                    }
+                    .background(Color(red: 0.08, green: 0.08, blue: 0.1))
+                    .onAppear {
+                        if !logs.isEmpty {
+                            proxy.scrollTo(logs.count - 1, anchor: .bottom)
+                        }
+                    }
+                }
+                
+                // 底部操作栏：再次复制与刷新
+                HStack(spacing: 16) {
+                    Button(action: {
+                        UIPasteboard.general.string = logs.joined(separator: "\n")
+                        isCopied = true
+                    }) {
+                        HStack {
+                            Image(systemName: "doc.on.doc.fill")
+                            Text("再次拷贝全部日志")
+                        }
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 48)
+                        .background(Color.blue)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    
+                    Button(action: {
+                        logs = Log.recentLogs
+                    }) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.white)
+                            .frame(width: 48, height: 48)
+                            .background(Color.gray.opacity(0.3))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                }
+                .padding(16)
+                .background(Color(red: 0.12, green: 0.12, blue: 0.14))
+            }
+            .navigationTitle("系统调试日志")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("完成") {
+                        dismiss()
+                    }
+                    .foregroundColor(.white)
+                }
+            }
+        }
+        .preferredColorScheme(.dark)
+    }
+    
+    private func logColor(for line: String) -> Color {
+        if line.contains("ERROR") || line.contains("❌") {
+            return .red
+        } else if line.contains("WARNING") || line.contains("⚠️") {
+            return .orange
+        } else if line.contains("INFO") {
+            return .white
+        } else {
+            return .gray
+        }
     }
 }
 

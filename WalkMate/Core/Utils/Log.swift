@@ -25,11 +25,49 @@ public enum Log {
     private static let uiLogger = Logger(subsystem: subsystem, category: "UI")
     private static let generalLogger = Logger(subsystem: subsystem, category: "General")
     
+    // MARK: - 实时内存日志环形缓冲区 (供 UI 调试弹窗与一键复制)
+    private static let logLock = NSLock()
+    private static var _recentLogs: [String] = []
+    private static let maxLogCount = 150
+    
+    /// 获取当前最新内存日志列表快照
+    public static var recentLogs: [String] {
+        logLock.lock()
+        defer { logLock.unlock() }
+        return _recentLogs
+    }
+    
+    /// 清空内存日志缓冲区
+    public static func clearLogs() {
+        logLock.lock()
+        _recentLogs.removeAll()
+        logLock.unlock()
+    }
+    
+    /// 格式化记录并存入缓冲区
+    private static func record(_ level: String, category: Category, message: String) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss.SSS"
+        let timeStr = formatter.string(from: Date())
+        let formatted = "[\(timeStr)] [\(level)] [\(category.rawValue)] \(message)"
+        
+        // 同时输出至控制台供 devicectl 与 Xcode Console 捕获
+        print(formatted)
+        
+        logLock.lock()
+        _recentLogs.append(formatted)
+        if _recentLogs.count > maxLogCount {
+            _recentLogs.removeFirst()
+        }
+        logLock.unlock()
+    }
+    
     /// 调试信息（细粒度追踪、瞬时计算状态等）
     /// - Parameters:
     ///   - message: 中文业务日志描述
     ///   - category: 业务分类
     public static func debug(_ message: String, category: Category = .general) {
+        record("DEBUG", category: category, message: message)
         logger(for: category).debug("[\(category.rawValue)] \(message, privacy: .public)")
     }
     
@@ -38,6 +76,7 @@ public enum Log {
     ///   - message: 中文业务日志描述
     ///   - category: 业务分类
     public static func info(_ message: String, category: Category = .general) {
+        record("INFO", category: category, message: message)
         logger(for: category).info("[\(category.rawValue)] \(message, privacy: .public)")
     }
     
@@ -46,6 +85,7 @@ public enum Log {
     ///   - message: 中文业务日志描述
     ///   - category: 业务分类
     public static func warning(_ message: String, category: Category = .general) {
+        record("WARNING", category: category, message: "⚠️ \(message)")
         logger(for: category).warning("[\(category.rawValue)] ⚠️ \(message, privacy: .public)")
     }
     
@@ -55,6 +95,8 @@ public enum Log {
     ///   - error: 可选关联错误对象
     ///   - category: 业务分类
     public static func error(_ message: String, error: Error? = nil, category: Category = .general) {
+        let detail = (error != nil) ? "\(message) | 详情: \(error!.localizedDescription)" : message
+        record("ERROR", category: category, message: "❌ \(detail)")
         if let error = error {
             logger(for: category).error("[\(category.rawValue)] ❌ \(message, privacy: .public) | 错误详情: \(error.localizedDescription, privacy: .public)")
         } else {
@@ -67,6 +109,7 @@ public enum Log {
     ///   - message: 中文业务日志描述
     ///   - category: 业务分类
     public static func severe(_ message: String, category: Category = .general) {
+        record("SEVERE", category: category, message: "🛑 \(message)")
         logger(for: category).fault("[\(category.rawValue)] 🛑 \(message, privacy: .public)")
     }
     

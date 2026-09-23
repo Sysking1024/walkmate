@@ -168,6 +168,11 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         navigationPlayerNode.renderingAlgorithm = .auto
         rewardPlayerNode.renderingAlgorithm = .auto
         
+        // 关键声学基准：预置声源在正前方 1 米处，彻底避免 (0, 0, 0) 原点与听者重叠引起的距离为0相位抵消
+        rewardPlayerNode.position = AVAudio3DPoint(x: 0, y: 0, z: -1.0)
+        navigationPlayerNode.position = AVAudio3DPoint(x: 0, y: 0, z: -2.0)
+        obstaclePlayerNode.position = AVAudio3DPoint(x: 0, y: 0, z: -1.0)
+        
         Log.info("空间音频节点图初始化完成，配置 .auto 自适应渲染", category: .audio)
     }
     
