@@ -27,6 +27,7 @@
 		7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */; };
 		7425B3CC00981B3CB64103DD /* SpeechRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078AD588D52A975F451A55FC /* SpeechRenderer.swift */; };
 		7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */; };
+		8479A4E13002BC4EDFBB779E /* bgm.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 776CCCD11BA3A597BFE14B78 /* bgm.m4a */; };
 		8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */; };
 		8C09D2D18A228BA300DFF66D /* SceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */; };
 		8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -141,6 +142,7 @@
 		717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassableRouteTests.swift; sourceTree = "<group>"; };
 		722F41754B566CC6C88138C1 /* QwenSpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSpeechRenderer.swift; sourceTree = "<group>"; };
 		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		776CCCD11BA3A597BFE14B78 /* bgm.m4a */ = {isa = PBXFileReference; path = bgm.m4a; sourceTree = "<group>"; };
 		78D063BD2D47E4B75201BDCB /* ConversationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationModels.swift; sourceTree = "<group>"; };
 		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
 		7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrationModels.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 		5B14F6567AE8293A18AA14F6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				776CCCD11BA3A597BFE14B78 /* bgm.m4a */,
 				AD40245303E20078AC0F4304 /* sample_erp_1.jpg */,
 				62905020C90431BD7831516A /* sample_erp_2.jpg */,
 				87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */,
@@ -630,6 +633,7 @@
 			files = (
 				57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */,
 				1246EFA6046078A93D7DB6C1 /* Secrets.plist in Resources */,
+				8479A4E13002BC4EDFBB779E /* bgm.m4a in Resources */,
 				A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */,
 				95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */,
 				DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */,

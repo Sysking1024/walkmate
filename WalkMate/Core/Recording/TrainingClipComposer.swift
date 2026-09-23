@@ -2,6 +2,7 @@ import AVFoundation
 import CoreGraphics
 import CoreText
 import Foundation
+import VideoToolbox
 
 /// 训练短片合成器：把关键帧、字幕与背景音乐合成为一段可分享的竖屏视频。
 ///
@@ -17,10 +18,36 @@ enum TrainingClipComposer {
     /// 从全景图纵向截取的比例。取中间 62% 的水平带，避开等矩形投影上下两极的拉伸畸变。
     static let verticalFieldRatio: CGFloat = 0.62
 
-    /// 一个画面片段：一张关键帧及其占用的时长
+    /// 一个画面片段：画面来源、在成片中占用的时长，以及取景方向。
     struct FrameSegment {
-        let imageURL: URL
+        /// 画面来源
+        enum Source {
+            /// 一张静态全景图
+            case image(URL)
+            /// 一段全景视频的某个区间（秒）。区间会被匀速拉伸或压缩到片段时长，
+            /// 素材帧率足够高时即为平滑的慢动作。
+            case video(URL, start: Double, end: Double)
+        }
+
+        let source: Source
         let durationMs: Int
+        /// 取景窗口中心在全景图横向上的位置（0 到 1，0.5 为相机正前方），
+        /// 片段播放过程中从下界平移到上界。为 nil 时横扫整幅画面。
+        ///
+        /// 需要这个参数的原因：手持拍摄时持相机的人本身处在画面正中，
+        /// 剪片时要让取景避开他，只拍周围的环境。
+        let viewRange: ClosedRange<CGFloat>?
+
+        init(source: Source, durationMs: Int, viewRange: ClosedRange<CGFloat>? = nil) {
+            self.source = source
+            self.durationMs = durationMs
+            self.viewRange = viewRange
+        }
+
+        /// 静帧片段的便捷构造，横扫整幅画面
+        init(imageURL: URL, durationMs: Int) {
+            self.init(source: .image(imageURL), durationMs: durationMs)
+        }
     }
 
     /// 一段配音：音频文件及其在成片时间轴上的起点
@@ -31,6 +58,8 @@ enum TrainingClipComposer {
 
     /// 背景音乐相对语音的音量。语音是主体，音乐只做衬底，压到两成避免盖住朗读。
     static let musicVolume: Float = 0.2
+    /// 背景音乐在片尾的淡出时长（秒）
+    static let musicFadeOutSeconds: Double = 2
 
     /// 合成短片。
     ///
@@ -91,8 +120,11 @@ enum TrainingClipComposer {
         guard writer.startWriting() else { throw writer.error ?? ClipComposeError.writerSetupFailed }
         writer.startSession(atSourceTime: .zero)
 
-        // 关键帧一次性解码后复用，避免每帧重复读盘
-        let images = try segments.map { try loadImage(at: $0.imageURL) }
+        // 静帧一次性解码后复用；视频片段按需顺序解码，不整段读入内存
+        var providers: [FrameProvider] = []
+        for segment in segments {
+            providers.append(try await makeFrameProvider(for: segment))
+        }
         let totalMs = segments.reduce(0) { $0 + $1.durationMs }
         let totalFrames = max(1, totalMs * Int(frameRate) / 1_000)
 
@@ -100,10 +132,14 @@ enum TrainingClipComposer {
             let timeMs = frameIndex * 1_000 / Int(frameRate)
             guard let position = segmentPosition(forTimeMs: timeMs, segments: segments) else { break }
 
+            let segment = segments[position.index]
+            guard let image = try providers[position.index].image(atProgress: position.progress) else { continue }
+
             let buffer = try makePixelBuffer()
             draw(
-                image: images[position.index],
-                progress: position.progress,
+                image: image,
+                viewCenter: viewCenter(for: segment, progress: position.progress),
+                sweepProgress: position.progress,
                 subtitle: activeSubtitle(atTimeMs: timeMs, cues: cues),
                 into: buffer
             )
@@ -136,6 +172,12 @@ enum TrainingClipComposer {
         return nil
     }
 
+    /// 该时刻取景窗口的中心位置。未指定取景范围时返回 nil，表示横扫整幅画面。
+    private static func viewCenter(for segment: FrameSegment, progress: Double) -> CGFloat? {
+        guard let range = segment.viewRange else { return nil }
+        return range.lowerBound + (range.upperBound - range.lowerBound) * CGFloat(progress)
+    }
+
     /// 取出该时刻应当显示的字幕
     private static func activeSubtitle(atTimeMs timeMs: Int, cues: [SubtitleCue]) -> String? {
         cues.first { timeMs >= $0.startMs && timeMs < $0.endMs }?.text
@@ -143,11 +185,13 @@ enum TrainingClipComposer {
 
     // MARK: - 单帧绘制
 
-    /// 把关键帧按进度平移裁切后绘制，再在底部叠加字幕。
+    /// 从全景图中裁出竖向取景窗口绘制，再在底部叠加字幕。
     ///
     /// 全景图是 2 比 1 的扁长画幅，直接塞进竖屏会严重变形，
-    /// 因此裁出一个竖向窗口并随时间缓慢横移，既规避变形又让静帧有运镜感。
-    private static func draw(image: CGImage, progress: Double, subtitle: String?, into buffer: CVPixelBuffer) {
+    /// 因此裁出一个竖向窗口，随时间缓慢横移，既规避变形又让画面有运镜感。
+    ///
+    /// - Parameter viewCenter: 窗口中心的横向位置（0 到 1）。为 nil 时由 `sweepProgress` 决定，横扫整幅画面。
+    private static func draw(image: CGImage, viewCenter: CGFloat?, sweepProgress: Double = 0, subtitle: String?, into buffer: CVPixelBuffer) {
         CVPixelBufferLockBaseAddress(buffer, [])
         defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
 
@@ -169,10 +213,15 @@ enum TrainingClipComposer {
         let bandHeight = CGFloat(image.height) * verticalFieldRatio
         let bandOriginY = (CGFloat(image.height) - bandHeight) / 2
 
-        // 裁切窗口的宽度由输出宽高比决定，横向位置随进度从左向右缓慢推移
+        // 裁切窗口的宽度由输出宽高比决定；指定了中心时围绕中心取景，否则按进度横扫
         let windowWidth = bandHeight * renderSize.width / renderSize.height
         let travel = max(0, CGFloat(image.width) - windowWidth)
-        let originX = travel * CGFloat(progress)
+        let originX: CGFloat
+        if let viewCenter {
+            originX = min(max(viewCenter * CGFloat(image.width) - windowWidth / 2, 0), travel)
+        } else {
+            originX = travel * CGFloat(sweepProgress)
+        }
         let cropRect = CGRect(x: originX, y: bandOriginY, width: windowWidth, height: bandHeight)
 
         if let cropped = image.cropping(to: cropRect) {
@@ -263,6 +312,13 @@ enum TrainingClipComposer {
 
                 let parameters = AVMutableAudioMixInputParameters(track: musicTrack)
                 parameters.setVolume(musicVolume, at: .zero)
+                // 音乐通常比成片长，在片尾截断会像被突然掐掉，收尾前留出一段淡出
+                let fadeDuration = CMTimeMinimum(CMTime(seconds: musicFadeOutSeconds, preferredTimescale: 600), usable)
+                parameters.setVolumeRamp(
+                    fromStartVolume: musicVolume,
+                    toEndVolume: 0,
+                    timeRange: CMTimeRange(start: CMTimeSubtract(usable, fadeDuration), duration: fadeDuration)
+                )
                 let mix = AVMutableAudioMix()
                 mix.inputParameters = [parameters]
                 audioMix = mix
@@ -282,6 +338,16 @@ enum TrainingClipComposer {
     }
 
     // MARK: - 辅助
+
+    /// 为片段准备画面提供者
+    private static func makeFrameProvider(for segment: FrameSegment) async throws -> FrameProvider {
+        switch segment.source {
+        case .image(let url):
+            return .still(try loadImage(at: url))
+        case .video(let url, let start, let end):
+            return .video(try await VideoFrameReader(url: url, start: start, end: end))
+        }
+    }
 
     private static func loadImage(at url: URL) throws -> CGImage {
         guard
@@ -310,6 +376,85 @@ enum TrainingClipComposer {
     }
 }
 
+/// 按片段进度提供画面：静帧始终返回同一张，视频按进度映射到素材时间取帧
+private enum FrameProvider {
+    case still(CGImage)
+    case video(VideoFrameReader)
+
+    func image(atProgress progress: Double) throws -> CGImage? {
+        switch self {
+        case .still(let image): return image
+        case .video(let reader): return try reader.image(atProgress: progress)
+        }
+    }
+}
+
+/// 顺序解码全景视频的一个区间，按进度取帧。
+///
+/// 只支持时间单调前进的读取，这正是逐帧合成的访问方式；
+/// 解码是流式的，任意时刻内存里只保留当前一帧。
+private final class VideoFrameReader {
+    private let reader: AVAssetReader
+    private let output: AVAssetReaderTrackOutput
+    private let start: Double
+    private let end: Double
+
+    /// 最近读到的一帧及其素材时间
+    private var latestBuffer: CVPixelBuffer?
+    private var latestTime = -Double.infinity
+    /// 已转换好的画面，同一帧被多次取用时直接复用
+    private var cachedImage: CGImage?
+    private var cachedTime = -Double.infinity
+    private var exhausted = false
+
+    init(url: URL, start: Double, end: Double) async throws {
+        let asset = AVURLAsset(url: url)
+        guard let track = try await asset.loadTracks(withMediaType: .video).first else {
+            throw ClipComposeError.videoTrackMissing(url)
+        }
+        reader = try AVAssetReader(asset: asset)
+        reader.timeRange = CMTimeRange(
+            start: CMTime(seconds: start, preferredTimescale: 600),
+            end: CMTime(seconds: end, preferredTimescale: 600)
+        )
+        output = AVAssetReaderTrackOutput(track: track, outputSettings: [
+            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+        ])
+        output.alwaysCopiesSampleData = false
+        guard reader.canAdd(output) else { throw ClipComposeError.videoTrackMissing(url) }
+        reader.add(output)
+        guard reader.startReading() else { throw reader.error ?? ClipComposeError.videoTrackMissing(url) }
+        self.start = start
+        self.end = end
+    }
+
+    /// 取片段进度对应的那一帧：把进度映射到素材时间，读到第一个不早于它的帧为止
+    func image(atProgress progress: Double) throws -> CGImage? {
+        let target = start + (end - start) * progress
+
+        while latestTime < target, !exhausted {
+            guard let sample = output.copyNextSampleBuffer() else {
+                // 读到区间末尾，此后一直沿用最后一帧
+                exhausted = true
+                break
+            }
+            if let buffer = CMSampleBufferGetImageBuffer(sample) {
+                latestBuffer = buffer
+                latestTime = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sample))
+            }
+        }
+
+        if latestTime == cachedTime, let cachedImage { return cachedImage }
+        guard let latestBuffer else { return nil }
+
+        var image: CGImage?
+        VTCreateCGImageFromCVPixelBuffer(latestBuffer, options: nil, imageOut: &image)
+        cachedImage = image
+        cachedTime = latestTime
+        return image
+    }
+}
+
 /// 短片合成过程中的可预期错误
 enum ClipComposeError: Error {
     case emptyInput
@@ -318,4 +463,6 @@ enum ClipComposeError: Error {
     case writerSetupFailed
     case frameAppendFailed(Int)
     case exportSetupFailed
+    /// 素材中找不到视频轨
+    case videoTrackMissing(URL)
 }

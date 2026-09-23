@@ -10,8 +10,8 @@ import UniformTypeIdentifiers
 ///
 /// 输入为等矩形全景图（由相机 SDK 的 FlatPanoOutput 拼接输出）。
 /// 实测数据（qwen3-vl-plus）：耗时几乎完全由上传体积决定。
-/// 全景图压到 768 像素长边、约 36KB 时，单次调用约 5 秒。
-/// 因此描述必须在训练结束后批量生成，不能在行走过程中实时调用。
+/// 全景图压到 768 像素长边、约 36KB 时，单次描述约 5 至 7 秒，追问约 2 至 3 秒，
+/// 足以支撑使用者驻足时的即时对谈。
 struct QwenSceneNarrator: SceneNarrator {
 
     /// 采用的模型。实测 plus 的描述细节优于 flash，而两者耗时相当（瓶颈在图片上传）。
@@ -27,6 +27,14 @@ struct QwenSceneNarrator: SceneNarrator {
     private let maxPixelSize = 768
     /// 上传前的 JPEG 压缩质量
     private let compressionQuality: CGFloat = 0.45
+
+    /// 首次描述的字数上限。约合 10 秒朗读，再长使用者就听不住了。
+    static let descriptionCharacterLimit = 45
+    /// 追问应答的字数上限
+    static let answerCharacterLimit = 40
+    /// 生成长度的硬上限。只作兜底：实测模型并不稳定遵守提示词里的字数要求，
+    /// 精确的字数控制由 `clamp(_:limit:)` 在句读处截断完成。
+    private let maxOutputTokens = 150
 
     private let apiKey: String
     private let baseURL: URL
@@ -45,9 +53,11 @@ struct QwenSceneNarrator: SceneNarrator {
     1. 只说你确实看到的，不推测。禁止『可能』『似乎』『好像』『大概』。
     2. 绝对不做安全判断，不说『可以走』『很安全』『注意避开』。
     3. 距离给大致米数。
-    4. 多写具体细节：颜色、光线、物体、人在做什么。少用空泛形容词。
-    5. 不要向使用者提问。
-    6. 总共不超过 60 个字。这段文字会被朗读出来，太长会让人听不住。
+    4. 只挑两三处最值得说的，不要把每个方向都念一遍。优先说有人在做什么、有标志性的建筑或招牌、有路或门的地方。
+    5. 细节要具体：颜色、材质、光线。少用空泛形容词。
+    6. 离得最近、手里拿着或身上戴着相机的那个人就是使用者本人，连同他的手臂和自拍杆，一律不要提。
+    7. 不要向使用者提问。
+    8. 总共不超过 45 个字。这段文字会被朗读出来，太长会让人听不住。
     """
 
     /// 追问阶段的系统提示词。
@@ -61,7 +71,8 @@ struct QwenSceneNarrator: SceneNarrator {
     1. 只说你确实看到的。看不清或画面里没有，就直说「这我看不清」，绝不编造。
     2. 绝对不做安全判断，不说『可以走』『很安全』『注意避开』。
     3. 只回答他问的，不要主动扯开话题，也不要反过来考他。
-    4. 像朋友说话那样自然，两句话以内。这段文字会被朗读出来。
+    4. 离得最近、拿着或戴着相机的那个人就是他自己，不要把他当成路人来描述。
+    5. 像朋友说话那样自然，不超过 40 个字。这段文字会被朗读出来。
     """
 
     /// 从被版本库忽略的 Secrets.plist 读取凭据。
@@ -102,7 +113,7 @@ struct QwenSceneNarrator: SceneNarrator {
             throw NarrationError.badStatus(code)
         }
 
-        let text = try parseContent(from: data)
+        let text = Self.clamp(try parseContent(from: data), limit: Self.descriptionCharacterLimit)
         Log.info("已生成场景描述，偏移 \(offsetMs) 毫秒，长度 \(text.count) 字", category: .narration)
         return SceneNarration(offsetMs: offsetMs, frameFileName: frameFileName, text: text, source: .model)
     }
@@ -144,6 +155,7 @@ struct QwenSceneNarrator: SceneNarrator {
         request.httpBody = try JSONSerialization.data(withJSONObject: [
             "model": model,
             "messages": messages,
+            "max_tokens": maxOutputTokens,
         ])
 
         let (data, response) = try await session.data(for: request)
@@ -152,7 +164,7 @@ struct QwenSceneNarrator: SceneNarrator {
             Log.error("追问接口返回异常状态码 \(code)", category: .narration)
             throw NarrationError.badStatus(code)
         }
-        let text = try parseContent(from: data)
+        let text = Self.clamp(try parseContent(from: data), limit: Self.answerCharacterLimit)
         Log.info("已回答追问，长度 \(text.count) 字", category: .narration)
         return text
     }
@@ -163,6 +175,7 @@ struct QwenSceneNarrator: SceneNarrator {
         let dataURI = "data:image/jpeg;base64,\(payload.base64EncodedString())"
         return [
             "model": model,
+            "max_tokens": maxOutputTokens,
             "messages": [
                 ["role": "system", "content": Self.systemPrompt],
                 ["role": "user", "content": [
@@ -196,6 +209,37 @@ struct QwenSceneNarrator: SceneNarrator {
 
         Log.debug("上传图片已压缩至 \(output.length / 1024) KB", category: .narration)
         return output as Data
+    }
+
+    /// 把超长文字截到字数上限以内，并尽量落在句读处，避免念到半句戛然而止。
+    ///
+    /// 句号、问号、叹号、分号是更自然的收尾点，但只有在它能保住六成以上字数时才优先采用；
+    /// 否则一个靠前的分号会把后面信息量更大的内容全部丢掉。此时改取最靠后的停顿，
+    /// 包括逗号、顿号。截断点留下的逗号或分号改成句号，读起来是完整收尾。
+    /// 一个标点都没有才按字数硬切。
+    static func clamp(_ text: String, limit: Int) -> String {
+        guard text.count > limit else { return text }
+        let head = String(text.prefix(limit))
+
+        let strongStops: Set<Character> = ["。", "！", "？", "；"]
+        let allStops = strongStops.union(["，", "、"])
+        let minimumKept = limit * 6 / 10
+
+        let strongCut = head.lastIndex(where: strongStops.contains)
+        let cut: String.Index?
+        if let strongCut, head.distance(from: head.startIndex, to: strongCut) + 1 >= minimumKept {
+            cut = strongCut
+        } else {
+            cut = head.lastIndex(where: allStops.contains)
+        }
+
+        guard let cut else { return head + "。" }
+        var clipped = String(head[...cut])
+        if let last = clipped.last, last != "。", last != "！", last != "？" {
+            clipped.removeLast()
+            clipped.append("。")
+        }
+        return clipped
     }
 
     /// 从响应中取出描述正文
