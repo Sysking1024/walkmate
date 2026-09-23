@@ -19,10 +19,10 @@
 
 **目标**: 建立不可分割的基础数据实体、沙盒存储管理器与既有感知流水线的数据暴露钩子。此阶段为所有用户故事的硬性前置依赖。
 
-- [ ] T003 [P] 创建核心采集与遥测 Codable 数据模型 `WalkMate/Models/CollectorModels.swift`（包含 `SessionMetadata`、`FrameTelemetryRecord`、`QuaternionRecord`、`SIMD3Record`、`EulerAnglesRecord` 与 `SessionSummaryItem`）
-- [ ] T004 [P] 编写会话沙盒存储管理器单元测试 `Tests/AppTests/SessionStorageManagerTests.swift`（验证会话隔离目录创建、500MB 存储保护门限与目录枚举）
-- [ ] T005 实现会话沙盒存储管理器 `WalkMate/Core/Collector/SessionStorageManager.swift`（实现 `SessionStorageManagerProtocol`，负责 `Documents/Sessions/` 目录生命周期与空间检测）
-- [ ] T006 外科手术式扩展既有感知引擎 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，增加内部状态数据回调钩子，允许采集器捕获每帧地面拟合参数 `[A, B, C, D]`、估算相机高度 `cameraHeight` 及当前 `DepthMatrix`
+- [X] T003 [P] 创建核心采集与遥测 Codable 数据模型 `WalkMate/Models/CollectorModels.swift`（包含 `SessionMetadata`、`FrameTelemetryRecord`、`QuaternionRecord`、`SIMD3Record`、`EulerAnglesRecord` 与 `SessionSummaryItem`）
+- [X] T004 [P] 编写会话沙盒存储管理器单元测试 `Tests/AppTests/SessionStorageManagerTests.swift`（验证会话隔离目录创建、500MB 存储保护门限与目录枚举）
+- [X] T005 实现会话沙盒存储管理器 `WalkMate/Core/Collector/SessionStorageManager.swift`（实现 `SessionStorageManagerProtocol`，负责 `Documents/Sessions/` 目录生命周期与空间检测）
+- [X] T006 外科手术式扩展既有感知引擎 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，增加内部状态数据回调钩子，允许采集器捕获每帧地面拟合参数 `[A, B, C, D]`、估算相机高度 `cameraHeight` 及当前 `DepthMatrix`
 
 ---
 

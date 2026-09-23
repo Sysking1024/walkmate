@@ -64,6 +64,35 @@ public protocol SpatialPerceptionEngineProtocol: AnyObject {
     
     /// 获取当前最新一帧的可通行路线快照
     var latestRoute: PassableRouteData? { get }
+    
+    // MARK: - 内部遥测与状态数据观测钩子 (供实测数据采集器挂载)
+    
+    /// 内部数据采集钩子闭包 (非阻塞传递原始帧、深度矩阵、地面拟合参数、相机高度、障碍物及寻路数据)
+    var onFrameProcessed: (@Sendable (
+        _ frame: PanoramicFrame,
+        _ depthMatrix: DepthMatrix?,
+        _ groundPlane: [Float],
+        _ cameraHeight: Float,
+        _ rawObstacles: [ObstacleItem],
+        _ routeData: PassableRouteData?,
+        _ latencyMs: Double
+    ) -> Void)? { get set }
+}
+
+public extension SpatialPerceptionEngineProtocol {
+    /// 默认空实现，保障已有测试替身及实现类的兼容性
+    var onFrameProcessed: (@Sendable (
+        _ frame: PanoramicFrame,
+        _ depthMatrix: DepthMatrix?,
+        _ groundPlane: [Float],
+        _ cameraHeight: Float,
+        _ rawObstacles: [ObstacleItem],
+        _ routeData: PassableRouteData?,
+        _ latencyMs: Double
+    ) -> Void)? {
+        get { nil }
+        set { }
+    }
 }
 
 // MARK: - 空间感知对外服务中枢
@@ -98,6 +127,39 @@ public final class SpatialPerceptionEngine: SpatialPerceptionEngineProtocol, @un
         stateLock.lock()
         defer { stateLock.unlock() }
         return _latestRoute
+    }
+    
+    // MARK: - 内部遥测与状态数据观测钩子 (供实测数据采集器挂载)
+    
+    private var _onFrameProcessed: (@Sendable (
+        _ frame: PanoramicFrame,
+        _ depthMatrix: DepthMatrix?,
+        _ groundPlane: [Float],
+        _ cameraHeight: Float,
+        _ rawObstacles: [ObstacleItem],
+        _ routeData: PassableRouteData?,
+        _ latencyMs: Double
+    ) -> Void)?
+    
+    public var onFrameProcessed: (@Sendable (
+        _ frame: PanoramicFrame,
+        _ depthMatrix: DepthMatrix?,
+        _ groundPlane: [Float],
+        _ cameraHeight: Float,
+        _ rawObstacles: [ObstacleItem],
+        _ routeData: PassableRouteData?,
+        _ latencyMs: Double
+    ) -> Void)? {
+        get {
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            return _onFrameProcessed
+        }
+        set {
+            stateLock.lock()
+            defer { stateLock.unlock() }
+            _onFrameProcessed = newValue
+        }
     }
     
     // MARK: - AsyncStream 异步流分发器
@@ -202,6 +264,8 @@ public final class SpatialPerceptionEngine: SpatialPerceptionEngineProtocol, @un
             }
             
             do {
+                let startUptime = DispatchTime.now().uptimeNanoseconds
+                
                 // 1. Accelerate 硬件预处理 (vImage 缩放 + vDSP 归一化)
                 let inputTensor = try self.preprocessor.preprocess(pixelBuffer: frame.pixelBuffer)
                 
@@ -261,6 +325,24 @@ public final class SpatialPerceptionEngine: SpatialPerceptionEngineProtocol, @un
                 // 11. 分发数据至 AsyncStream 与 Delegate 回调
                 self.obstacleContinuation?.yield(obstacleData)
                 self.routeContinuation?.yield(routeData)
+                
+                // 12. 触发内部数据采集回调钩子 (供实测数据采集器挂载)
+                let latencyMs = Double(DispatchTime.now().uptimeNanoseconds - startUptime) / 1_000_000.0
+                let groundParams: [Float] = [
+                    groundResult.groundPlane.x,
+                    groundResult.groundPlane.y,
+                    groundResult.groundPlane.z,
+                    groundResult.groundPlane.w
+                ]
+                self.onFrameProcessed?(
+                    frame,
+                    depthMatrix,
+                    groundParams,
+                    groundResult.cameraHeight,
+                    detectedObstacles,
+                    routeData,
+                    latencyMs
+                )
                 
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self, let delegate = self.delegate else { return }
