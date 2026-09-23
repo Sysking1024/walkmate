@@ -61,10 +61,11 @@
 **独立测试验证**: 相机连接推流时，模型不工作；点击右下角“开始”，后台开始处理帧流并输出音频；点击“停止”，音频立即静音且停止向模型投递帧，全屏推流持续流畅；相机意外掉线时，自动停止感知并静音。
 
 ### 1. 测试先行 (TDD) ⚠️ 在实现前编写测试用例
-- [ ] T005 [US2] 在 `Tests/AppTests/PilotViewModelTests.swift` 中扩展感知独立启停状态机测试（断言 `isPerceiving` 切换、`didReceiveFrame` 仅在 `isPerceiving == true` 时投递给引擎、停止感知时音频播放器调用 `reset()` 立即静音；断言相机意外掉线 `.failed`/`.noConnection` 时自动将 `isPerceiving` 重置为 `false` 并静音；验证启停与静音响应延迟满足 SC-002 性能指标）
+- [x] T005 [US2] 在 `Tests/AppTests/PilotViewModelTests.swift` 中扩展感知独立启停状态机测试（断言 `isPerceiving` 切换、`didReceiveFrame` 仅在 `isPerceiving == true` 时投递给引擎、停止感知时音频播放器调用 `reset()` 立即静音；断言相机意外掉线 `.failed`/`.noConnection` 时自动将 `isPerceiving` 重置为 `false` 并静音；验证启停与静音响应延迟满足 SC-002 性能指标）
 
 ### 2. 核心状态机实现
-- [ ] T006 [US2] 在 `WalkMate/App/ContentView.swift` 的 `CameraViewModel` 中引入 `isPerceiving: Bool` 响应式状态与 `togglePerception()` 控制方法，在 `didReceiveFrame` 中添加 `isPerceiving` 门禁过滤，实现启停时与 `SpatialAudioPlayer.shared.start()/reset()` 及 `perceptionEngine?.start()/stop()` 的联动；并在 `didUpdateState` 中实现掉线安全自愈（`.failed`/`.noConnection` 时自动重置感知状态并静音）
+- [x] T006 [US2] 在 `WalkMate/App/ContentView.swift` 的 `CameraViewModel` 中引入 `isPerceiving: Bool` 响应式状态与 `togglePerception()` 控制方法，在 `didReceiveFrame` 中添加 `isPerceiving` 门禁过滤，实现启停时与 `SpatialAudioPlayer.shared.start()/reset()` 及 `perceptionEngine?.start()/stop()` 的联动；并在 `didUpdateState` 中实现掉线安全自愈（`.failed`/`.noConnection` 时自动重置感知状态并静音）
+
 
 **检查点 (Checkpoint)**: 用户故事 2 交付！大模型推理与空间音频拥有独立受控的启停机制，具备掉线自愈能力，不额外浪费 iPhone 电量与发热。
 
