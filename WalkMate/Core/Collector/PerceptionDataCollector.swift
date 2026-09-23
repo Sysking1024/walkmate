@@ -93,7 +93,10 @@ public final class PerceptionDataCollector: PerceptionDataCollectorProtocol, @un
         return _currentDuration
     }
     
-    // MARK: - 依赖与配置
+    // MARK: - 单例与依赖
+    
+    /// 默认单例协调器实例
+    public static let shared = PerceptionDataCollector()
     
     private let storageManager: SessionStorageManagerProtocol
     /// 专用后台异步写盘队列 (Utility QoS，确保主线程和推理线程零 I/O 阻塞)
@@ -122,7 +125,7 @@ public final class PerceptionDataCollector: PerceptionDataCollectorProtocol, @un
     
     /// 初始化数据采集协调器
     /// - Parameter storageManager: 会话沙盒存储管理器实例
-    public init(storageManager: SessionStorageManagerProtocol = SessionStorageManager()) {
+    public init(storageManager: SessionStorageManagerProtocol = SessionStorageManager.shared) {
         self.storageManager = storageManager
     }
     

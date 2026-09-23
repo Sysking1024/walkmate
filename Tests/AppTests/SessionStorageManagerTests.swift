@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import SSZipArchive
 @testable import WalkMate
 
 /// 会话沙盒存储管理器单元测试
@@ -135,5 +136,61 @@ final class SessionStorageManagerTests: XCTestCase {
             storageManager.hasSufficientStorage(minRequiredMB: 1_000_000_000),
             "超过实际磁盘总量的请求必须触发拒绝保护"
         )
+    }
+    
+    // MARK: - Zip 归档与解压完整性测试 (T011)
+    
+    /// 验证基于 SSZipArchive 的会话目录极速打包与解压还原完整性
+    func testCreateZipArchiveAndVerifyIntegrity() throws {
+        let sessionId = "session_zip_test"
+        let folder = try storageManager.createSessionFolder(sessionId: sessionId)
+        
+        // 构造虚拟文件
+        let meta = SessionMetadata(
+            sessionId: sessionId,
+            startTimeMs: 1727092800000,
+            durationSeconds: 15,
+            totalTelemetryFrames: 150
+        )
+        try storageManager.saveMetadata(meta, sessionId: sessionId)
+        
+        let dummyTelemetry = "{\"frameIndex\":0}\n{\"frameIndex\":1}\n"
+        try dummyTelemetry.write(to: folder.appendingPathComponent("telemetry.jsonl"), atomically: true, encoding: .utf8)
+        
+        var progressValues: [Double] = []
+        let zipURL = try storageManager.createArchive(sessionId: sessionId) { progress in
+            progressValues.append(progress)
+        }
+        
+        XCTAssertTrue(FileManager.default.fileExists(atPath: zipURL.path), "打包生成的 .zip 文件必须存在")
+        XCTAssertGreaterThan(try Data(contentsOf: zipURL).count, 0, "压缩包大小必须大于 0")
+        
+        // 解压至独立验证目录
+        let unpackDir = tempDirectoryURL.appendingPathComponent("Unpacked_\(sessionId)", isDirectory: true)
+        let unzipSuccess = SSZipArchive.unzipFile(atPath: zipURL.path, toDestination: unpackDir.path)
+        XCTAssertTrue(unzipSuccess, "SSZipArchive 解压必须成功")
+        
+        // 验证解压后目录结构
+        let unpackedSessionDir = unpackDir.appendingPathComponent(sessionId)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unpackedSessionDir.appendingPathComponent("metadata.json").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unpackedSessionDir.appendingPathComponent("telemetry.jsonl").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unpackedSessionDir.appendingPathComponent("frames").path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: unpackedSessionDir.appendingPathComponent("depths").path))
+    }
+    
+    /// 验证对不存在的会话执行归档时抛出标准错误
+    func testArchiveNonExistentSessionThrows() {
+        XCTAssertThrowsError(try storageManager.createArchive(sessionId: "invalid_session_id")) { error in
+            guard let storageError = error as? SessionStorageError else {
+                XCTFail("必须抛出 SessionStorageError 错误类型")
+                return
+            }
+            switch storageError {
+            case .sessionNotFound:
+                break
+            default:
+                XCTFail("对于不存在的会话必须返回 sessionNotFound")
+            }
+        }
     }
 }

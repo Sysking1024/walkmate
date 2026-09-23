@@ -38,6 +38,8 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     @Published public var collectorState: CollectorState = .idle
     @Published public var recordingDuration: Double = 0
     @Published public var isRecording: Bool = false
+    @Published public var finishedSessionMetadata: SessionMetadata?
+    @Published public var showRecordingFinishedNotice: Bool = false
     
     /// 感知主控按钮是否可用（仅当相机连接成功后方可点击）
     public var isPerceptionEnabled: Bool {
@@ -55,7 +57,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         pipeline: CameraPipelineProtocol = CameraPipeline(),
         perceptionEngine: SpatialPerceptionEngineProtocol? = nil,
         audioPlayer: SpatialAudioPlayerProtocol = SpatialAudioPlayer.shared,
-        collector: PerceptionDataCollectorProtocol = PerceptionDataCollector()
+        collector: PerceptionDataCollectorProtocol = PerceptionDataCollector.shared
     ) {
         self.pipeline = pipeline
         self.audioPlayer = audioPlayer
@@ -110,12 +112,16 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func toggleRecording() {
         if isRecording {
             collector.stopRecording { [weak self] result in
-                switch result {
-                case .success:
-                    UIAccessibility.post(notification: .announcement, argument: "实测数据采集完成，已保存至本地沙盒")
-                case .failure(let error):
-                    self?.latestError = "停止录制异常: \(error.localizedDescription)"
-                    Log.error("停止录制异常: \(error.localizedDescription)", category: .perception)
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let metadata):
+                        self?.finishedSessionMetadata = metadata
+                        self?.showRecordingFinishedNotice = true
+                        UIAccessibility.post(notification: .announcement, argument: "实测数据采集完成，已保存至本地沙盒，可打开数据面板导出")
+                    case .failure(let error):
+                        self?.latestError = "停止录制异常: \(error.localizedDescription)"
+                        Log.error("停止录制异常: \(error.localizedDescription)", category: .perception)
+                    }
                 }
             }
         } else {
@@ -318,7 +324,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
 /// 极简真机实测主界面 (Minimal Field Pilot)
 public struct ContentView: View {
     @StateObject private var viewModel = CameraViewModel()
-    @State private var showLogSheet: Bool = false
+    @State private var showSessionSheet: Bool = false
     
     public init() {}
     
@@ -381,16 +387,14 @@ public struct ContentView: View {
                     .accessibilityLabel(viewModel.isRecording ? "停止实测采集" : "开始实测采集")
                     .accessibilityHint(viewModel.isRecording ? "双击停止当前实测数据采集并保存到本地" : "双击启动多模态实测数据流与高保真传感器记录")
                     
-                    // 2. 日志与会话查看入口
+                    // 2. 实测数据包与调试日志面板入口 (FR-001)
                     Button(action: {
-                        let text = Log.recentLogs.joined(separator: "\n")
-                        UIPasteboard.general.string = text
-                        showLogSheet = true
+                        showSessionSheet = true
                     }) {
                         HStack(spacing: 4) {
-                            Image(systemName: "doc.on.doc.fill")
+                            Image(systemName: "folder.badge.gearshape")
                                 .font(.system(size: 13, weight: .bold))
-                            Text("日志")
+                            Text("数据")
                                 .font(.system(size: 13, weight: .bold))
                         }
                         .foregroundColor(.white)
@@ -402,8 +406,8 @@ public struct ContentView: View {
                         .shadow(radius: 4)
                         .contentShape(Rectangle())
                     }
-                    .accessibilityLabel("日志与会话面板")
-                    .accessibilityHint("双击打开日志抽屉并复制最新日志到剪贴板")
+                    .accessibilityLabel("实测数据包与调试日志面板")
+                    .accessibilityHint("双击打开实测数据会话管理面板，支持 AirDrop 导出与日志复制")
                 }
                 .padding(.trailing, 16)
                 .padding(.top, 16)
@@ -460,8 +464,20 @@ public struct ContentView: View {
                 .padding(.bottom, 28)
             }
         }
-        .sheet(isPresented: $showLogSheet) {
-            LogSheetView()
+        .sheet(isPresented: $showSessionSheet) {
+            SessionManagementSheet()
+        }
+        .alert("实测采集完成", isPresented: $viewModel.showRecordingFinishedNotice) {
+            Button("稍后查看", role: .cancel) {}
+            Button("立即查看与导出") {
+                showSessionSheet = true
+            }
+        } message: {
+            if let meta = viewModel.finishedSessionMetadata {
+                Text("会话「\(meta.sessionId)」已安全落盘。\n录制时长: \(String(format: "%.1f", meta.durationSeconds)) 秒，遥测帧数: \(meta.totalTelemetryFrames) 帧，图像快照: \(meta.totalImageSnapshots) 张。\n是否立即打开会话面板进行 AirDrop 导出？")
+            } else {
+                Text("本次实测会话已安全落盘，可前往数据面板查看并导出。")
+            }
         }
     }
     

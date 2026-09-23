@@ -51,12 +51,12 @@
 在非录制状态下轻点右上角复合按钮调出会话管理面板，列表清晰展示历史记录；点击任一会话的导出按钮，系统在 3 秒内完成打包并弹出 AirDrop 分享面板，Mac 接收后解压可得完整目录文件。
 
 ### 阶段四测试任务 (Tests)
-- [ ] T011 [P] [US2] 在 `Tests/AppTests/SessionStorageManagerTests.swift` 中补充基于既有 `SSZipArchive.xcframework` 的 zip 压缩归档打包与解压校验单测
+- [X] T011 [P] [US2] 在 `Tests/AppTests/SessionStorageManagerTests.swift` 中补充基于既有 `SSZipArchive.xcframework` 的 zip 压缩归档打包与解压校验单测
 
 ### 阶段四实现任务 (Implementation)
-- [ ] T012 [US2] 在 `WalkMate/Core/Collector/SessionStorageManager.swift` 中实现 `createArchive(sessionId:progress:)`，直接调用既有的 `SSZipArchive.createZipFile` 执行后台异步压缩生成 `.zip` 归档
-- [ ] T013 [US2] 创建实测会话管理与 AirDrop 导出半屏抽屉视图 `WalkMate/App/Views/SessionManagementSheet.swift`（展示会话时间、大小、时长，提供单项一键 AirDrop 导出、批量清理，并保留原有纯文本日志复制卡片）
-- [ ] T014 [US2] 在主界面 `WalkMate/App/ContentView.swift` 中集成 `SessionManagementSheet`，实现非录制态点按弹出管理抽屉，录制完成自动提示查看或分享
+- [X] T012 [US2] 在 `WalkMate/Core/Collector/SessionStorageManager.swift` 中实现 `createArchive(sessionId:progress:)`，直接调用既有的 `SSZipArchive.createZipFile` 执行后台异步压缩生成 `.zip` 归档
+- [X] T013 [US2] 创建实测会话管理与 AirDrop 导出半屏抽屉视图 `WalkMate/App/Views/SessionManagementSheet.swift`（展示会话时间、大小、时长，提供单项一键 AirDrop 导出、批量清理，并保留原有纯文本日志复制卡片）
+- [X] T014 [US2] 在主界面 `WalkMate/App/ContentView.swift` 中集成 `SessionManagementSheet`，实现非录制态点按弹出管理抽屉，录制完成自动提示查看或分享
 
 ---
 

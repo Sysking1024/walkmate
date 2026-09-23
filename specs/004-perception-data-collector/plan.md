@@ -92,6 +92,7 @@
 * `WalkMate/App/Views/SessionManagementSheet.swift`：会话管理与 AirDrop 导出抽屉视图组件。
 * `Tests/AppTests/SessionStorageManagerTests.swift`：沙盒会话管理、空间检测与 zip 打包测试。
 * `Tests/AppTests/PerceptionDataCollectorTests.swift`：异步无损采样、JSONL 序列化与生命周期测试。
+* `Tests/ReplayTests/PerceptionReplayer.swift`：离线回放数据加载与解包驱动器（实现 `PerceptionReplayerProtocol`）。
 * `Tests/ReplayTests/PerceptionReplayTests.swift`：Mac 端离线回放套件，读取解压的实测会话并重跑算法流水线。
 
 ---
@@ -153,6 +154,7 @@ Tests/
 ├── PerceptionTests/                       # [既有保持: 感知与寻路单测]
 └── ReplayTests/                           # [新增测试目标: 离线回放与调优基准]
     ├── Datasets/                          # [新增目录: 存放样本会话用于回归验证]
+    ├── PerceptionReplayer.swift           # [新增: 离线回放数据加载与解压驱动器]
     └── PerceptionReplayTests.swift        # [新增: 离线数据回灌与调参评估测试]
 ```
 

@@ -74,6 +74,9 @@ public final class SessionStorageManager: SessionStorageManagerProtocol, @unchec
     /// 沙盒内会话根目录 URL
     public let sessionsDirectoryURL: URL
     
+    /// 默认单例实例
+    public static let shared = SessionStorageManager()
+    
     /// 默认安全存储门限 (500MB)
     public static let defaultSafetyStorageThresholdMB: Int = 500
     

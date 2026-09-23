@@ -68,12 +68,14 @@ public struct SessionMetadata: Codable, Sendable {
 ```swift
 /// 单一感知帧的全量时序遥测快照
 public struct FrameTelemetryRecord: Codable, Sendable {
-    /// 微秒级对齐时间戳 (自 1970 纪元毫秒或微秒)
+    /// 毫秒级对齐时间戳 (自 1970 纪元毫秒数，对齐 PanoramicFrame.timestampMs)
     public let timestampMs: Int64
     /// 视频帧连续序号
     public let frameIndex: Int
     
     // MARK: - 传感器与几何姿态
+    /// 相机 IMU 绝对姿态四元数 (用于高保真重力校准与点云反算)
+    public let quaternion: QuaternionRecord
     /// 相机 IMU 欧拉角 (度: roll, pitch, yaw)
     public let eulerAngles: EulerAnglesRecord
     /// 相机 IMU 加速度向量 (m/s^2)
@@ -115,6 +117,14 @@ public struct SIMD3Record: Codable, Sendable {
     public let x: Float
     public let y: Float
     public let z: Float
+}
+
+/// 兼容 Codable 的四元数姿态记录 (对齐 simd_quatf)
+public struct QuaternionRecord: Codable, Sendable {
+    public let x: Float
+    public let y: Float
+    public let z: Float
+    public let w: Float
 }
 
 /// 兼容 Codable 的欧拉角记录

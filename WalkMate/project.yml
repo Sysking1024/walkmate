@@ -102,6 +102,8 @@ targets:
       - TestTarget
     sources:
       - path: ../Tests/AppTests
+    dependencies:
+      - framework: Frameworks/SSZipArchive.xcframework
 
   ReplayTests:
     templates:
