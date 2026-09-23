@@ -10,8 +10,8 @@
 
 **目标**: 配置构建描述文件与目录结构，挂载既有依赖库并生成统一 Xcode 工程配置。
 
-- [ ] T001 在项目工程配置 `WalkMate/project.yml` 中声明 `Collector` 源码目录与 `ReplayTests` 测试目标，配置对 `SSZipArchive.xcframework` 的链接与嵌入依赖
-- [ ] T002 运行 `xcodegen generate` 重新生成 `WalkMate/WalkMate.xcodeproj`，并在 `Tests/ReplayTests/` 下建立回放套件目录骨架
+- [X] T001 在项目工程配置 `WalkMate/project.yml` 中声明 `Collector` 源码目录与 `ReplayTests` 测试目标，配置对 `SSZipArchive.xcframework` 的链接与嵌入依赖
+- [X] T002 运行 `xcodegen generate` 重新生成 `WalkMate/WalkMate.xcodeproj`，并在 `Tests/ReplayTests/` 下建立回放套件目录骨架
 
 ---
 
@@ -19,7 +19,7 @@
 
 **目标**: 建立不可分割的基础数据实体、沙盒存储管理器与既有感知流水线的数据暴露钩子。此阶段为所有用户故事的硬性前置依赖。
 
-- [ ] T003 [P] 创建核心采集与遥测 Codable 数据模型 `WalkMate/Models/CollectorModels.swift`（包含 `SessionMetadata`、`FrameTelemetryRecord`、`SIMD3Record` 与 `SessionSummaryItem`）
+- [ ] T003 [P] 创建核心采集与遥测 Codable 数据模型 `WalkMate/Models/CollectorModels.swift`（包含 `SessionMetadata`、`FrameTelemetryRecord`、`QuaternionRecord`、`SIMD3Record`、`EulerAnglesRecord` 与 `SessionSummaryItem`）
 - [ ] T004 [P] 编写会话沙盒存储管理器单元测试 `Tests/AppTests/SessionStorageManagerTests.swift`（验证会话隔离目录创建、500MB 存储保护门限与目录枚举）
 - [ ] T005 实现会话沙盒存储管理器 `WalkMate/Core/Collector/SessionStorageManager.swift`（实现 `SessionStorageManagerProtocol`，负责 `Documents/Sessions/` 目录生命周期与空间检测）
 - [ ] T006 外科手术式扩展既有感知引擎 `WalkMate/Core/Engine/SpatialPerceptionEngine.swift`，增加内部状态数据回调钩子，允许采集器捕获每帧地面拟合参数 `[A, B, C, D]`、估算相机高度 `cameraHeight` 及当前 `DepthMatrix`
@@ -34,12 +34,12 @@
 连接相机并开启空间感知，点击主界面右上角 `[REC 录制]` 按钮，手持行走 30 秒后点击停止。检查沙盒生成带有完整时间戳的 `session_xxx` 独立目录，包含格式合法的 `telemetry.jsonl` 与抽样图像快照，录制全程空间音频无卡顿、视频推流不掉帧。
 
 ### 阶段三测试任务 (Tests)
-- [ ] T007 [P] [US1] 编写数据采集协调器单元测试 `Tests/AppTests/PerceptionDataCollectorTests.swift`（验证状态机流转、环形队列异步缓冲、10~30Hz 遥测与 1~2Hz 视觉分级采样及 JSONL 流式写入）
+- [ ] T007 [P] [US1] 编写数据采集协调器单元测试 `Tests/AppTests/PerceptionDataCollectorTests.swift`（验证状态机流转、环形队列异步缓冲、10~30Hz 遥测与 1~2Hz 视觉分级采样、JSONL 流式写入及入队延迟基准断言）
 
 ### 阶段三实现任务 (Implementation)
 - [ ] T008 [US1] 实现空间感知数据采集协调器 `WalkMate/Core/Collector/PerceptionDataCollector.swift`（实现 `PerceptionDataCollectorProtocol`，集成 Utility 专用写盘队列、环形内存缓冲区、JSONL 追加流与 JPEG/二进制深度图采样）
-- [ ] T009 [US1] 在主界面视图模型 `CameraViewModel` 中注入 `PerceptionDataCollector` 并挂载每帧数据转发与录制时长心跳绑定（`WalkMate/App/ContentView.swift`）
-- [ ] T010 [US1] 将主界面右上角原“拷贝日志”按钮直接升级替换为实测采集控制胶囊按钮 `[REC 录制 / 00:00]`，支持根据录制状态显示红色指示与动态秒数，并提供全流程语音读屏支持（`WalkMate/App/ContentView.swift`）
+- [ ] T009 [US1] 在主界面视图模型 `CameraViewModel` 中注入 `PerceptionDataCollector`，挂载每帧数据转发与录制时长心跳绑定，并在捕获相机断连或连接失败时主动触发采集器安全停止（`WalkMate/App/ContentView.swift`）
+- [ ] T010 [US1] 将主界面右上角原“拷贝日志”按钮直接升级替换为实测采集控制胶囊按钮 `[REC 录制 / 00:00]`，显式保证触控尺寸不低于 48x48 像素，提供静态无障碍标签与提示，并在启停时刻通过 `UIAccessibility.post(notification: .announcement)` 播报状态，避免动态秒数轮询打断读屏（`WalkMate/App/ContentView.swift`）
 
 ---
 
@@ -79,7 +79,7 @@
 
 **目标**: 完善极端异常边界防护，执行全量自动化静态分析与单元测试，确保零错误零警告。
 
-- [ ] T019 [P] 在 `WalkMate/Core/Collector/PerceptionDataCollector.swift` 中完善存储空间低于 500MB 自动安全中止保护、异常强退下的流式恢复逻辑以及单次录制 15 分钟滚动分片保护
+- [ ] T019 [P] 在 `WalkMate/Core/Collector/PerceptionDataCollector.swift` 中完善存储空间低于 500MB 自动安全中止保护、相机断连被动中止保护、异常强退下的流式恢复逻辑以及单次录制 15 分钟滚动分片保护
 - [ ] T020 运行全量单元测试套件（`AppTests`、`AudioTests`、`CameraTests`、`InferenceTests`、`GeometryTests`、`PerceptionTests`、`ReplayTests`），确保 100% 编译与逻辑通过（Zero Failures, Zero Errors）
 - [ ] T021 审查全量代码注释与日志消息，确认完全符合项目宪章纯中文规范，更新规范追踪元数据
 

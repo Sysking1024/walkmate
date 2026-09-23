@@ -103,6 +103,14 @@ targets:
     sources:
       - path: ../Tests/AppTests
 
+  ReplayTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/ReplayTests
+    dependencies:
+      - framework: Frameworks/SSZipArchive.xcframework
+
 schemes:
   WalkMate:
     build:
@@ -120,6 +128,7 @@ schemes:
         - ToolkitTests
         - AudioTests
         - AppTests
+        - ReplayTests
 
 
 

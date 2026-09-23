@@ -12,6 +12,7 @@
 		0D45CACBD1308EF6FFE6B03D /* SpatialAudioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98056ACD8F6F25764E72E56 /* SpatialAudioPlayerTests.swift */; };
 		144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */; };
 		16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */; };
+		1CEC47B271BC81F0F49105D1 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
 		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
@@ -19,6 +20,7 @@
 		3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; };
 		44AAB007A33DEB4CD0E7D75F /* PilotViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296297A21A536E58CD824C1E /* PilotViewModelTests.swift */; };
+		47D7184EF1498F9E33285A2F /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
 		4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */; };
 		4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */; };
 		5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */; };
@@ -67,9 +69,17 @@
 		EF66D8B621602D0ABF6CB379 /* ResilientSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */; };
 		F00FD760EF7D51263E7BD83C /* QwenSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */; };
 		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
+		F32819A692053026FDA52FE9 /* PerceptionReplayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44241A9977D78EAC65175E1E /* PerceptionReplayTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3257AFEAFB3BBC2074164103 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
 		9B1C58329275310E69C5EE94 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
@@ -122,6 +132,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		14147CEF9737F25972000370 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				1CEC47B271BC81F0F49105D1 /* SSZipArchive.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F41A89E7295550BF433AAB7B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -151,6 +172,7 @@
 		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
 		40C583E912BC4D513B945E3D /* SubtitleComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleComposer.swift; sourceTree = "<group>"; };
 		4219B1DDF080E9332C0B4DA1 /* TrainingRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingRecordViewModel.swift; sourceTree = "<group>"; };
+		44241A9977D78EAC65175E1E /* PerceptionReplayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionReplayTests.swift; sourceTree = "<group>"; };
 		456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceleratePreprocessor.swift; sourceTree = "<group>"; };
 		49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneNarrator.swift; sourceTree = "<group>"; };
 		4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayer.swift; sourceTree = "<group>"; };
@@ -166,6 +188,7 @@
 		717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizerTests.swift; sourceTree = "<group>"; };
 		722F41754B566CC6C88138C1 /* QwenSpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSpeechRenderer.swift; sourceTree = "<group>"; };
 		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		761EEFBAAB458F4EE7726A1B /* ReplayTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ReplayTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		78D063BD2D47E4B75201BDCB /* ConversationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationModels.swift; sourceTree = "<group>"; };
 		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
 		7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrationModels.swift; sourceTree = "<group>"; };
@@ -214,6 +237,14 @@
 				AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */,
 				BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */,
 				222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		67CE978B2887E2370B13E4BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				47D7184EF1498F9E33285A2F /* SSZipArchive.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +307,7 @@
 				E3E68F02D83D0B632D54A80B /* InferenceTests */,
 				AC713B0EB62E8D8D8F024473 /* Models */,
 				E830EFB4F2958558F6183AE1 /* PerceptionTests */,
+				7E64AB7109487D9D270CC3EB /* ReplayTests */,
 				5B14F6567AE8293A18AA14F6 /* Resources */,
 				4669D27B66744D7C46EBB731 /* ToolkitTests */,
 				00227ACEB3AF1A3A6B6E77A4 /* Frameworks */,
@@ -384,6 +416,15 @@
 			path = Camera;
 			sourceTree = "<group>";
 		};
+		7E64AB7109487D9D270CC3EB /* ReplayTests */ = {
+			isa = PBXGroup;
+			children = (
+				44241A9977D78EAC65175E1E /* PerceptionReplayTests.swift */,
+			);
+			name = ReplayTests;
+			path = ../Tests/ReplayTests;
+			sourceTree = "<group>";
+		};
 		7F16D93A0D3989BC4F8D7D2A /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -449,6 +490,7 @@
 				91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */,
 				BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */,
 				8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */,
+				761EEFBAAB458F4EE7726A1B /* ReplayTests.xctest */,
 				EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */,
 				72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */,
 			);
@@ -540,6 +582,26 @@
 			);
 			productName = PerceptionTests;
 			productReference = 8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		266E45B2CBE1B789CFDB81ED /* ReplayTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 311149E778B0DDDEEC91911B /* Build configuration list for PBXNativeTarget "ReplayTests" */;
+			buildPhases = (
+				86C928EF9E9C6A95E11B2C10 /* Sources */,
+				67CE978B2887E2370B13E4BF /* Frameworks */,
+				14147CEF9737F25972000370 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3737083672CD82136D0A4ED0 /* PBXTargetDependency */,
+			);
+			name = ReplayTests;
+			packageProductDependencies = (
+			);
+			productName = ReplayTests;
+			productReference = 761EEFBAAB458F4EE7726A1B /* ReplayTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		53D5E9ABDA53910DBCDDE672 /* AppTests */ = {
@@ -683,6 +745,10 @@
 						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
 					};
+					266E45B2CBE1B789CFDB81ED = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
 					53D5E9ABDA53910DBCDDE672 = {
 						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
@@ -735,6 +801,7 @@
 				BE0C96D69F7DFED10AA888AC /* ToolkitTests */,
 				CD06BC1458078B937C4FA18C /* AudioTests */,
 				53D5E9ABDA53910DBCDDE672 /* AppTests */,
+				266E45B2CBE1B789CFDB81ED /* ReplayTests */,
 			);
 		};
 /* End PBXProject section */
@@ -778,6 +845,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		86C928EF9E9C6A95E11B2C10 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F32819A692053026FDA52FE9 /* PerceptionReplayTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -870,6 +945,11 @@
 			isa = PBXTargetDependency;
 			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
 			targetProxy = B4D5EC36338B94A819E897E1 /* PBXContainerItemProxy */;
+		};
+		3737083672CD82136D0A4ED0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = 3257AFEAFB3BBC2074164103 /* PBXContainerItemProxy */;
 		};
 		3F0B16896E678F380D3FBFF0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1207,6 +1287,29 @@
 			};
 			name = Debug;
 		};
+		9BEEEAC09879968EE0E585B4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Frameworks\"",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ReplayTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
 		A8FC53DC8E79BE5BC55EF6FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1244,6 +1347,29 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
 			};
 			name = Release;
+		};
+		C2C02382DE59C8348E720AA3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"Frameworks\"",
+				);
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ReplayTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
 		};
 		C522FDA5A7D391D344A6AAD1 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1357,6 +1483,15 @@
 			buildConfigurations = (
 				7DAE7D8FA78E870BB453D99F /* Debug */,
 				C522FDA5A7D391D344A6AAD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		311149E778B0DDDEEC91911B /* Build configuration list for PBXNativeTarget "ReplayTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C2C02382DE59C8348E720AA3 /* Debug */,
+				9BEEEAC09879968EE0E585B4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
