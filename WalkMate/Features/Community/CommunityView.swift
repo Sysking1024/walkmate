@@ -238,6 +238,7 @@ struct CommunityView: View {
                     .font(WalkMateTheme.Fonts.caption)
                     .foregroundStyle(WalkMateTheme.Colors.textPrimary)
                     .lineLimit(1)
+                    .fixedSize()
                 Spacer(minLength: 8)
                 Button {
                     likedJourney.toggle()
@@ -279,6 +280,8 @@ extension CommunityView {
             Text("\(count)")
                 .font(WalkMateTheme.Fonts.body)
                 .monospacedDigit()
+                .lineLimit(1)
+                .fixedSize()
         }
         .foregroundStyle(highlighted ? WalkMateTheme.Colors.accentSoft : WalkMateTheme.Colors.textPrimary)
         .padding(.horizontal, 10)
