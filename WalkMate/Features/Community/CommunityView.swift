@@ -263,14 +263,6 @@ struct CommunityView: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("评论，\(journey.comments + myComments.count) 条")
 
-                if let reel = history.latestReelURL {
-                    ShareLink(item: reel) {
-                        reactionLabel("icon_share", count: journey.shares, highlighted: false)
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("转发，\(journey.shares) 次")
-                }
             }
 
             // 只有本机已经剪出过集锦，才有东西可分享
