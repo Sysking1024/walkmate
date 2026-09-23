@@ -133,6 +133,15 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         
         // 2. 装配并连接系统 3D 声学音频图
         setupAudioGraph()
+        
+        // 3. 注册系统级音频会话打断与线路变化监听 (T011)
+        setupSessionObservers()
+    }
+    
+    deinit {
+        #if os(iOS)
+        NotificationCenter.default.removeObserver(self)
+        #endif
     }
     
     // MARK: - 3D 音频图装配
@@ -524,4 +533,61 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
             self.audioQueue.asyncAfter(deadline: .now() + 0.4, execute: completionItem)
         }
     }
+    
+    // MARK: - 系统级音频打断与线路切换处理 (T011)
+    
+    private func setupSessionObservers() {
+        #if os(iOS)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAudioSessionInterruption(_:)),
+            name: AVAudioSession.interruptionNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleAudioSessionRouteChange(_:)),
+            name: AVAudioSession.routeChangeNotification,
+            object: nil
+        )
+        #endif
+    }
+    
+    #if os(iOS)
+    @objc internal func handleAudioSessionInterruption(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let interruptionType = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+            return
+        }
+        
+        switch interruptionType {
+        case .began:
+            Log.info("监听到系统音频打断开始 (如电话呼入、Siri 激活)，安全暂停音频播放", category: .audio)
+            self.stop()
+        case .ended:
+            guard let optionsValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt else { return }
+            let options = AVAudioSession.InterruptionOptions(rawValue: optionsValue)
+            if options.contains(.shouldResume) {
+                Log.info("系统音频打断结束且允许恢复，重新启动空间音频引擎", category: .audio)
+                try? self.start()
+            }
+        @unknown default:
+            break
+        }
+    }
+    
+    @objc internal func handleAudioSessionRouteChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let reasonValue = userInfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue) else {
+            return
+        }
+        
+        if reason == .oldDeviceUnavailable {
+            Log.info("音频输出线路断开 (如耳机拔出/蓝牙断开)，自动暂停引擎以防外放声音突变", category: .audio)
+            self.stop()
+        }
+    }
+    #endif
 }

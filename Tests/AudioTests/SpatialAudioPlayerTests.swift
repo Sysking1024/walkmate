@@ -252,4 +252,42 @@ final class SpatialAudioPlayerTests: XCTestCase {
         
         player.stop()
     }
+    
+    // MARK: - 测试 8: 音频会话打断与恢复通知响应验证 (T011)
+    func testAudioSessionInterruptionHandling() throws {
+        #if os(iOS)
+        let player = SpatialAudioPlayer()
+        try player.start()
+        XCTAssertTrue(player.isRunning)
+        
+        // 1. 模拟系统音频打断开始（如电话呼入、Siri 激活）
+        NotificationCenter.default.post(
+            name: AVAudioSession.interruptionNotification,
+            object: nil,
+            userInfo: [AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.began.rawValue]
+        )
+        XCTAssertFalse(player.isRunning, "收到系统打断开始通知后引擎必须安全停止")
+        
+        // 2. 模拟系统打断结束且系统允许恢复 (.shouldResume)
+        NotificationCenter.default.post(
+            name: AVAudioSession.interruptionNotification,
+            object: nil,
+            userInfo: [
+                AVAudioSessionInterruptionTypeKey: AVAudioSession.InterruptionType.ended.rawValue,
+                AVAudioSessionInterruptionOptionKey: AVAudioSession.InterruptionOptions.shouldResume.rawValue
+            ]
+        )
+        XCTAssertTrue(player.isRunning, "收到允许恢复通知后引擎必须自动重新启动")
+        
+        // 3. 模拟耳机线路断开 (oldDeviceUnavailable)
+        NotificationCenter.default.post(
+            name: AVAudioSession.routeChangeNotification,
+            object: nil,
+            userInfo: [AVAudioSessionRouteChangeReasonKey: AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue]
+        )
+        XCTAssertFalse(player.isRunning, "耳机拔出线路中断后必须暂停播放以保护听力")
+        
+        player.stop()
+        #endif
+    }
 }

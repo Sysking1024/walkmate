@@ -92,9 +92,9 @@
 
 **目标**：补齐系统级音频打断处理，并执行全工程全量回归测试，达到交付标准。
 
-- [ ] T011 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中集成 `AVAudioSession` 中断监听（电话呼入、Siri 激活、耳机拔出断开），实现自动安全暂停与恢复
-- [ ] T012 编写全景图驱动空间音频端到端集成测试 `Tests/PerceptionTests/PerceptionAudioIntegrationTests.swift`，加载真实样本 `tmp/pano_indoor.jpg` 注入 `SpatialPerceptionEngine`，在感知代理回调中驱动 `SpatialAudioPlayer.shared.setObstacleTarget` 与 `setNavigationTarget`，验证真实图像输入下全链路闭环，断言零崩溃、零主线程掉帧与声源坐标正确绑定
-- [ ] T013 运行全工程完整回归测试套件（执行 `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`, `AudioTests` 全量用例并断言接口时延 $\le 20\text{ms}$），确保 100% 绿灯且零编译警告
+- [X] T011 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中集成 `AVAudioSession` 中断监听（电话呼入、Siri 激活、耳机拔出断开），实现自动安全暂停与恢复
+- [X] T012 编写全景图驱动空间音频端到端集成测试 `Tests/PerceptionTests/PerceptionAudioIntegrationTests.swift`，加载真实样本 `tmp/pano_indoor.jpg` 注入 `SpatialPerceptionEngine`，在感知代理回调中驱动 `SpatialAudioPlayer.shared.setObstacleTarget` 与 `setNavigationTarget`，验证真实图像输入下全链路闭环，断言零崩溃、零主线程掉帧与声源坐标正确绑定
+- [X] T013 运行全工程完整回归测试套件（执行 `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`, `AudioTests` 全量用例并断言接口时延 $\le 20\text{ms}$），确保 100% 绿灯且零编译警告
 
 ---
 
