@@ -33,6 +33,10 @@ final class CompanionSession {
     private(set) var isBusy = false
     /// 最近一次调试落盘的帧路径与尺寸
     private(set) var savedFrameNote: String?
+    /// 语音指令是否在听
+    private(set) var isListening = false
+    /// 正在听到的话，供界面展示
+    private(set) var heardText = ""
 
     private var conversation = CompanionConversation()
     private var detector = StandstillDetector()
@@ -40,6 +44,9 @@ final class CompanionSession {
     private let fallbackNarrator = FallbackSceneNarrator()
     private let speech = SpeechRenderer()
     private let ciContext = CIContext()
+    private let listener = VoiceCommandListener()
+    /// 唤醒时顺带问的问题，描述完立刻作答
+    private var pendingQuestion: String?
 
     private var latestFrame: PanoramicFrame?
     /// 本次对谈锁定的那一帧，征询时就截下，保证描述的是使用者停下时看到的
@@ -63,9 +70,51 @@ final class CompanionSession {
             Task { @MainActor in self?.tick() }
         }
         Log.info("伙伴会话已启动，开始订阅相机帧", category: .narration)
+        startListening()
+    }
+
+    /// 开启语音指令：申请权限后持续听写，伙伴说话时暂停
+    private func startListening() {
+        speech.onSpeechFinished = { [weak self] in
+            Task { @MainActor in self?.listener.resume() }
+        }
+        listener.onPartial = { [weak self] text in self?.heardText = text }
+        listener.onUtterance = { [weak self] text in self?.handleVoice(text) }
+        Task {
+            guard await listener.requestAuthorization() else { return }
+            listener.start()
+            isListening = listener.isListening
+        }
+    }
+
+    /// 语音指令：按当前对谈窗口解析并执行
+    private func handleVoice(_ text: String) {
+        heardText = ""
+        let window: VoiceIntent.Window
+        if isBusy { window = .busy } else {
+            switch stage {
+            case .awaitingConsent: window = .awaitingConsent
+            case .awaitingFollowUp: window = .awaitingFollowUp
+            case .silent: window = .idle
+            case .describing, .answering: window = .busy
+            }
+        }
+        guard let intent = VoiceIntent.parse(text, window: window) else { return }
+        Log.info("语音意图：\(intent)", category: .narration)
+        switch intent {
+        case .yes: accept()
+        case .no: decline()
+        case .stop: dismiss()
+        case .ask(let question): ask(question)
+        case .describe(let question):
+            pendingQuestion = question
+            if stage == .awaitingConsent { accept() } else { describeNow() }
+        }
     }
 
     func stop() {
+        listener.stop()
+        isListening = false
         if let subscription { FrameBus.shared.unsubscribe(subscription) }
         subscription = nil
         ticker?.invalidate(); ticker = nil
@@ -162,6 +211,15 @@ final class CompanionSession {
         try? await Task.sleep(nanoseconds: UInt64(narration.text.count) * 230_000_000)
         conversation.finishDescribing(nowMs: nowMs)
         syncStage()
+
+        // 唤醒时顺带问了问题：描述说完接着答
+        if let question = pendingQuestion {
+            pendingQuestion = nil
+            Task { @MainActor in
+                while speech.isSpeaking { try? await Task.sleep(nanoseconds: 200_000_000) }
+                ask(question)
+            }
+        }
     }
 
     private func answerFollowUp(_ question: String) async {
@@ -203,6 +261,8 @@ final class CompanionSession {
     private func say(_ text: String) {
         conversation.record(.companion, text, nowMs: nowMs)
         transcript = conversation.turns
+        // 自己说话时不听，免得把自己的声音当指令
+        listener.suspend()
         speech.speak(text)
     }
 

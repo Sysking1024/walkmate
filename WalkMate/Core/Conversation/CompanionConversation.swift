@@ -12,7 +12,7 @@ import Foundation
 struct CompanionConversation {
 
     /// 判定为驻足所需的持续时长。太短会在等红灯、侧身避让时误触发。
-    static let standstillThresholdMs = 3_000
+    static let standstillThresholdMs = 5_000
     /// 两次主动征询之间的最小间隔
     static let cooldownAfterSessionMs = 60_000
     /// 被拒绝后的冷却时长。明显长于常规冷却，体现「拒绝了就别再烦我」。

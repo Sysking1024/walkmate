@@ -105,10 +105,12 @@ struct TrainingSessionView: View {
     }
 }
 
-/// 伙伴对谈卡：随对谈阶段切换内容与操作
+/// 伙伴对谈卡：随对谈阶段切换内容与操作。
+///
+/// 主要靠说话：说「walkmate，说说周围」随时唤起；伙伴问「要我说说这儿吗」时直接答「好」或「不用」；
+/// 描述完直接开口追问。按钮保留给读屏和不方便出声的场合。
 struct CompanionPanel: View {
     @Bindable var session: CompanionSession
-    @State private var question = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -129,6 +131,7 @@ struct CompanionPanel: View {
                 .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.85))
                 .fixedSize(horizontal: false, vertical: true)
 
+            listeningLine
             controls
         }
         .padding(WalkMateTheme.Layout.cardPadding)
@@ -141,12 +144,27 @@ struct CompanionPanel: View {
         switch session.stage {
         case .silent:
             return session.hasFrames
-                ? "伙伴在旁。停下来 3 秒，它会问你要不要听听周围。"
+                ? "伙伴在旁。停下来 5 秒它会问你，或者直接说「walkmate，说说周围」。"
                 : "相机连上后，伙伴会陪着你。"
-        case .awaitingConsent: return "要我说说这儿吗？"
+        case .awaitingConsent: return "要我说说这儿吗？说「好」或「不用」。"
         case .describing, .answering, .awaitingFollowUp:
             return session.transcript.last(where: { $0.speaker == .companion })?.text ?? ""
         }
+    }
+
+    /// 麦克风状态与正在听到的话
+    @ViewBuilder private var listeningLine: some View {
+        HStack(spacing: 8) {
+            Image(systemName: session.isListening ? "mic.fill" : "mic.slash")
+                .foregroundStyle(session.isListening ? WalkMateTheme.Colors.accentSoft : WalkMateTheme.Colors.textSecondary)
+            Text(session.isListening
+                 ? (session.heardText.isEmpty ? "听着呢" : session.heardText)
+                 : "没有麦克风权限，用下面的按钮")
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                .lineLimit(2)
+        }
+        .accessibilityElement(children: .combine)
     }
 
     @ViewBuilder private var controls: some View {
@@ -163,27 +181,7 @@ struct CompanionPanel: View {
         case .describing, .answering:
             WMButton(title: "停下", style: .subdued, height: 48) { session.dismiss() }
         case .awaitingFollowUp:
-            VStack(spacing: 10) {
-                HStack(spacing: 8) {
-                    TextField("想问什么", text: $question)
-                        .textFieldStyle(.plain)
-                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                        .padding(.horizontal, 14)
-                        .frame(minHeight: 48)
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
-                        .onSubmit(submit)
-                    WMButton(title: "问", height: 48, action: submit)
-                        .frame(width: 72)
-                        .disabled(question.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-                WMButton(title: "够了", style: .subdued, height: 48) { session.dismiss() }
-            }
+            WMButton(title: "够了", style: .subdued, height: 48) { session.dismiss() }
         }
-    }
-
-    private func submit() {
-        session.ask(question)
-        question = ""
     }
 }

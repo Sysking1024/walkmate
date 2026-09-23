@@ -9,7 +9,13 @@ import Foundation
 ///
 /// 第二点不可省略：这条线的产物是要分享进社群的，而社群里的接收方同样看不见。
 /// 一段只有字幕没有语音的视频，对目标受众等于空白。
-final class SpeechRenderer {
+final class SpeechRenderer: NSObject, AVSpeechSynthesizerDelegate {
+
+    /// 语音指令开着时为 true：音频会话要同时允许录音与外放
+    static var recordingEnabled = false
+    /// 朗读结束（或被打断）时回调，供语音指令恢复听写
+    var onSpeechFinished: (() -> Void)?
+    var isSpeaking: Bool { synthesizer.isSpeaking }
 
     /// 中文朗读音色。系统内置、离线可用，无需联网也无额外费用。
     private static let voiceIdentifier = "zh-CN"
@@ -19,6 +25,14 @@ final class SpeechRenderer {
 
     /// 合成器需在整个渲染过程中持有，提前释放会导致回调中断
     private let synthesizer = AVSpeechSynthesizer()
+
+    override init() {
+        super.init()
+        synthesizer.delegate = self
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) { onSpeechFinished?() }
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) { onSpeechFinished?() }
 
     /// 一段渲染好的语音
     struct RenderedSpeech {
@@ -34,8 +48,14 @@ final class SpeechRenderer {
     static func activatePlaybackSession() {
         #if os(iOS)
         do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
-            try AVAudioSession.sharedInstance().setActive(true)
+            let session = AVAudioSession.sharedInstance()
+            if recordingEnabled {
+                // 边听边说：外放 + 麦克风，允许与队友的空间音频混音
+                try session.setCategory(.playAndRecord, mode: .spokenAudio, options: [.defaultToSpeaker, .allowBluetoothHFP, .mixWithOthers])
+            } else {
+                try session.setCategory(.playback, mode: .spokenAudio)
+            }
+            try session.setActive(true)
         } catch {
             Log.warning("音频会话配置失败：\(error)", category: .narration)
         }

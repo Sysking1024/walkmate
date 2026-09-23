@@ -60,5 +60,9 @@
 	<array>
 		<string>iosamap</string>
 	</array>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>训练中用麦克风听你对伙伴说的话，比如「walkmate，说说周围」。</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>把你说的话转成文字，让伙伴听懂你的问题。</string>
 </dict>
 </plist>
