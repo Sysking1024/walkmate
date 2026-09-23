@@ -133,6 +133,11 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
             }
         }
         
+        // 连接成功时自动清除历史错误提示条
+        if state == .connected {
+            self.latestError = nil
+        }
+        
         // 状态变更触发针对视障用户的屏幕朗读通知
         let announcement: String
         switch state {

@@ -171,7 +171,8 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
         Log.info("开始通过 Wi-Fi Socket 连接 Insta360 全景相机...", category: .camera)
         currentState = .connecting
         
-        // 发起官方 Socket 握手
+        // 关键防护：先安全关闭旧 Socket 句柄以清理可能的残留异常状态，随后发起全新 Socket 握手
+        INSCameraManager.socket().shutdown()
         INSCameraManager.socket().setup()
     }
     
@@ -329,6 +330,15 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
                 }
             case .connectFailed:
                 currentState = .failed
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    let err = NSError(
+                        domain: "world.accera.walkmate.camera",
+                        code: -101,
+                        userInfo: [NSLocalizedDescriptionKey: "相机连接失败，请检查手机是否已连接相机Wi-Fi热点"]
+                    )
+                    self.delegate?.cameraPipeline(self, didEncounterError: err)
+                }
             case .noConnection:
                 if currentState == .connected {
                     currentState = .noConnection
@@ -349,6 +359,15 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
         Log.error("收到 INSCameraConnectionError 错误通知", category: .camera)
         currentState = .failed
         stopTelemetryTimer()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let err = NSError(
+                domain: "world.accera.walkmate.camera",
+                code: -100,
+                userInfo: [NSLocalizedDescriptionKey: "相机通信链路异常，请确认手机已加入相机Wi-Fi且无其他设备占用"]
+            )
+            self.delegate?.cameraPipeline(self, didEncounterError: err)
+        }
     }
     
     @objc private func handleCameraDidReconnect(_ notification: Notification) {
