@@ -5,7 +5,10 @@
 //  Created by Antigravity on 2026-09-23.
 //
 
+import CoreML
+import CoreVideo
 import simd
+import UIKit
 import XCTest
 @testable import WalkMate
 
@@ -153,5 +156,130 @@ final class GeometryTests: XCTestCase {
         // 6. 验证已有效剥离地面，非地面点集中包含上述障碍物点
         XCTAssertGreaterThan(result.nonGroundPoints.count, 0)
         XCTAssertLessThanOrEqual(result.nonGroundPoints.count, 250)
+    }
+    
+    // MARK: - 测试 5: 常数内存 EMA 指数滑动平均平滑滤波 (T013, Edge Cases)
+    func testEMADepthSmoothingFilter() {
+        projector.resetEMA()
+        let totalCount = DepthMatrix.width * DepthMatrix.height
+        let centerIdx = 128 * DepthMatrix.width + 256
+        
+        // 1. 首帧：全图均匀 2.0 米
+        var frame1Depths = ContiguousArray<Float>(repeating: 2.0, count: totalCount)
+        let matrix1 = DepthMatrix(values: frame1Depths, minDepth: 2.0, maxDepth: 2.0, timestampMs: 1000)
+        let cloud1 = projector.project(depthMatrix: matrix1, enableEMA: true)
+        let dist1 = simd_length(cloud1[centerIdx])
+        XCTAssertEqual(dist1, 2.0, accuracy: 0.02, "首帧中心点距离应为 2.0m")
+        
+        // 2. 次帧：中心点出现突发高反光/噪波跳变 (从 2.0m 骤增到 10.0m)
+        var frame2Depths = ContiguousArray<Float>(repeating: 2.0, count: totalCount)
+        frame2Depths[centerIdx] = 10.0
+        let matrix2 = DepthMatrix(values: frame2Depths, minDepth: 2.0, maxDepth: 10.0, timestampMs: 1100)
+        
+        // 启用 EMA 平滑滤波投影: 预期平滑深度为 0.7 * 10.0 + 0.3 * 2.0 = 7.6m
+        let cloud2Smoothed = projector.project(depthMatrix: matrix2, enableEMA: true)
+        let dist2Smoothed = simd_length(cloud2Smoothed[centerIdx])
+        XCTAssertEqual(dist2Smoothed, 7.6, accuracy: 0.1, "启用 EMA 滤波后中心点噪波应被显著平滑至 7.6m 左右")
+        
+        // 禁用 EMA 时的对照基准: 中心点直接为 10.0m
+        let cloud2Raw = projector.project(depthMatrix: matrix2, enableEMA: false)
+        let dist2Raw = simd_length(cloud2Raw[centerIdx])
+        XCTAssertEqual(dist2Raw, 10.0, accuracy: 0.05, "未启用 EMA 时中心点应直接反映原始噪波 10.0m")
+        
+        // 3. 测试重置功能
+        projector.resetEMA()
+        let cloud3 = projector.project(depthMatrix: matrix2, enableEMA: true)
+        let dist3 = simd_length(cloud3[centerIdx])
+        XCTAssertEqual(dist3, 10.0, accuracy: 0.05, "重置历史后首帧应重新初始化为当前原始输入")
+    }
+    
+    // MARK: - 测试 6: 基于真实全景图样本 (tmp/pano_indoor.jpg) 的真实室内地面 RANSAC 拟合验证 (T010, T040)
+    func testRealPanoIndoorRANSACGroundFitting() {
+        guard let realDepth = loadRealPanoIndoorDepth() else {
+            XCTFail("无法从 tmp/pano_indoor.jpg 加载真实全景深度矩阵")
+            return
+        }
+        
+        // 1. 基于真实全景图深度矩阵反投影生成 13 万个 3D 点
+        let realPoints = projector.project(depthMatrix: realDepth, enableEMA: true)
+        XCTAssertEqual(realPoints.count, DepthMatrix.width * DepthMatrix.height)
+        
+        // 2. 对真实点云执行纯动态 RANSAC 地面拟合
+        let result = groundEstimator.estimateGround(from: realPoints)
+        
+        // 3. 验证真实室内场景下的物理相机离地高度 (样本 pano_indoor.jpg 为矮茶几/低脚架放置实拍，高度约 0.47m)
+        XCTAssertGreaterThanOrEqual(result.cameraHeight, 0.40, "解算出的真实相机高度过低: \(result.cameraHeight)m")
+        XCTAssertLessThanOrEqual(result.cameraHeight, 0.60, "解算出的真实相机高度过高: \(result.cameraHeight)m")
+        
+        // 4. 验证地平面法向量主要垂直朝上 (+Y 轴方向，分量 >= 0.75)
+        XCTAssertGreaterThanOrEqual(result.groundPlane.y, 0.75, "真实地面法向量 Y 分量应主导朝上: \(result.groundPlane.y)")
+        
+        // 5. 验证成功剥离出平整地面点与非地面物体点
+        XCTAssertGreaterThan(result.groundPointsCount, 500, "真实室内地面点识别数量不足")
+        XCTAssertGreaterThan(result.nonGroundPoints.count, 500, "真实室内非地面障碍物点数量不足")
+    }
+    
+    // MARK: - 辅助方法：读取真实 pano_indoor.jpg 深度矩阵
+    private func loadRealPanoIndoorDepth() -> DepthMatrix? {
+        let sourceFileURL = URL(fileURLWithPath: #filePath)
+        let panoURL = sourceFileURL
+            .deletingLastPathComponent() // GeometryTests
+            .deletingLastPathComponent() // Tests
+            .deletingLastPathComponent() // 工作空间根目录
+            .appendingPathComponent("tmp/pano_indoor.jpg")
+        
+        guard FileManager.default.fileExists(atPath: panoURL.path) else {
+            fatalError("【形式主义清零】必须存在真实样本 tmp/pano_indoor.jpg，严禁静默伪造！路径: \(panoURL.path)")
+        }
+        
+        guard let image = UIImage(contentsOfFile: panoURL.path),
+              let pixelBuffer = pixelBuffer(from: image) else {
+            fatalError("【形式主义清零】加载 tmp/pano_indoor.jpg 并转换 CVPixelBuffer 失败！")
+        }
+        
+        do {
+            let preprocessor = AcceleratePreprocessor()
+            let dapEngine = try DAPEngine()
+            let tensor = try preprocessor.preprocess(pixelBuffer: pixelBuffer)
+            return try dapEngine.inferDepth(from: tensor, timestampMs: 1000)
+        } catch {
+            return nil
+        }
+    }
+    
+    private func pixelBuffer(from image: UIImage) -> CVPixelBuffer? {
+        let width = Int(image.size.width)
+        let height = Int(image.size.height)
+        var pixelBuffer: CVPixelBuffer?
+        let attrs: [CFString: Any] = [
+            kCVPixelBufferCGImageCompatibilityKey: true,
+            kCVPixelBufferCGBitmapContextCompatibilityKey: true
+        ]
+        let status = CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            width,
+            height,
+            kCVPixelFormatType_32BGRA,
+            attrs as CFDictionary,
+            &pixelBuffer
+        )
+        guard status == kCVReturnSuccess, let buffer = pixelBuffer, let cgImage = image.cgImage else { return nil }
+        
+        CVPixelBufferLockBaseAddress(buffer, [])
+        if let baseAddress = CVPixelBufferGetBaseAddress(buffer) {
+            let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+            let context = CGContext(
+                data: baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: CVPixelBufferGetBytesPerRow(buffer),
+                space: rgbColorSpace,
+                bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+            )
+            context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+        }
+        CVPixelBufferUnlockBaseAddress(buffer, [])
+        return buffer
     }
 }

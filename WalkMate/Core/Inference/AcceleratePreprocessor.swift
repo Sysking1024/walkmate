@@ -111,36 +111,55 @@ public final class AcceleratePreprocessor: Sendable {
             throw PreprocessingError.multiArrayCreationFailed
         }
         
-        // 5. 将交错排列的像素分离为 Planar RGB 并批量归一化到 [0.0, 1.0]
+        // 5. 使用 vImageConvert_ARGB8888toPlanar8 硬件分离四通道至平面缓冲区
         let planeSize = destHeight * destWidth
-        let outPtr = multiArray.dataPointer.bindMemory(to: Float.self, capacity: 3 * planeSize)
+        let planarBlock = UnsafeMutablePointer<UInt8>.allocate(capacity: 4 * planeSize)
+        defer { planarBlock.deallocate() }
         
+        let p0 = planarBlock
+        let p1 = planarBlock.advanced(by: planeSize)
+        let p2 = planarBlock.advanced(by: 2 * planeSize)
+        let p3 = planarBlock.advanced(by: 3 * planeSize)
+        
+        var buf0 = vImage_Buffer(data: p0, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destWidth)
+        var buf1 = vImage_Buffer(data: p1, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destWidth)
+        var buf2 = vImage_Buffer(data: p2, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destWidth)
+        var buf3 = vImage_Buffer(data: p3, height: vImagePixelCount(destHeight), width: vImagePixelCount(destWidth), rowBytes: destWidth)
+        
+        let convertErr = vImageConvert_ARGB8888toPlanar8(&destBuffer, &buf0, &buf1, &buf2, &buf3, vImage_Flags(kvImageNoFlags))
+        guard convertErr == kvImageNoError else {
+            Log.error("vImage 通道分离失败: \(convertErr)", category: .perception)
+            throw PreprocessingError.scalingFailed(convertErr)
+        }
+        
+        // 6. 根据输入格式 (BGRA vs RGBA) 映射 R, G, B 通道
+        let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+        let isBGRA = (pixelFormat == kCVPixelFormatType_32BGRA)
+        
+        let rSource = isBGRA ? p2 : p0
+        let gSource = p1
+        let bSource = isBGRA ? p0 : p2
+        
+        // 7. 使用 vDSP 芯片级硬件向量指令执行 UInt8 转 Float32 及归一化 (x * (1/255.0))
+        let outPtr = multiArray.dataPointer.bindMemory(to: Float.self, capacity: 3 * planeSize)
         let redPlane = outPtr
         let greenPlane = outPtr.advanced(by: planeSize)
         let bluePlane = outPtr.advanced(by: 2 * planeSize)
         
-        // 判断输入像素格式 (默认 iOS 相机/解码器大多为 BGRA)
-        let pixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
-        let isBGRA = (pixelFormat == kCVPixelFormatType_32BGRA)
+        let length = vDSP_Length(planeSize)
+        var scale: Float = 1.0 / 255.0
         
-        // 遍历所有像素提取并归一化
-        let scaleFactor: Float = 1.0 / 255.0
-        for i in 0..<planeSize {
-            let offset = i * 4
-            let b = Float(destData[offset + 0]) * scaleFactor
-            let g = Float(destData[offset + 1]) * scaleFactor
-            let r = Float(destData[offset + 2]) * scaleFactor
-            
-            if isBGRA {
-                redPlane[i] = r
-                greenPlane[i] = g
-                bluePlane[i] = b
-            } else {
-                redPlane[i] = b
-                greenPlane[i] = g
-                bluePlane[i] = r
-            }
-        }
+        // 红色平面
+        vDSP_vfltu8(rSource, 1, redPlane, 1, length)
+        vDSP_vsmul(redPlane, 1, &scale, redPlane, 1, length)
+        
+        // 绿色平面
+        vDSP_vfltu8(gSource, 1, greenPlane, 1, length)
+        vDSP_vsmul(greenPlane, 1, &scale, greenPlane, 1, length)
+        
+        // 蓝色平面
+        vDSP_vfltu8(bSource, 1, bluePlane, 1, length)
+        vDSP_vsmul(bluePlane, 1, &scale, bluePlane, 1, length)
         
         return multiArray
     }

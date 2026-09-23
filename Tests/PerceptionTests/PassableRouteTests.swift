@@ -139,4 +139,54 @@ final class PassableRouteTests: XCTestCase {
             XCTAssertFalse(route.isPathAvailable, "通道全阻挡时应明确标记 isPathAvailable = false")
         }
     }
+    
+    // MARK: - 辅助方法：生成指定通道净宽的门洞隔离墙体障碍物 (封闭横向两侧以确保通道为唯一路径)
+    private func createCorridorWithGap(gapWidth: Float, z: Float = -1.0) -> [ObstacleItem] {
+        var obstacles: [ObstacleItem] = []
+        let halfGap = gapWidth / 2.0
+        let totalHalfWidth: Float = 3.0
+        let wallSpan = totalHalfWidth - halfGap
+        if wallSpan > 0 {
+            // 左侧连续墙体 (覆盖 [-3.0, -halfGap])
+            let leftCenter = -(halfGap + wallSpan / 2.0)
+            obstacles.append(createObstacle(id: 101, x: leftCenter, z: z, width: wallSpan, depth: 0.4))
+            
+            // 右侧连续墙体 (覆盖 [+halfGap, +3.0])
+            let rightCenter = halfGap + wallSpan / 2.0
+            obstacles.append(createObstacle(id: 102, x: rightCenter, z: z, width: wallSpan, depth: 0.4))
+        }
+        return obstacles
+    }
+    
+    // MARK: - 测试 5: 临界宽度通道通行判定与滞后区间 (0.55m ~ 0.65m Hysteresis)
+    func testPassageHysteresisThresholds() {
+        planner.reset()
+        
+        // 1. 初始状态（未开通）：通道宽度 0.60m（处于 [0.55m, 0.65m] 临界区间）
+        // 预期：未达到 0.65m 开通门限，判定为不可通行
+        let corridor060 = createCorridorWithGap(gapWidth: 0.60, z: -1.0)
+        let routeInitial = planner.planRoute(obstacles: corridor060, cameraHeight: 1.4)
+        XCTAssertFalse(routeInitial.isPathAvailable, "通道初次开通门槛为 0.65m，0.60m 临界宽度应判定不可通行以保安全")
+        
+        // 2. 通道拓宽至 0.70m（大于 0.65m 开通门限）
+        let corridor070 = createCorridorWithGap(gapWidth: 0.70, z: -1.0)
+        let routeOpened = planner.planRoute(obstacles: corridor070, cameraHeight: 1.4)
+        XCTAssertTrue(routeOpened.isPathAvailable, "通道宽度 0.70m 超过 0.65m 开通门槛，应判定为可通行")
+        
+        // 3. 通道轻微收窄至 0.58m（处于 [0.55m, 0.65m] 临界区间）
+        // 预期：因为前一帧已经开通，且 0.58m >= 0.55m（关闭门限），滞后机制应保持通行状态，防止抖动
+        let corridor058 = createCorridorWithGap(gapWidth: 0.58, z: -1.0)
+        let routeStayOpen = planner.planRoute(obstacles: corridor058, cameraHeight: 1.4)
+        XCTAssertTrue(routeStayOpen.isPathAvailable, "已开通通道在收窄至 0.58m (>= 0.55m 关闭门槛) 时，滞后机制应维持通行状态")
+        
+        // 4. 通道进一步收窄至 0.50m（跌破 0.55m 关闭门限）
+        let corridor050 = createCorridorWithGap(gapWidth: 0.50, z: -1.0)
+        let routeClosed = planner.planRoute(obstacles: corridor050, cameraHeight: 1.4)
+        XCTAssertFalse(routeClosed.isPathAvailable, "通道收窄至 0.50m (< 0.55m 关闭门槛)，应及时关闭通路")
+        
+        // 5. 通道恢复至 0.58m
+        // 预期：由于上一步已关闭，恢复开通需重新达到 0.65m，因此 0.58m 维持关闭状态
+        let routeStayClosed = planner.planRoute(obstacles: corridor058, cameraHeight: 1.4)
+        XCTAssertFalse(routeStayClosed.isPathAvailable, "已关闭通道在未达到 0.65m 开通门限前，0.58m 应维持关闭状态")
+    }
 }

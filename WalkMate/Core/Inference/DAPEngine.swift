@@ -59,14 +59,21 @@ public final class DAPEngine: DAPEngineProtocol {
         } else if let frameworkBundleURL = Bundle(for: DAPEngine.self).url(forResource: "dap_256x512_int8", withExtension: "mlpackage") {
             finalURL = frameworkBundleURL
         } else {
-            // 开发与脱机单元测试环境下的绝对路径与相对路径后备搜索
+            // 开发与脱机单元测试环境下的相对路径与工作空间动态定位
+            let sourceFileURL = URL(fileURLWithPath: #filePath)
+            let projectRootURL = sourceFileURL
+                .deletingLastPathComponent() // Inference
+                .deletingLastPathComponent() // Core
+                .deletingLastPathComponent() // WalkMate
+                .deletingLastPathComponent() // 工作空间根目录
+            
             let candidatePaths = [
                 "WalkMate/Resources/Models/dap_256x512_int8.mlpackage",
                 "../WalkMate/Resources/Models/dap_256x512_int8.mlpackage",
                 "tmp/dap_256x512_int8.mlpackage",
                 "../tmp/dap_256x512_int8.mlpackage",
-                "/Users/wuyiming/Code/walkmate/WalkMate/Resources/Models/dap_256x512_int8.mlpackage",
-                "/Users/wuyiming/Code/walkmate/tmp/dap_256x512_int8.mlpackage"
+                projectRootURL.appendingPathComponent("WalkMate/Resources/Models/dap_256x512_int8.mlpackage").path,
+                projectRootURL.appendingPathComponent("tmp/dap_256x512_int8.mlpackage").path
             ]
             var foundURL: URL?
             for path in candidatePaths {

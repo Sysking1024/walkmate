@@ -108,7 +108,8 @@ final class ObstacleTrackingTests: XCTestCase {
             return
         }
         
-        XCTAssertLessThanOrEqual(obs.distance, 0.35, "盲区距离应处于极近区间")
+        XCTAssertEqual(obs.distance, 0.3, accuracy: 0.001, "盲区距离应统一转换为 0.3 米极近距离")
+        XCTAssertEqual(simd_length(obs.position), 0.3, accuracy: 0.001, "盲区障碍物坐标应统一换算至 0.3 米球面")
         XCTAssertEqual(obs.threatLevel, .danger, "贴身极近障碍物必须赋予 danger 威胁等级")
     }
     

@@ -176,19 +176,34 @@ public final class ObstacleDetector: Sendable {
                 max(0.1, rawSize.z)
             )
             
-            // 4. 换算极坐标几何参数
-            let distance = simd_length(center)
+            // 4. 换算极坐标几何参数与盲区规约
+            let rawDistance = simd_length(center)
+            let distance: Float
+            let position: SIMD3<Float>
+            
+            // 超近距离盲区兜底 (< 0.3 米)：统一转换为 0.3 米极近距离输出并调整三维坐标 (Edge Cases / FR-009)
+            if rawDistance < 0.3 {
+                distance = 0.3
+                if rawDistance > 0.0001 {
+                    position = (center / rawDistance) * 0.3
+                } else {
+                    position = SIMD3<Float>(0, 0, -0.3)
+                }
+            } else {
+                distance = rawDistance
+                position = center
+            }
             
             // 方位偏角 (-180° ~ +180°): iOS 空间音频右手系中 +X 为右, -Z 为前向
             // 前向 (0, 0, -z) 对应 0°, 右方 (+x, 0, 0) 对应 +90°, 左方 (-x, 0, 0) 对应 -90°
-            let azimuth = atan2(center.x, -center.z) * (180.0 / .pi)
+            let azimuth = atan2(position.x, -position.z) * (180.0 / .pi)
             
             // 垂直仰角
-            let horizontalDistance = sqrt(center.x * center.x + center.z * center.z)
-            let elevation = atan2(center.y, max(horizontalDistance, 0.001)) * (180.0 / .pi)
+            let horizontalDistance = sqrt(position.x * position.x + position.z * position.z)
+            let elevation = atan2(position.y, max(horizontalDistance, 0.001)) * (180.0 / .pi)
             
             // 是否处于使用者身后的视野 (+Z 轴或偏角绝对值 > 90°)
-            let isRear = center.z > 0 || abs(azimuth) > 90.0
+            let isRear = position.z > 0 || abs(azimuth) > 90.0
             
             // 5. 超近距离盲区兜底与威胁评级解算
             let effectiveDistance = max(distance, 0.3)
@@ -216,7 +231,7 @@ public final class ObstacleDetector: Sendable {
             
             let item = ObstacleItem(
                 id: 0, // 初始未追踪 ID
-                position: center,
+                position: position,
                 distance: distance,
                 azimuth: azimuth,
                 elevation: elevation,

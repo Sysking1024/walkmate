@@ -7,6 +7,7 @@
 
 import CoreML
 import CoreVideo
+import UIKit
 import XCTest
 @testable import WalkMate
 
@@ -33,13 +34,32 @@ final class InferenceTests: XCTestCase {
         super.tearDown()
     }
     
-    // MARK: - 辅助方法：生成或读取测试用全景 CVPixelBuffer
-    private func createTestPixelBuffer(width: Int = 1920, height: Int = 960) -> CVPixelBuffer {
+    // MARK: - 辅助方法：读取真实 pano_indoor.jpg 全景 CVPixelBuffer
+    private func loadRealPanoIndoorPixelBuffer() -> CVPixelBuffer {
+        let sourceFileURL = URL(fileURLWithPath: #filePath)
+        let panoURL = sourceFileURL
+            .deletingLastPathComponent() // InferenceTests
+            .deletingLastPathComponent() // Tests
+            .deletingLastPathComponent() // 工作空间根目录
+            .appendingPathComponent("tmp/pano_indoor.jpg")
+        
+        guard FileManager.default.fileExists(atPath: panoURL.path) else {
+            fatalError("【形式主义清零】必须存在真实样本 tmp/pano_indoor.jpg，严禁静默回退伪造数据！路径: \(panoURL.path)")
+        }
+        
+        guard let image = UIImage(contentsOfFile: panoURL.path), let buffer = pixelBuffer(from: image) else {
+            fatalError("【形式主义清零】加载 tmp/pano_indoor.jpg 并转换 CVPixelBuffer 失败！")
+        }
+        return buffer
+    }
+    
+    private func pixelBuffer(from image: UIImage) -> CVPixelBuffer? {
+        let width = Int(image.size.width)
+        let height = Int(image.size.height)
         var pixelBuffer: CVPixelBuffer?
         let attrs: [CFString: Any] = [
             kCVPixelBufferCGImageCompatibilityKey: true,
-            kCVPixelBufferCGBitmapContextCompatibilityKey: true,
-            kCVPixelBufferIOSurfacePropertiesKey: [:]
+            kCVPixelBufferCGBitmapContextCompatibilityKey: true
         ]
         let status = CVPixelBufferCreate(
             kCFAllocatorDefault,
@@ -49,24 +69,21 @@ final class InferenceTests: XCTestCase {
             attrs as CFDictionary,
             &pixelBuffer
         )
-        guard status == kCVReturnSuccess, let buffer = pixelBuffer else {
-            fatalError("无法创建测试 CVPixelBuffer")
-        }
+        guard status == kCVReturnSuccess, let buffer = pixelBuffer, let cgImage = image.cgImage else { return nil }
         
-        // 填充渐变或纯色像素，模拟真实全景图像
         CVPixelBufferLockBaseAddress(buffer, [])
         if let baseAddress = CVPixelBufferGetBaseAddress(buffer) {
-            let bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
-            let ptr = baseAddress.assumingMemoryBound(to: UInt8.self)
-            for y in 0..<height {
-                for x in 0..<width {
-                    let offset = y * bytesPerRow + x * 4
-                    ptr[offset + 0] = UInt8((x * 255) / width)     // B
-                    ptr[offset + 1] = UInt8((y * 255) / height)    // G
-                    ptr[offset + 2] = 128                          // R
-                    ptr[offset + 3] = 255                          // A
-                }
-            }
+            let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+            let context = CGContext(
+                data: baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: CVPixelBufferGetBytesPerRow(buffer),
+                space: rgbColorSpace,
+                bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
+            )
+            context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
         }
         CVPixelBufferUnlockBaseAddress(buffer, [])
         return buffer
@@ -74,7 +91,10 @@ final class InferenceTests: XCTestCase {
     
     // MARK: - 测试 1: 图像硬件向量化缩放与归一化
     func testAcceleratePreprocessorOutputShapeAndNormalization() throws {
-        let inputBuffer = createTestPixelBuffer(width: 1920, height: 960)
+        let inputBuffer = loadRealPanoIndoorPixelBuffer()
+        
+        // 预热一帧，排除缺页中断与冷启动缓存影响
+        _ = try preprocessor.preprocess(pixelBuffer: inputBuffer)
         
         let startTime = CFAbsoluteTimeGetCurrent()
         let tensor = try preprocessor.preprocess(pixelBuffer: inputBuffer)
@@ -87,8 +107,8 @@ final class InferenceTests: XCTestCase {
         XCTAssertEqual(tensor.shape[2].intValue, 256)
         XCTAssertEqual(tensor.shape[3].intValue, 512)
         
-        // 2. 验证预处理耗时满足 15ms 预算 (预算目标 11.2ms)
-        XCTAssertLessThanOrEqual(elapsedMs, 30.0, "预处理单帧耗时超出容差阈值: \(elapsedMs)ms")
+        // 2. 验证预处理耗时满足 11.2ms 硬件向量化预算 (严格遵守 T011 与宪章原则二)
+        XCTAssertLessThanOrEqual(elapsedMs, 11.2, "Accelerate vDSP 硬件向量化单帧耗时超出 11.2ms 预算: \(elapsedMs)ms")
         
         // 3. 验证归一化数值范围严格在 [0.0, 1.0] 内
         let count = tensor.count
@@ -111,7 +131,7 @@ final class InferenceTests: XCTestCase {
             return
         }
         
-        let inputBuffer = createTestPixelBuffer(width: 1920, height: 960)
+        let inputBuffer = loadRealPanoIndoorPixelBuffer()
         let tensor = try preprocessor.preprocess(pixelBuffer: inputBuffer)
         
         let startTime = CFAbsoluteTimeGetCurrent()

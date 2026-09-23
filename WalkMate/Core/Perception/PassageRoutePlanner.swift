@@ -28,11 +28,20 @@ public final class PassageRoutePlanner: Sendable {
     /// 前向最大探测纵深 (米, 0 ~ 6.0m)
     public static let maxDepthMeters: Float = 6.0
     
-    /// 人体标准通行宽度约束 (米, 默认 0.6m)
+    /// 人体标准通行宽度基准约束 (米, 默认 0.6m)
     private let bodyWidthThreshold: Float
     
     /// 航路点前向采样期望步长 (米, 默认 0.4m)
     private let waypointStepMeters: Float
+    
+    /// 通道开通判定门限 (米, 规范设定 0.65m)
+    public static let openHysteresisThreshold: Float = 0.65
+    /// 通道关闭判定门限 (米, 规范设定 0.55m)
+    public static let closeHysteresisThreshold: Float = 0.55
+    
+    private let stateLock = NSLock()
+    /// 上一帧通道是否处于可用开通状态 (供滞后区间判定)
+    private var isPreviouslyPassable: Bool = false
     
     /// 初始化路线规划器
     /// - Parameters:
@@ -44,6 +53,13 @@ public final class PassageRoutePlanner: Sendable {
     ) {
         self.bodyWidthThreshold = bodyWidthThreshold
         self.waypointStepMeters = waypointStepMeters
+    }
+    
+    /// 重置路线规划器内部滞后状态
+    public func reset() {
+        stateLock.lock()
+        isPreviouslyPassable = false
+        stateLock.unlock()
     }
     
     // MARK: - 核心规划方法
@@ -60,6 +76,16 @@ public final class PassageRoutePlanner: Sendable {
         let width = PassageRoutePlanner.gridWidth
         let height = PassageRoutePlanner.gridHeight
         let res = PassageRoutePlanner.resolution
+        
+        stateLock.lock()
+        let wasPassable = isPreviouslyPassable
+        stateLock.unlock()
+        
+        // 依据前序状态与规范边缘情况施加滞后区间门限 (0.55m ~ 0.65m):
+        // 若前序已开通，则维持开通的临界宽度放宽至 closeHysteresisThreshold (0.55m);
+        // 若前序未开通，则必须达到开通门槛 openHysteresisThreshold (0.65m) 才能激活
+        let activeWidthThreshold = wasPassable ? Self.closeHysteresisThreshold : Self.openHysteresisThreshold
+        let requiredClearanceRadius = activeWidthThreshold / 2.0
         
         // 1. 初始化 300x300 二维二值栅格 (0 表示障碍物，大数值表示自由空间)
         var grid = [Float](repeating: 1e8, count: width * height)
@@ -113,7 +139,6 @@ public final class PassageRoutePlanner: Sendable {
         
         let startR = 0
         let startC = (width / 2) / searchScale
-        let requiredClearanceRadius = bodyWidthThreshold / 2.0
         
         // A* 优先队列节点
         struct SearchNode: Comparable {
@@ -272,6 +297,10 @@ public final class PassageRoutePlanner: Sendable {
         
         // 8. 综合判定路线可用性与起步推荐朝向
         let isPathAvailable = !waypoints.isEmpty && maxTraversedDepth >= 1.2
+        
+        stateLock.lock()
+        isPreviouslyPassable = isPathAvailable
+        stateLock.unlock()
         
         let recommendedHeading: Float
         if let firstWp = waypoints.first {

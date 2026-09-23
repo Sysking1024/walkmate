@@ -158,6 +158,8 @@ public final class SpatialPerceptionEngine: SpatialPerceptionEngineProtocol, @un
         guard !_isRunning else { return }
         _isRunning = true
         obstacleTracker.reset()
+        routePlanner.reset()
+        projector.resetEMA()
         Log.info("空间感知流水线已启动", category: .perception)
     }
     
@@ -168,6 +170,8 @@ public final class SpatialPerceptionEngine: SpatialPerceptionEngineProtocol, @un
         guard _isRunning else { return }
         _isRunning = false
         obstacleTracker.reset()
+        routePlanner.reset()
+        projector.resetEMA()
         Log.info("空间感知流水线已停止", category: .perception)
     }
     

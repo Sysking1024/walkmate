@@ -190,3 +190,15 @@ Phase 2: Foundational (T004 ~ T008 数据模型与资源)
   - 在 Phase 2 底层算法就绪后，US2（障碍物检测追踪）与 US3（路线规划）完全解耦，T022/T023/T024 与 T025/T026 可由不同开发者**100% 并行执行**。
 - **Phase 6 纯计算工具箱独立并行**：
   - T027 与 T028 为纯数学计算，无任何硬件依赖，可随时提前并行开发与测试。
+
+---
+
+## Phase 9: Convergence
+
+- [x] T036 [CRITICAL] 修正 `Tests/PerceptionTests/PerceptionEngineTests.swift` 虚假断言，并清理 `WalkMate/Core/Inference/DAPEngine.swift` 中的绝对路径硬编码，区分模拟器/CPU 与真机/ANE 环境的真实延迟基准断言 per Constitution II, SC-003 (contradicts)
+- [x] T037 [CRITICAL] 重构 Accelerate 预处理器 `WalkMate/Core/Inference/AcceleratePreprocessor.swift`，使用 `vImageConvert_ARGB8888toPlanar8` 与 `vDSP_vfltu8` 硬件向量化替代 CPU 遍历循环，收紧 `Tests/InferenceTests/InferenceTests.swift` 耗时断言至 $\le 11.2\text{ms}$ per Constitution II, T011 (partial)
+- [x] T038 [HIGH] 在 `WalkMate/Core/Perception/PassageRoutePlanner.swift` 中实现人体通行临界宽度 $[0.55\text{m}, 0.65\text{m}]$ 的滞后区间（Hysteresis）状态机，并在 `Tests/PerceptionTests/PassableRouteTests.swift` 中增加临界通道开通/关闭抖动测试用例 per FR-011, Edge Cases (partial)
+- [x] T039 [MEDIUM] 在 `WalkMate/Core/Geometry/SphericalProjector.swift` 中补齐常数内存的 EMA 平滑滤波逻辑，并在 `Tests/GeometryTests/GeometryTests.swift` 中增加孤立噪点平滑滤波验证断言 per T013, Edge Cases (missing)
+- [x] T040 [MEDIUM] 将真实样本 `tmp/pano_indoor.jpg` 接入 `Tests/InferenceTests/InferenceTests.swift` 与 `Tests/GeometryTests/GeometryTests.swift`，替换纯理想合成点，验证真实室内深度下的 RANSAC 地面拟合误差 $\le 5\text{cm}$ per T009, T010 (partial)
+- [x] T041 [LOW] 在 `WalkMate/Core/Perception/ObstacleDetector.swift` 中对进入 $< 0.3\text{m}$ 盲区的障碍物坐标与距离统一转换为 0.3 米极近距离输出 per FR-009, Edge Cases (partial)
+

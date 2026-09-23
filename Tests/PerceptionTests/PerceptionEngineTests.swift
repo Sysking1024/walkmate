@@ -58,22 +58,25 @@ final class PerceptionEngineTests: XCTestCase, SpatialPerceptionDelegate {
         receivedError = error
     }
     
-    // MARK: - 辅助方法：读取真实 pano_indoor.jpg 或生成合成全景帧
+    // MARK: - 辅助方法：读取真实 pano_indoor.jpg 全景帧
     private func createTestPanoramicFrame(timestampMs: Int64 = 1000) -> PanoramicFrame {
-        let panoPath = "/Users/wuyiming/Code/walkmate/tmp/pano_indoor.jpg"
-        if let image = UIImage(contentsOfFile: panoPath), let pixelBuffer = pixelBuffer(from: image) {
-            return PanoramicFrame(
-                pixelBuffer: pixelBuffer,
-                timestampMs: timestampMs,
-                orientation: simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)),
-                acceleration: SIMD3<Float>(0, -9.8, 0)
-            )
+        let sourceFileURL = URL(fileURLWithPath: #filePath)
+        let panoURL = sourceFileURL
+            .deletingLastPathComponent() // PerceptionTests
+            .deletingLastPathComponent() // Tests
+            .deletingLastPathComponent() // repo root
+            .appendingPathComponent("tmp/pano_indoor.jpg")
+        
+        guard FileManager.default.fileExists(atPath: panoURL.path) else {
+            fatalError("【形式主义清零】必须存在真实样本 tmp/pano_indoor.jpg，严禁静默回退伪造数据！路径: \(panoURL.path)")
         }
         
-        // 兜底合成全景帧
-        let fallbackBuffer = createFallbackPixelBuffer(width: 1920, height: 960)
+        guard let image = UIImage(contentsOfFile: panoURL.path), let pixelBuffer = pixelBuffer(from: image) else {
+            fatalError("【形式主义清零】加载 tmp/pano_indoor.jpg 并转换 CVPixelBuffer 失败！")
+        }
+        
         return PanoramicFrame(
-            pixelBuffer: fallbackBuffer,
+            pixelBuffer: pixelBuffer,
             timestampMs: timestampMs,
             orientation: simd_quatf(angle: 0, axis: SIMD3<Float>(0, 1, 0)),
             acceleration: SIMD3<Float>(0, -9.8, 0)
@@ -111,39 +114,6 @@ final class PerceptionEngineTests: XCTestCase, SpatialPerceptionDelegate {
                 bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue
             )
             context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-        }
-        CVPixelBufferUnlockBaseAddress(buffer, [])
-        return buffer
-    }
-    
-    private func createFallbackPixelBuffer(width: Int, height: Int) -> CVPixelBuffer {
-        var pixelBuffer: CVPixelBuffer?
-        let attrs: [CFString: Any] = [
-            kCVPixelBufferCGImageCompatibilityKey: true,
-            kCVPixelBufferCGBitmapContextCompatibilityKey: true
-        ]
-        _ = CVPixelBufferCreate(
-            kCFAllocatorDefault,
-            width,
-            height,
-            kCVPixelFormatType_32BGRA,
-            attrs as CFDictionary,
-            &pixelBuffer
-        )
-        let buffer = pixelBuffer!
-        CVPixelBufferLockBaseAddress(buffer, [])
-        if let baseAddress = CVPixelBufferGetBaseAddress(buffer) {
-            let bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
-            let ptr = baseAddress.assumingMemoryBound(to: UInt8.self)
-            for y in 0..<height {
-                for x in 0..<width {
-                    let offset = y * bytesPerRow + x * 4
-                    ptr[offset + 0] = 120
-                    ptr[offset + 1] = 130
-                    ptr[offset + 2] = 140
-                    ptr[offset + 3] = 255
-                }
-            }
         }
         CVPixelBufferUnlockBaseAddress(buffer, [])
         return buffer
@@ -274,7 +244,16 @@ final class PerceptionEngineTests: XCTestCase, SpatialPerceptionDelegate {
             totalElapsed += tElapsed
         }
         let avgLatencyMs = totalElapsed / Double(testIterations)
-        XCTAssertGreaterThan(avgLatencyMs, 0.0)
         Log.info("全链路端到端平均处理耗时: \(String(format: "%.2f", avgLatencyMs)) ms", category: .perception)
+        
+        #if targetEnvironment(simulator)
+        // 在 iOS 模拟器环境中，由于缺少 Apple Neural Engine (ANE) 硬件支持，CoreML INT8 采用纯 CPU 软件仿真回退
+        // 模拟器下单帧基准阈值设定为 3000ms 兜底防卡死，同时显式记录脱机环境警告
+        XCTAssertLessThanOrEqual(avgLatencyMs, 3000.0, "模拟器 CPU 软件仿真单帧处理超时，实测: \(avgLatencyMs)ms")
+        Log.warning("当前处于 iOS 模拟器脱机环境（缺少 ANE 硬件加速），单帧实测耗时为 \(avgLatencyMs)ms；真机搭载 ANE 神经引擎后方可达到 <= 130ms 目标", category: .perception)
+        #else
+        // 在 iPhone 15/16 真实物理设备上，必须由 ANE 神经引擎硬件加速，严格遵守 SC-003 与宪章原则二时延红线 (<= 130ms)
+        XCTAssertLessThanOrEqual(avgLatencyMs, 130.0, "真机 ANE 全链路单帧处理耗时超出 130ms 宪章红线，实测: \(avgLatencyMs)ms")
+        #endif
     }
 }
