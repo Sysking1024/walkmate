@@ -50,19 +50,21 @@ final class CommunityStore {
 enum SeedData {
     static let stores: [StoreSummary] = [
         StoreSummary(
-            id: "s_insta360", name: "影石Insta360", category: "购物", distanceKm: 2.2, coverKey: "store_insta360",
+            id: "s_insta360", name: "影石Insta360 仙林金鹰店", category: "购物", distanceKm: 2.2, coverKey: "store_insta360",
             averageScore: 4.8, visitorCount: 36, tags: ["无障碍入口", "方便独立前往", "店内安静", "无障碍卫生间"],
-            route: RouteInfo(start: "小区南门", end: "影石Insta360 门店", distanceMeters: 2200, averageObstacles: 6,
+            route: RouteInfo(start: "小区南门", end: "影石Insta360 仙林金鹰店", distanceMeters: 2200, averageObstacles: 6,
                              points: [[0.08, 0.85], [0.3, 0.8], [0.35, 0.55], [0.6, 0.5], [0.65, 0.25], [0.9, 0.15]],
                              obstacles: [[0.3, 0.8], [0.6, 0.5], [0.65, 0.25]],
-                             steps: ["出小区南门右转，沿人行道直行约 400 米", "路口有过街音响提示，直行过马路", "沿商场外墙走到玻璃门入口，门口有两级台阶"])),
+                             steps: ["出小区南门右转，沿人行道直行约 400 米", "路口有过街音响提示，直行过马路", "沿商场外墙走到玻璃门入口，门口有两级台阶"],
+                             destination: RouteInfo.Destination(name: "影石Insta360南京仙林金鹰店", address: "栖霞区仙林街道学海路1号仙林金鹰HB01-F1111", latitude: 32.103141, longitude: 118.926546))),
         StoreSummary(
-            id: "s_duck_soup", name: "南京鸭血粉丝汤店", category: "美食", distanceKm: 1.4, coverKey: "store_duck_soup",
+            id: "s_duck_soup", name: "回味鸭血粉丝汤 九霄梦天地店", category: "美食", distanceKm: 1.4, coverKey: "store_duck_soup",
             averageScore: 4.5, visitorCount: 21, tags: ["店员友善", "菜单可朗读", "有盲道", "店内安静"],
-            route: RouteInfo(start: "小区南门", end: "鸭血粉丝汤店", distanceMeters: 1400, averageObstacles: 4,
+            route: RouteInfo(start: "小区南门", end: "回味鸭血粉丝汤 九霄梦天地店", distanceMeters: 1400, averageObstacles: 4,
                              points: [[0.1, 0.8], [0.4, 0.78], [0.45, 0.45], [0.8, 0.4], [0.85, 0.2]],
                              obstacles: [[0.4, 0.78], [0.8, 0.4]],
-                             steps: ["出小区南门左转，沿盲道走约 300 米", "菜市场门口常有电动车停放，靠右侧行走", "店门口无台阶，推门进入"])),
+                             steps: ["出小区南门左转，沿盲道走约 300 米", "菜市场门口常有电动车停放，靠右侧行走", "店门口无台阶，推门进入"],
+                             destination: RouteInfo.Destination(name: "回味鸭血粉丝汤(九霄梦天地店)", address: "栖霞区仙林街道学衡路1号九霄梦天地B1层01号101号商铺", latitude: 32.092324, longitude: 118.917132))),
     ]
 
     /// 小区路线演示数据
