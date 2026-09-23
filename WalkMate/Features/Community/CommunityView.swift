@@ -492,17 +492,14 @@ struct JourneyCommentSheet: View {
     }
 }
 
-/// 邀请好友去某家店：选一个人、选个时间，发出即在卡片和首页任务里出现
+/// 邀请好友去某家店：选一个人发出即可，时间到时候再约
 struct InviteFriendSheet: View {
     let store: StoreSummary
     let onClose: () -> Void
 
     @State private var community = CommunityStore.shared
     @State private var friend: String = CommunityStore.friends.first?.name ?? ""
-    @State private var timeIndex = 0
     @State private var sent = false
-
-    private let times = ["明天上午 9:30", "明天下午 3:00", "周六上午 10:00", "周日下午 2:00"]
 
     var body: some View {
         NavigationStack {
@@ -539,29 +536,6 @@ struct InviteFriendSheet: View {
                     .padding(.vertical, 6)
                     .wmCard()
 
-                    WMSectionHeader(title: "什么时候")
-                    VStack(spacing: 0) {
-                        ForEach(Array(times.enumerated()), id: \.offset) { index, time in
-                            Button { timeIndex = index } label: {
-                                HStack {
-                                    Text(time).font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                                    Spacer()
-                                    Image(systemName: timeIndex == index ? "checkmark.circle.fill" : "circle")
-                                        .font(.system(size: 24))
-                                        .foregroundStyle(timeIndex == index ? WalkMateTheme.Colors.accent : Color.white.opacity(0.4))
-                                }
-                                .padding(.vertical, 10)
-                                .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityAddTraits(timeIndex == index ? [.isButton, .isSelected] : .isButton)
-                            if index < times.count - 1 { Divider().overlay(WalkMateTheme.Colors.divider) }
-                        }
-                    }
-                    .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
-                    .padding(.vertical, 6)
-                    .wmCard()
-
                     WMButton(title: sent ? "已发出邀请" : "发出邀请", height: 61) { send() }
                         .disabled(sent)
                 }
@@ -585,9 +559,9 @@ struct InviteFriendSheet: View {
     }
 
     private func send() {
-        community.invite(friend: friend, to: store, time: times[timeIndex])
+        community.invite(friend: friend, to: store, time: "时间待定")
         sent = true
-        AccessibilityFeedback.done("已邀请 \(friend)，\(times[timeIndex])")
+        AccessibilityFeedback.done("已邀请 \(friend)")
         Task {
             try? await Task.sleep(nanoseconds: 700_000_000)
             onClose()
