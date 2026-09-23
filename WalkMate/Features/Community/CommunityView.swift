@@ -219,18 +219,12 @@ struct CommunityView: View {
             Button {
                 if let video { player = AVPlayer(url: video) }
             } label: {
-                ZStack(alignment: .bottomLeading) {
-                    if let cover = CommunityStore.coverImage(for: journey) {
-                        Image(uiImage: cover).resizable().scaledToFill()
-                    } else {
-                        Image("journey_thumbnail").resizable().scaledToFill()
+                WMCoverImage(image: CommunityStore.coverImage(for: journey), fallback: "journey_thumbnail", height: 190)
+                    .overlay { WalkMateTheme.Gradients.coverShade }
+                    .overlay(alignment: .bottomLeading) {
+                        Image("journey_play_badge").resizable().scaledToFit().frame(width: 40).padding(14)
                     }
-                    WalkMateTheme.Gradients.coverShade
-                    Image("journey_play_badge").resizable().scaledToFit().frame(width: 40).padding(14)
-                }
-                .frame(maxWidth: .infinity)
-                .frame(height: 190)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
             .buttonStyle(.plain)
             .disabled(video == nil)

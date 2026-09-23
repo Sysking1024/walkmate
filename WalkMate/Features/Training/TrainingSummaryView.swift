@@ -64,18 +64,10 @@ struct TrainingSummaryView: View {
     private var reelSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             WMSectionHeader(title: "视频集锦")
-            ZStack(alignment: .bottomLeading) {
-                if let cover = result.moments.first?.frameURL, let image = UIImage(contentsOfFile: cover.path) {
-                    Image(uiImage: image).resizable().scaledToFill()
-                } else {
-                    Image("journey_thumbnail").resizable().scaledToFill()
-                }
-                WalkMateTheme.Gradients.coverShade
-                reelOverlay
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 200)
-            .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
+            WMCoverImage(image: result.moments.first.flatMap { UIImage(contentsOfFile: $0.frameURL.path) }, fallback: "journey_thumbnail", height: 200)
+                .overlay { WalkMateTheme.Gradients.coverShade }
+                .overlay(alignment: .bottomLeading) { reelOverlay }
+                .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
             .accessibilityElement(children: .contain)
         }
     }

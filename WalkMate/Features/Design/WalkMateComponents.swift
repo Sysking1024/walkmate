@@ -206,6 +206,30 @@ struct WMStatTile: View {
     }
 }
 
+/// 通栏封面：图片按 fill 铺满给定高度，超出部分裁掉。
+///
+/// 不能直接用 `Image.scaledToFill()`：它会把铺满后超出的那一边报给布局，
+/// 宽图（比如 2:1 的全景帧）会把整张卡片、乃至整页撑出屏幕。
+struct WMCoverImage: View {
+    let image: UIImage?
+    let fallback: String
+    let height: CGFloat
+
+    var body: some View {
+        Color.clear
+            .frame(maxWidth: .infinity)
+            .frame(height: height)
+            .overlay {
+                if let image {
+                    Image(uiImage: image).resizable().scaledToFill()
+                } else {
+                    Image(fallback).resizable().scaledToFill()
+                }
+            }
+            .clipped()
+    }
+}
+
 /// 从左到右排列、放不下就换行的布局，用于标签组
 struct WMFlowLayout: Layout {
     var spacing: CGFloat = 4
