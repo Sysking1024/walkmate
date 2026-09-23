@@ -116,6 +116,17 @@
                ReferencedContainer = "container:WalkMate.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "266E45B2CBE1B789CFDB81ED"
+               BuildableName = "ReplayTests.xctest"
+               BlueprintName = "ReplayTests"
+               ReferencedContainer = "container:WalkMate.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <CommandLineArguments>
       </CommandLineArguments>

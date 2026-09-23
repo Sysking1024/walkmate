@@ -1,0 +1,15 @@
+{
+  "sessionId": "session_blocked_sample",
+  "startTimeMs": 1774341000000,
+  "endTimeMs": 1774341002000,
+  "durationSeconds": 2.0,
+  "totalTelemetryFrames": 20,
+  "totalImageSnapshots": 4,
+  "deviceInfo": "iPhone 16 Pro",
+  "appVersion": "1.0.0",
+  "algorithmConfig": {
+    "bodyWidthThreshold": "0.60",
+    "waypointStepMeters": "0.40",
+    "groundStripMargin": "0.08"
+  }
+}
