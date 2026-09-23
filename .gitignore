@@ -32,6 +32,9 @@ Package.pins
 *~
 *.orig
 tmp/
-WalkMate/Frameworks/
+WalkMate/Frameworks
 *.mlpackage
 WalkMate/Resources/Models/*.mlpackage
+
+# 密钥文件，严禁提交
+WalkMate/Resources/Secrets.plist

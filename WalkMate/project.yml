@@ -33,6 +33,7 @@ targets:
       - path: App
       - path: Core
       - path: Models
+      - path: Features
       - path: Resources
     settings:
       base:

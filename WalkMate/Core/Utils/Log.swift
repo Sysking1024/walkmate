@@ -24,6 +24,8 @@ public enum Log {
     private static let audioLogger = Logger(subsystem: subsystem, category: "Audio")
     private static let uiLogger = Logger(subsystem: subsystem, category: "UI")
     private static let generalLogger = Logger(subsystem: subsystem, category: "General")
+    private static let narrationLogger = Logger(subsystem: subsystem, category: "Narration")
+    private static let recordingLogger = Logger(subsystem: subsystem, category: "Recording")
     
     // MARK: - 实时内存日志环形缓冲区 (供 UI 调试弹窗与一键复制)
     private static let logLock = NSLock()
@@ -126,6 +128,10 @@ public enum Log {
             return uiLogger
         case .general:
             return generalLogger
+        case .narration:
+            return narrationLogger
+        case .recording:
+            return recordingLogger
         }
     }
     
@@ -136,5 +142,9 @@ public enum Log {
         case audio = "空间音频"
         case ui = "用户界面"
         case general = "基础通用"
+        /// 场景描述、伙伴对谈与语音合成
+        case narration = "场景描述"
+        /// 训练记录短片的合成与导出
+        case recording = "记录合成"
     }
 }

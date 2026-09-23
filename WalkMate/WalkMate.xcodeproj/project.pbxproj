@@ -22,20 +22,29 @@
 		4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */; };
 		4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */; };
 		5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */; };
+		57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */ = {isa = PBXBuildFile; fileRef = E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */; };
 		6A01649963AB2BEAAD6845EC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5498756E59D2F84A66C26DF /* Log.swift */; };
 		6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */; };
+		6F0E4083F8E58A3740D2910F /* ConversationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D063BD2D47E4B75201BDCB /* ConversationModels.swift */; };
 		70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */; };
 		7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */; };
+		7425B3CC00981B3CB64103DD /* SpeechRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 078AD588D52A975F451A55FC /* SpeechRenderer.swift */; };
 		7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */; };
 		803DD792FFA80D3D24F2C3B8 /* ProceduralAudioSynthesizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */; };
 		85EB196A8D89C11E65E17274 /* ProceduralAudioSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */; };
 		8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */; };
+		8C09D2D18A228BA300DFF66D /* SceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */; };
 		8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8FEBC04F44FB98DD9F3EB09F /* SubtitleComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C583E912BC4D513B945E3D /* SubtitleComposer.swift */; };
+		957F8D68251E993AD82C528D /* QwenSpeechRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722F41754B566CC6C88138C1 /* QwenSpeechRenderer.swift */; };
+		95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 62905020C90431BD7831516A /* sample_erp_2.jpg */; };
 		970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB665524D4B1FD6014B271D /* InferenceTests.swift */; };
 		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
+		A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD40245303E20078AC0F4304 /* sample_erp_1.jpg */; };
 		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
 		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
 		B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */; };
+		B52EB5439FABCDFA9533B951 /* NarrationHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B655F6729037B17C8E9202BD /* NarrationHomeView.swift */; };
 		BA2E9D4812BDBFD4A554B0E9 /* SpatialAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */; };
 		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
 		BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */; };
@@ -43,13 +52,20 @@
 		BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93BE0730790922553537549 /* CameraPipeline.swift */; };
 		C1BA1CE198A17E94F9BB25ED /* GeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */; };
 		C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C386741DDF61B5E77854B400 /* NarrationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */; };
 		C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAAE4606E429E914DCB254E /* GravityAligner.swift */; };
 		C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */; };
+		CE1BBFB1A80BFE6F9E21F36F /* TrainingRecordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4219B1DDF080E9332C0B4DA1 /* TrainingRecordViewModel.swift */; };
 		D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */; };
+		D29483E2C3A526662360F9DD /* CompanionConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */; };
 		D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */; };
+		DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */; };
+		DD3B106550B53C36CABAD84A /* TrainingClipComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */; };
 		E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839DCF58737B54707405439 /* ToolModels.swift */; };
 		E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */; };
 		EA861847E607B54465C201DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044702FEF2781A714A52AF5 /* ContentView.swift */; };
+		EF66D8B621602D0ABF6CB379 /* ResilientSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */; };
+		F00FD760EF7D51263E7BD83C /* QwenSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */; };
 		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
 /* End PBXBuildFile section */
 
@@ -123,16 +139,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		078AD588D52A975F451A55FC /* SpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRenderer.swift; sourceTree = "<group>"; };
+		0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionConversation.swift; sourceTree = "<group>"; };
 		117593E93A9E84FC113FF610 /* PerceptionAudioIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionAudioIntegrationTests.swift; sourceTree = "<group>"; };
+		19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSceneNarrator.swift; sourceTree = "<group>"; };
 		2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalProjector.swift; sourceTree = "<group>"; };
 		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
 		296297A21A536E58CD824C1E /* PilotViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotViewModelTests.swift; sourceTree = "<group>"; };
 		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
 		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
+		40C583E912BC4D513B945E3D /* SubtitleComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleComposer.swift; sourceTree = "<group>"; };
+		4219B1DDF080E9332C0B4DA1 /* TrainingRecordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingRecordViewModel.swift; sourceTree = "<group>"; };
 		456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceleratePreprocessor.swift; sourceTree = "<group>"; };
+		49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneNarrator.swift; sourceTree = "<group>"; };
 		4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayer.swift; sourceTree = "<group>"; };
 		5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTracker.swift; sourceTree = "<group>"; };
+		62905020C90431BD7831516A /* sample_erp_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample_erp_2.jpg; sourceTree = "<group>"; };
 		64F024C8A3562A552B6792C3 /* FrameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModels.swift; sourceTree = "<group>"; };
 		6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleDetector.swift; sourceTree = "<group>"; };
 		68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramicStreamView.swift; sourceTree = "<group>"; };
@@ -141,12 +164,17 @@
 		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
 		717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassableRouteTests.swift; sourceTree = "<group>"; };
 		717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizerTests.swift; sourceTree = "<group>"; };
-		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		722F41754B566CC6C88138C1 /* QwenSpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSpeechRenderer.swift; sourceTree = "<group>"; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		78D063BD2D47E4B75201BDCB /* ConversationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationModels.swift; sourceTree = "<group>"; };
 		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
+		7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrationModels.swift; sourceTree = "<group>"; };
 		82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizer.swift; sourceTree = "<group>"; };
 		857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageRoutePlanner.swift; sourceTree = "<group>"; };
+		87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample_erp_3.jpg; sourceTree = "<group>"; };
 		8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PerceptionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAPEngine.swift; sourceTree = "<group>"; };
+		8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResilientSceneNarrator.swift; sourceTree = "<group>"; };
 		91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKit.swift; sourceTree = "<group>"; };
 		9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundPlaneEstimator.swift; sourceTree = "<group>"; };
@@ -155,7 +183,9 @@
 		A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCoreMedia.xcframework; path = Frameworks/INSCoreMedia.xcframework; sourceTree = "<group>"; };
 		A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryTests.swift; sourceTree = "<group>"; };
 		A98056ACD8F6F25764E72E56 /* SpatialAudioPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayerTests.swift; sourceTree = "<group>"; };
+		AD40245303E20078AC0F4304 /* sample_erp_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample_erp_1.jpg; sourceTree = "<group>"; };
 		AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPlayerBridge.swift; sourceTree = "<group>"; };
+		B655F6729037B17C8E9202BD /* NarrationHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NarrationHomeView.swift; sourceTree = "<group>"; };
 		B839DCF58737B54707405439 /* ToolModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolModels.swift; sourceTree = "<group>"; };
 		BAAAE4606E429E914DCB254E /* GravityAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GravityAligner.swift; sourceTree = "<group>"; };
 		BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = InferenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -166,8 +196,10 @@
 		D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKitTests.swift; sourceTree = "<group>"; };
 		D43B9CFB19741A302829B9F6 /* AudioTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
-		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
+		DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingClipComposer.swift; sourceTree = "<group>"; };
+		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
 		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
+		E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.example.plist; sourceTree = "<group>"; };
 		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
 		E93BE0730790922553537549 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
 		EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ToolkitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -199,6 +231,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0368BB97272973AA44449652 /* Narration */ = {
+			isa = PBXGroup;
+			children = (
+				19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */,
+				722F41754B566CC6C88138C1 /* QwenSpeechRenderer.swift */,
+				8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */,
+				49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */,
+				078AD588D52A975F451A55FC /* SpeechRenderer.swift */,
+				40C583E912BC4D513B945E3D /* SubtitleComposer.swift */,
+			);
+			path = Narration;
+			sourceTree = "<group>";
+		};
 		0BB71713613AB35E434FA834 /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
@@ -226,6 +271,7 @@
 				6126D45C3A95412A3EA42A79 /* AudioTests */,
 				0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */,
 				67A8893A47EE14F9AD376867 /* Core */,
+				6896A5FC230D966CB0AE0D80 /* Features */,
 				DD8B47801B1216A13BF4A80E /* GeometryTests */,
 				E3E68F02D83D0B632D54A80B /* InferenceTests */,
 				AC713B0EB62E8D8D8F024473 /* Models */,
@@ -257,9 +303,21 @@
 		5B14F6567AE8293A18AA14F6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AD40245303E20078AC0F4304 /* sample_erp_1.jpg */,
+				62905020C90431BD7831516A /* sample_erp_2.jpg */,
+				87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */,
+				E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */,
 				7F16D93A0D3989BC4F8D7D2A /* Models */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		5C9B6722D221D5316DABEB6E /* Conversation */ = {
+			isa = PBXGroup;
+			children = (
+				0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */,
+			);
+			path = Conversation;
 			sourceTree = "<group>";
 		};
 		6126D45C3A95412A3EA42A79 /* AudioTests */ = {
@@ -295,14 +353,25 @@
 			children = (
 				9025344BE56B492AA17FF0EB /* Audio */,
 				69A8918F85B5A915D5308FCE /* Camera */,
+				5C9B6722D221D5316DABEB6E /* Conversation */,
 				EAFCF0864CB0AF2D46D01EDC /* Engine */,
 				0BB71713613AB35E434FA834 /* Geometry */,
 				FFCD70091BCC481B3A24592A /* Inference */,
+				0368BB97272973AA44449652 /* Narration */,
 				E742D9264920FA2B79AC9039 /* Perception */,
+				A8E567C04E2BB87009B4C71C /* Recording */,
 				33999797768AF687EE0FA48B /* Toolkits */,
 				6764D7282FA491C1EDB1EE12 /* Utils */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		6896A5FC230D966CB0AE0D80 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				E6A5A562C4E6864324386D3D /* Narration */,
+			);
+			path = Features;
 			sourceTree = "<group>";
 		};
 		69A8918F85B5A915D5308FCE /* Camera */ = {
@@ -350,10 +419,20 @@
 			path = Audio;
 			sourceTree = "<group>";
 		};
+		A8E567C04E2BB87009B4C71C /* Recording */ = {
+			isa = PBXGroup;
+			children = (
+				DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */,
+			);
+			path = Recording;
+			sourceTree = "<group>";
+		};
 		AC713B0EB62E8D8D8F024473 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				78D063BD2D47E4B75201BDCB /* ConversationModels.swift */,
 				64F024C8A3562A552B6792C3 /* FrameModels.swift */,
+				7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */,
 				DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */,
 				26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */,
 				B839DCF58737B54707405439 /* ToolModels.swift */,
@@ -392,6 +471,15 @@
 			);
 			name = InferenceTests;
 			path = ../Tests/InferenceTests;
+			sourceTree = "<group>";
+		};
+		E6A5A562C4E6864324386D3D /* Narration */ = {
+			isa = PBXGroup;
+			children = (
+				B655F6729037B17C8E9202BD /* NarrationHomeView.swift */,
+				4219B1DDF080E9332C0B4DA1 /* TrainingRecordViewModel.swift */,
+			);
+			path = Narration;
 			sourceTree = "<group>";
 		};
 		E742D9264920FA2B79AC9039 /* Perception */ = {
@@ -549,6 +637,7 @@
 			buildConfigurationList = 864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */;
 			buildPhases = (
 				BB22D4CD7749D6A467348B14 /* Sources */,
+				5EC83324E847CB76E7AABE95 /* Resources */,
 				3F805AF8623FBC4D80E25ACC /* Frameworks */,
 				F41A89E7295550BF433AAB7B /* Embed Frameworks */,
 			);
@@ -615,6 +704,7 @@
 						ProvisioningStyle = Automatic;
 					};
 					D0C10D6348A3309AC5F5EA63 = {
+						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
 					};
 					D8A983DE875364D7AFB1F969 = {
@@ -648,6 +738,20 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5EC83324E847CB76E7AABE95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */,
+				A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */,
+				95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */,
+				DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		15CA529CE1348A0AD4EB0247 /* Sources */ = {
@@ -699,27 +803,39 @@
 			files = (
 				D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */,
 				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
+				D29483E2C3A526662360F9DD /* CompanionConversation.swift in Sources */,
 				EA861847E607B54465C201DB /* ContentView.swift in Sources */,
+				6F0E4083F8E58A3740D2910F /* ConversationModels.swift in Sources */,
 				BEE51A1E31B39825AC1BEFCB /* DAPEngine.swift in Sources */,
 				F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */,
 				C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */,
 				E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */,
 				16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */,
 				6A01649963AB2BEAAD6845EC /* Log.swift in Sources */,
+				B52EB5439FABCDFA9533B951 /* NarrationHomeView.swift in Sources */,
+				C386741DDF61B5E77854B400 /* NarrationModels.swift in Sources */,
 				AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */,
 				39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */,
 				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
 				7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */,
 				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,
 				85EB196A8D89C11E65E17274 /* ProceduralAudioSynthesizer.swift in Sources */,
+				F00FD760EF7D51263E7BD83C /* QwenSceneNarrator.swift in Sources */,
+				957F8D68251E993AD82C528D /* QwenSpeechRenderer.swift in Sources */,
+				EF66D8B621602D0ABF6CB379 /* ResilientSceneNarrator.swift in Sources */,
+				8C09D2D18A228BA300DFF66D /* SceneNarrator.swift in Sources */,
 				70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */,
 				144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */,
 				BA2E9D4812BDBFD4A554B0E9 /* SpatialAudioPlayer.swift in Sources */,
 				5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */,
+				7425B3CC00981B3CB64103DD /* SpeechRenderer.swift in Sources */,
 				B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */,
 				8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */,
+				8FEBC04F44FB98DD9F3EB09F /* SubtitleComposer.swift in Sources */,
 				0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */,
 				E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */,
+				DD3B106550B53C36CABAD84A /* TrainingClipComposer.swift in Sources */,
+				CE1BBFB1A80BFE6F9E21F36F /* TrainingRecordViewModel.swift in Sources */,
 				4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */,
 				6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */,
 			);
@@ -789,7 +905,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",
@@ -814,7 +929,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",

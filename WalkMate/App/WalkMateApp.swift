@@ -17,7 +17,14 @@ struct WalkMateApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // 临时导航：出行（相机与空间感知）为首屏，训练记录（场景描述与短片）为第二页。
+            // 待 UI 设计稿确定整体导航结构后替换。
+            TabView {
+                ContentView()
+                    .tabItem { Label("出行", systemImage: "figure.walk") }
+                NarrationHomeView()
+                    .tabItem { Label("训练记录", systemImage: "list.bullet.rectangle") }
+            }
         }
     }
 }
