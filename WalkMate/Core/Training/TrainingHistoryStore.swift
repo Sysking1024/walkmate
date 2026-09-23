@@ -72,17 +72,22 @@ final class TrainingHistoryStore {
     }
 
     /// 首次启动写入一段演示历史，让本周记录、徽章、路线与档位解锁互相对得上：
-    /// 连续 5 天室内训练（解锁「KEEP GOING」）、2 次小区路线、昨天一次 320 米避障 20 次。
+    /// 连续 5 天室内训练（解锁「KEEP GOING」）、2 次小区路线、昨天一次 320 米避障 20 次、今早一次 18 分钟。
+    /// 种子分版本：已装过旧版种子的手机只补今天这一条。
     private func seedDemoHistoryIfNeeded() {
-        let flag = "walkmate.historySeeded"
-        guard records.isEmpty, !UserDefaults.standard.bool(forKey: flag) else { return }
+        let versionKey = "walkmate.historySeedVersion"
+        let legacyFlag = "walkmate.historySeeded"
+        var version = UserDefaults.standard.integer(forKey: versionKey)
+        if version == 0, UserDefaults.standard.bool(forKey: legacyFlag) { version = 1 }
+        guard version < 2 else { return }
+
         let calendar = Calendar.current
-        func day(_ daysAgo: Int, hour: Int) -> Date {
+        func day(_ daysAgo: Int, hour: Int, minute: Int = 0) -> Date {
             let base = calendar.date(byAdding: .day, value: -daysAgo, to: calendar.startOfDay(for: Date()))!
-            return calendar.date(byAdding: .hour, value: hour, to: base)!
+            return calendar.date(byAdding: .minute, value: hour * 60 + minute, to: base)!
         }
-        let seeds: [(Int, Int, TrainingKind, Int, Int, Int, Bool)] = [
-            // (几天前, 小时, 类型, 秒, 米, 避障, 记为路线)
+        // (几天前, 小时, 类型, 秒, 米, 避障, 记为路线)
+        let history: [(Int, Int, TrainingKind, Int, Int, Int, Bool)] = [
             (7, 10, .indoor, 14 * 60, 180, 8, false),
             (6, 10, .indoor, 16 * 60, 210, 11, false),
             (5, 9, .indoor, 18 * 60, 240, 12, false),
@@ -92,13 +97,22 @@ final class TrainingHistoryStore {
             (2, 9, .neighborhood, 24 * 60, 650, 4, true),
             (1, 10, .indoor, 22 * 60, 320, 20, false),
         ]
-        records = seeds.map { daysAgo, hour, kind, seconds, meters, obstacles, route in
-            TrainingRecord(id: UUID(), kind: kind, durationSeconds: seconds, distanceMeters: meters, obstaclesAvoided: obstacles,
-                           moments: [], finishedAt: day(daysAgo, hour: hour), savedAsRoute: route)
-        }.sorted { $0.finishedAt > $1.finishedAt }
+        let today: (Int, Int, TrainingKind, Int, Int, Int, Bool) = (0, 8, .indoor, 18 * 60, 230, 12, false)
+
+        func make(_ seed: (Int, Int, TrainingKind, Int, Int, Int, Bool)) -> TrainingRecord {
+            TrainingRecord(id: UUID(), kind: seed.2, durationSeconds: seed.3, distanceMeters: seed.4, obstaclesAvoided: seed.5,
+                           moments: [], finishedAt: day(seed.0, hour: seed.1, minute: 30), savedAsRoute: seed.6)
+        }
+
+        if records.isEmpty {
+            records = (history + [today]).map(make)
+        } else if !records.contains(where: { calendar.isDateInToday($0.finishedAt) }) {
+            records.append(make(today))
+        }
+        records.sort { $0.finishedAt > $1.finishedAt }
         persist()
-        UserDefaults.standard.set(true, forKey: flag)
-        Log.info("已写入演示训练历史 \(records.count) 条", category: .general)
+        UserDefaults.standard.set(2, forKey: versionKey)
+        Log.info("演示训练历史已就绪，共 \(records.count) 条", category: .general)
     }
 
     /// 训练结束时记录一次，并尝试上传

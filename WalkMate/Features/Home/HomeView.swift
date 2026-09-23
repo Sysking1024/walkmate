@@ -71,16 +71,21 @@ struct HomeView: View {
     private var todayObstacles: Int {
         history.records.filter { Calendar.current.isDateInToday($0.finishedAt) }.reduce(0) { $0 + $1.obstaclesAvoided }
     }
-    private var todayProgress: Double { min(1, Double(todayMinutes) / Double(dailyGoalMinutes)) }
+    /// 每日避障目标次数
+    private let dailyGoalObstacles = 15
+    private var minutesProgress: Double { min(1, Double(todayMinutes) / Double(dailyGoalMinutes)) }
+    private var obstaclesProgress: Double { min(1, Double(todayObstacles) / Double(dailyGoalObstacles)) }
+    /// 今日完成度：时长与避障两项目标的平均
+    private var todayProgress: Double { (minutesProgress + obstaclesProgress) / 2 }
 
     private var loopSection: some View {
         VStack(spacing: 12) {
             WMSectionHeader(title: "今日康复闭环", action: "查看成长") { showGrowth = true }
             VStack(alignment: .leading, spacing: 18) {
                 HStack {
-                    WMRing(progress: todayProgress, value: "\(todayMinutes)", caption: "分钟")
+                    WMRing(progress: minutesProgress, value: "\(todayMinutes)", caption: "分钟")
                     Spacer()
-                    WMRing(progress: min(1, Double(todayObstacles) / 15), value: "\(todayObstacles)", caption: "避障")
+                    WMRing(progress: obstaclesProgress, value: "\(todayObstacles)", caption: "避障")
                     Spacer()
                     WMRing(progress: todayProgress, value: "\(Int(todayProgress * 100))%", caption: "完成")
                 }
