@@ -45,13 +45,14 @@ struct HomeView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .wmCard(WalkMateTheme.Gradients.hero)
         .overlay(alignment: .topTrailing) {
+            // 设计稿里的弧形光晕自带右上圆角，必须紧贴卡片右上角
             Image("home_hero_glow")
                 .resizable().scaledToFit()
                 .frame(width: 120)
-                .padding(.trailing, 20)
                 .opacity(0.9)
                 .accessibilityHidden(true)
         }
+        .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
     }
 
     // MARK: - 今日任务
@@ -60,6 +61,11 @@ struct HomeView: View {
     private var todayObstacles: Int {
         history.records.filter { Calendar.current.isDateInToday($0.finishedAt) }.reduce(0) { $0 + $1.obstaclesAvoided }
     }
+
+    private var minutesProgress: Double { min(1, Double(todayMinutes) / Double(settings.dailyGoalMinutes)) }
+    private var obstaclesProgress: Double { min(1, Double(todayObstacles) / Double(settings.dailyGoalObstacles)) }
+    /// 今日完成度：时长与避障两项目标的平均
+    private var todayProgress: Double { (minutesProgress + obstaclesProgress) / 2 }
 
     private struct TaskItem: Identifiable {
         let id: String
@@ -86,6 +92,17 @@ struct HomeView: View {
         VStack(spacing: 12) {
             WMSectionHeader(title: "今日任务", action: "查看成长") { showGrowth = true }
             VStack(spacing: 0) {
+                HStack {
+                    WMRing(progress: minutesProgress, value: "\(todayMinutes)", caption: "分钟")
+                    Spacer()
+                    WMRing(progress: obstaclesProgress, value: "\(todayObstacles)", caption: "避障")
+                    Spacer()
+                    WMRing(progress: todayProgress, value: "\(Int(todayProgress * 100))%", caption: "完成")
+                }
+                .padding(.vertical, 16)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("今日，训练 \(todayMinutes) 分钟，避障 \(todayObstacles) 次，完成 \(Int(todayProgress * 100))%")
+                Divider().overlay(WalkMateTheme.Colors.divider)
                 ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
                     HStack(spacing: 14) {
                         Image(systemName: task.done ? "checkmark.circle.fill" : "circle")
@@ -123,10 +140,14 @@ struct HomeView: View {
         let goal = history.nextGoalText
         return VStack(spacing: 12) {
             WMSectionHeader(title: "本周")
-            VStack(alignment: .leading, spacing: 8) {
-                Text("训练 \(history.trainingDaysThisWeek) 天 · 避障 \(history.obstaclesThisWeek) 次 · 独立完成 \(Int(history.independentRate * 100))%")
-                    .font(WalkMateTheme.Fonts.body)
-                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+            VStack(alignment: .leading, spacing: 14) {
+                HStack {
+                    WMRing(progress: Double(history.trainingDaysThisWeek) / 7, value: "\(history.trainingDaysThisWeek)", caption: "训练天")
+                    Spacer()
+                    WMRing(progress: min(1, Double(history.obstaclesThisWeek) / 80), value: "\(history.obstaclesThisWeek)", caption: "避障")
+                    Spacer()
+                    WMRing(progress: history.independentRate, value: "\(Int(history.independentRate * 100))%", caption: "独立完成")
+                }
                 Text("下一目标：\(goal.title)，\(goal.detail)")
                     .font(WalkMateTheme.Fonts.caption)
                     .foregroundStyle(WalkMateTheme.Colors.accentSoft)
@@ -135,7 +156,8 @@ struct HomeView: View {
             .padding(WalkMateTheme.Layout.cardPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
             .wmCard()
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("本周，训练 \(history.trainingDaysThisWeek) 天，避障 \(history.obstaclesThisWeek) 次，独立完成 \(Int(history.independentRate * 100))%。下一目标：\(goal.title)，\(goal.detail)")
         }
     }
 
