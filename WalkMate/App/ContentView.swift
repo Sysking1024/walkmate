@@ -21,7 +21,7 @@ import SwiftUI
 import UIKit
 
 /// 主视图模型：桥接底层相机管道事件与 SwiftUI 响应式状态，实现启停解耦与业务层前向避障导引
-public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, SpatialPerceptionDelegate {
+public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, SpatialPerceptionDelegate, PerceptionDataCollectorDelegate {
     
     // MARK: - 响应式状态 (Published Properties)
     
@@ -34,6 +34,11 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     @Published public var latestObstacles: ObstacleData?
     @Published public var latestRoute: PassableRouteData?
     
+    // 实测多模态数据采集响应式状态
+    @Published public var collectorState: CollectorState = .idle
+    @Published public var recordingDuration: Double = 0
+    @Published public var isRecording: Bool = false
+    
     /// 感知主控按钮是否可用（仅当相机连接成功后方可点击）
     public var isPerceptionEnabled: Bool {
         return connectionState == .connected
@@ -44,14 +49,17 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public let pipeline: CameraPipelineProtocol
     public var perceptionEngine: SpatialPerceptionEngineProtocol?
     public let audioPlayer: SpatialAudioPlayerProtocol
+    public let collector: PerceptionDataCollectorProtocol
     
     public init(
         pipeline: CameraPipelineProtocol = CameraPipeline(),
         perceptionEngine: SpatialPerceptionEngineProtocol? = nil,
-        audioPlayer: SpatialAudioPlayerProtocol = SpatialAudioPlayer.shared
+        audioPlayer: SpatialAudioPlayerProtocol = SpatialAudioPlayer.shared,
+        collector: PerceptionDataCollectorProtocol = PerceptionDataCollector()
     ) {
         self.pipeline = pipeline
         self.audioPlayer = audioPlayer
+        self.collector = collector
         if let engine = perceptionEngine {
             self.perceptionEngine = engine
         } else {
@@ -65,9 +73,62 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         
         self.pipeline.delegate = self
         self.perceptionEngine?.delegate = self
+        self.collector.delegate = self
+        self.bindEngineCollectorHooks()
+    }
+    
+    // MARK: - 引擎数据采集钩子绑定
+    
+    private func bindEngineCollectorHooks() {
+        perceptionEngine?.onFrameProcessed = { [weak self] frame, depthMatrix, groundPlane, cameraHeight, rawObstacles, routeData, latencyMs in
+            guard let self = self, self.isRecording else { return }
+            
+            // 业务层前向 130° 扇区与 1 米近身危险过滤
+            let forwardNearObstacles = rawObstacles.filter { abs($0.azimuth) <= 65.0 && $0.distance <= 1.0 }
+            let nearestHazard = forwardNearObstacles.min(by: { $0.distance < $1.distance })
+            let activeObstacle = nearestHazard?.position
+            let activeNav = routeData?.waypoints.first?.position
+            
+            self.collector.recordFrame(
+                frame: frame,
+                depthMatrix: depthMatrix,
+                groundPlane: groundPlane,
+                cameraHeight: cameraHeight,
+                rawObstacles: rawObstacles,
+                hazardObstacles: forwardNearObstacles,
+                routeData: routeData,
+                activeObstacleTarget: activeObstacle,
+                activeNavigationTarget: activeNav,
+                latencyMs: latencyMs
+            )
+        }
     }
     
     // MARK: - 用户交互指令 (Actions)
+    
+    /// 触发实测数据采集的启停控制
+    public func toggleRecording() {
+        if isRecording {
+            collector.stopRecording { [weak self] result in
+                switch result {
+                case .success:
+                    UIAccessibility.post(notification: .announcement, argument: "实测数据采集完成，已保存至本地沙盒")
+                case .failure(let error):
+                    self?.latestError = "停止录制异常: \(error.localizedDescription)"
+                    Log.error("停止录制异常: \(error.localizedDescription)", category: .perception)
+                }
+            }
+        } else {
+            do {
+                try collector.startRecording()
+                UIAccessibility.post(notification: .announcement, argument: "已开始采集实测数据")
+            } catch {
+                self.latestError = error.localizedDescription
+                Log.error("启动实测数据采集失败: \(error.localizedDescription)", category: .perception)
+                UIAccessibility.post(notification: .announcement, argument: "无法开启采集：\(error.localizedDescription)")
+            }
+        }
+    }
     
     /// 触发相机连接/断开切换
     public func toggleConnection() {
@@ -139,8 +200,11 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         self.previewView = pipeline.previewView
         Log.info("相机连接状态变更: \(state.rawValue)", category: .camera)
         
-        // 掉线安全自愈：相机异常断开或连接失败时，若感知正在运行则强制安全停止并静音
+        // 掉线安全自愈：相机异常断开或连接失败时，若正在录制立即安全停止，若感知正在运行则强制安全停止并静音
         if state == .failed || state == .noConnection {
+            if isRecording {
+                collector.stopRecording(completion: nil)
+            }
             if isPerceiving {
                 stopPerception()
             } else {
@@ -227,6 +291,28 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didEncounterError error: Error) {
         Log.error("空间感知引擎异常: \(error.localizedDescription)", category: .perception)
     }
+    
+    // MARK: - PerceptionDataCollectorDelegate 回调
+    
+    public func collector(_ collector: PerceptionDataCollectorProtocol, didChangeState state: CollectorState) {
+        DispatchQueue.main.async {
+            self.collectorState = state
+            self.isRecording = (state == .recording)
+        }
+    }
+    
+    public func collector(_ collector: PerceptionDataCollectorProtocol, didUpdateDuration seconds: Double) {
+        DispatchQueue.main.async {
+            self.recordingDuration = seconds
+        }
+    }
+    
+    public func collector(_ collector: PerceptionDataCollectorProtocol, didEncounterError error: Error) {
+        DispatchQueue.main.async {
+            self.latestError = error.localizedDescription
+            UIAccessibility.post(notification: .announcement, argument: "数据采集提示：\(error.localizedDescription)")
+        }
+    }
 }
 
 /// 极简真机实测主界面 (Minimal Field Pilot)
@@ -266,32 +352,61 @@ public struct ContentView: View {
                 }
             }
             
-            // 界面右上角：实时日志排查按钮 (点击立即拷贝全部日志到剪贴板，并展开日志抽屉)
+            // 界面右上角：实测采集与日志管理复合控制项 (T010 / FR-001)
             VStack {
-                HStack {
+                HStack(spacing: 10) {
                     Spacer()
+                    
+                    // 1. 实测数据采集主控胶囊按钮 (REC / 00:00)
+                    Button(action: {
+                        viewModel.toggleRecording()
+                    }) {
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(viewModel.isRecording ? Color.white : Color.red)
+                                .frame(width: 10, height: 10)
+                            
+                            Text(viewModel.isRecording ? formattedRecordingDuration : "REC 录制")
+                                .font(.system(size: 13, weight: .bold, design: .monospaced))
+                                .foregroundColor(.white)
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .frame(minWidth: 48, minHeight: 48) // 触控靶心严格 >= 48x48 像素 (宪章原则四)
+                        .background(viewModel.isRecording ? Color.red.opacity(0.85) : Color.black.opacity(0.75))
+                        .clipShape(Capsule())
+                        .shadow(radius: 4)
+                        .contentShape(Rectangle())
+                    }
+                    .accessibilityLabel(viewModel.isRecording ? "停止实测采集" : "开始实测采集")
+                    .accessibilityHint(viewModel.isRecording ? "双击停止当前实测数据采集并保存到本地" : "双击启动多模态实测数据流与高保真传感器记录")
+                    
+                    // 2. 日志与会话查看入口
                     Button(action: {
                         let text = Log.recentLogs.joined(separator: "\n")
                         UIPasteboard.general.string = text
                         showLogSheet = true
                     }) {
-                        HStack(spacing: 6) {
+                        HStack(spacing: 4) {
                             Image(systemName: "doc.on.doc.fill")
                                 .font(.system(size: 13, weight: .bold))
-                            Text("拷贝日志")
+                            Text("日志")
                                 .font(.system(size: 13, weight: .bold))
                         }
                         .foregroundColor(.white)
-                        .padding(.horizontal, 14)
+                        .padding(.horizontal, 12)
                         .padding(.vertical, 8)
+                        .frame(minWidth: 48, minHeight: 48) // 触控靶心严格 >= 48x48 像素
                         .background(Color.black.opacity(0.75))
                         .clipShape(Capsule())
                         .shadow(radius: 4)
+                        .contentShape(Rectangle())
                     }
-                    .accessibilityLabel("拷贝全部运行日志到剪贴板")
-                    .padding(.trailing, 16)
-                    .padding(.top, 16)
+                    .accessibilityLabel("日志与会话面板")
+                    .accessibilityHint("双击打开日志抽屉并复制最新日志到剪贴板")
                 }
+                .padding(.trailing, 16)
+                .padding(.top, 16)
                 Spacer()
             }
             
@@ -406,6 +521,15 @@ public struct ContentView: View {
             return Color.gray.opacity(0.4) // 禁用灰色
         }
         return viewModel.isPerceiving ? Color(red: 0.85, green: 0.25, blue: 0.2) : Color(red: 0.15, green: 0.65, blue: 0.35) // 运行红 / 启动绿
+    }
+    
+    // MARK: - 录制时长格式化计算属性
+    
+    private var formattedRecordingDuration: String {
+        let total = Int(viewModel.recordingDuration.rounded())
+        let mins = total / 60
+        let secs = total % 60
+        return String(format: "%02d:%02d", mins, secs)
     }
 }
 

@@ -34,12 +34,12 @@
 连接相机并开启空间感知，点击主界面右上角 `[REC 录制]` 按钮，手持行走 30 秒后点击停止。检查沙盒生成带有完整时间戳的 `session_xxx` 独立目录，包含格式合法的 `telemetry.jsonl` 与抽样图像快照，录制全程空间音频无卡顿、视频推流不掉帧。
 
 ### 阶段三测试任务 (Tests)
-- [ ] T007 [P] [US1] 编写数据采集协调器单元测试 `Tests/AppTests/PerceptionDataCollectorTests.swift`（验证状态机流转、环形队列异步缓冲、10~30Hz 遥测与 1~2Hz 视觉分级采样、JSONL 流式写入及入队延迟基准断言）
+- [X] T007 [P] [US1] 编写数据采集协调器单元测试 `Tests/AppTests/PerceptionDataCollectorTests.swift`（验证状态机流转、环形队列异步缓冲、10~30Hz 遥测与 1~2Hz 视觉分级采样、JSONL 流式写入及入队延迟基准断言）
 
 ### 阶段三实现任务 (Implementation)
-- [ ] T008 [US1] 实现空间感知数据采集协调器 `WalkMate/Core/Collector/PerceptionDataCollector.swift`（实现 `PerceptionDataCollectorProtocol`，集成 Utility 专用写盘队列、环形内存缓冲区、JSONL 追加流与 JPEG/二进制深度图采样）
-- [ ] T009 [US1] 在主界面视图模型 `CameraViewModel` 中注入 `PerceptionDataCollector`，挂载每帧数据转发与录制时长心跳绑定，并在捕获相机断连或连接失败时主动触发采集器安全停止（`WalkMate/App/ContentView.swift`）
-- [ ] T010 [US1] 将主界面右上角原“拷贝日志”按钮直接升级替换为实测采集控制胶囊按钮 `[REC 录制 / 00:00]`，显式保证触控尺寸不低于 48x48 像素，提供静态无障碍标签与提示，并在启停时刻通过 `UIAccessibility.post(notification: .announcement)` 播报状态，避免动态秒数轮询打断读屏（`WalkMate/App/ContentView.swift`）
+- [X] T008 [US1] 实现空间感知数据采集协调器 `WalkMate/Core/Collector/PerceptionDataCollector.swift`（实现 `PerceptionDataCollectorProtocol`，集成 Utility 专用写盘队列、环形内存缓冲区、JSONL 追加流与 JPEG/二进制深度图采样）
+- [X] T009 [US1] 在主界面视图模型 `CameraViewModel` 中注入 `PerceptionDataCollector`，挂载每帧数据转发与录制时长心跳绑定，并在捕获相机断连或连接失败时主动触发采集器安全停止（`WalkMate/App/ContentView.swift`）
+- [X] T010 [US1] 将主界面右上角原“拷贝日志”按钮直接升级替换为实测采集控制胶囊按钮 `[REC 录制 / 00:00]`，显式保证触控尺寸不低于 48x48 像素，提供静态无障碍标签与提示，并在启停时刻通过 `UIAccessibility.post(notification: .announcement)` 播报状态，避免动态秒数轮询打断读屏（`WalkMate/App/ContentView.swift`）
 
 ---
 
