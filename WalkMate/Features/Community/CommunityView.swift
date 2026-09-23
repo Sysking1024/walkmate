@@ -10,6 +10,8 @@ struct CommunityView: View {
     @State private var communityStore = CommunityStore.shared
     @State private var history = TrainingHistoryStore.shared
     @State private var player: AVPlayer?
+    /// 本机是否给旅程点过赞，只存本地
+    @AppStorage("walkmate.likedJourney") private var likedJourney = false
 
     var body: some View {
         NavigationStack {
@@ -28,7 +30,7 @@ struct CommunityView: View {
                     }
 
                     if let journey = communityStore.feed.journeys.first {
-                        WMPageTitle(text: "今日旅程")
+                        WMPageTitle(text: "我的旅程")
                         journeyCard(journey)
                     }
                 }
@@ -189,7 +191,7 @@ struct CommunityView: View {
         .wmCard(WalkMateTheme.Gradients.communityCard)
     }
 
-    // MARK: - 今日旅程
+    // MARK: - 我的旅程
 
     private func journeyCard(_ journey: CommunityFeed.Journey) -> some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -213,32 +215,42 @@ struct CommunityView: View {
                     Text(journey.title)
                         .font(.system(size: 14, weight: .medium))
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    Text("\(journey.duration)")
-                    Text("步行\(Int(journey.distanceKm))km     解锁新区域")
+                    Text(journey.duration)
+                    Text("步行 \(Int(journey.distanceKm)) km · 解锁新区域")
                     if let note = journey.note {
                         Text(note)
-                            .font(.system(size: 8))
+                            .font(.system(size: 9))
                             .foregroundStyle(Color(hex: 0x1B3320))
                             .padding(8)
                             .background(WalkMateTheme.Colors.chipBackground)
                             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     }
-                    HStack(spacing: 10) {
-                        WMAvatar(imageName: journey.avatarKey, size: 22)
-                        Text(journey.user)
-                        Spacer()
-                        Label("\(journey.likes)", image: "icon_like")
-                        Label("\(journey.comments)", image: "icon_comment")
-                        Label("\(journey.shares)", image: "icon_share")
-                    }
-                    .font(.system(size: 10))
-                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    .labelStyle(TinyIconLabelStyle())
                 }
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(WalkMateTheme.Colors.textSecondary)
             }
             .accessibilityElement(children: .combine)
+
+            // 作者与互动单独一排，触控目标不小于 48 点
+            HStack(spacing: 8) {
+                WMAvatar(imageName: journey.avatarKey, size: 28)
+                Text(journey.user)
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                    .lineLimit(1)
+                Spacer(minLength: 8)
+                Button {
+                    likedJourney.toggle()
+                } label: {
+                    reactionLabel("icon_like", count: journey.likes + (likedJourney ? 1 : 0), highlighted: likedJourney)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(likedJourney ? "已点赞，\(journey.likes + 1)" : "点赞，\(journey.likes)")
+                reactionLabel("icon_comment", count: journey.comments, highlighted: false)
+                    .accessibilityLabel("评论 \(journey.comments) 条")
+                reactionLabel("icon_share", count: journey.shares, highlighted: false)
+                    .accessibilityLabel("转发 \(journey.shares) 次")
+            }
 
             // 只有本机已经剪出过集锦，才有东西可分享
             if let latestReel = history.latestReelURL {
@@ -256,6 +268,23 @@ struct CommunityView: View {
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)
         .wmCard(WalkMateTheme.Gradients.communityCard)
+    }
+}
+
+extension CommunityView {
+    /// 图标加数字的互动项，高度 48 点
+    fileprivate func reactionLabel(_ icon: String, count: Int, highlighted: Bool) -> some View {
+        HStack(spacing: 6) {
+            Image(icon).resizable().scaledToFit().frame(width: 22, height: 22)
+            Text("\(count)")
+                .font(WalkMateTheme.Fonts.body)
+                .monospacedDigit()
+        }
+        .foregroundStyle(highlighted ? WalkMateTheme.Colors.accentSoft : WalkMateTheme.Colors.textPrimary)
+        .padding(.horizontal, 10)
+        .frame(minWidth: 56, minHeight: WalkMateTheme.Layout.minimumTapTarget)
+        .background(Color.white.opacity(highlighted ? 0.18 : 0.08))
+        .clipShape(Capsule())
     }
 }
 
@@ -293,15 +322,5 @@ struct GhostPillButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity, minHeight: 48)
             .background(Color.white.opacity(configuration.isPressed ? 0.12 : 0.2))
             .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
-    }
-}
-
-/// 小图标在前、数字在后的紧凑标签
-struct TinyIconLabelStyle: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 3) {
-            configuration.icon.frame(width: 14, height: 14)
-            configuration.title
-        }
     }
 }
