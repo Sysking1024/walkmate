@@ -152,8 +152,7 @@ final class CompanionSession {
         defer { isBusy = false }
 
         let narration = await describe(frameJPEG)
-        conversation.record(.companion, narration.text, nowMs: nowMs)
-        transcript = conversation.turns
+        // say 会负责记录这一轮，这里不再单独记录，否则对话历史里会出现两遍
         say(narration.text)
         saveMoment(frameJPEG, narration: narration)
 
@@ -179,8 +178,6 @@ final class CompanionSession {
         } else {
             reply = "这会儿联系不上，稍后再问我。"
         }
-        conversation.record(.companion, reply, nowMs: nowMs)
-        transcript = conversation.turns
         say(reply)
 
         try? await Task.sleep(nanoseconds: UInt64(reply.count) * 230_000_000)
