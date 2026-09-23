@@ -436,11 +436,16 @@ public final class PerceptionDataCollector: PerceptionDataCollectorProtocol, @un
             return
         }
         
-        // 2. 超长录制保护 (15 分钟滚动分片保护)
+        // 2. 超长录制保护 (15 分钟滚动分片保护: 自动封包并无缝衔接开启新分片)
         let elapsed = self.currentDuration
         if elapsed >= Self.maxRecordingDurationSeconds {
-            Log.info("录制达到单次 15 分钟上限，自动安全封包", category: .perception)
-            self.stopRecording(completion: nil)
+            Log.info("录制达到单次 15 分钟上限，自动安全封包并无缝开启新分片", category: .perception)
+            self.stopRecording { [weak self] result in
+                guard let self = self else { return }
+                if case .success = result {
+                    try? self.startRecording()
+                }
+            }
         }
     }
     

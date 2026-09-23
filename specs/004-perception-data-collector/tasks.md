@@ -79,9 +79,9 @@
 
 **目标**: 完善极端异常边界防护，执行全量自动化静态分析与单元测试，确保零错误零警告。
 
-- [ ] T019 [P] 在 `WalkMate/Core/Collector/PerceptionDataCollector.swift` 中完善存储空间低于 500MB 自动安全中止保护、相机断连被动中止保护、异常强退下的流式恢复逻辑以及单次录制 15 分钟滚动分片保护
-- [ ] T020 运行全量单元测试套件（`AppTests`、`AudioTests`、`CameraTests`、`InferenceTests`、`GeometryTests`、`PerceptionTests`、`ReplayTests`），确保 100% 编译与逻辑通过（Zero Failures, Zero Errors）
-- [ ] T021 审查全量代码注释与日志消息，确认完全符合项目宪章纯中文规范，更新规范追踪元数据
+- [X] T019 [P] 在 `WalkMate/Core/Collector/PerceptionDataCollector.swift` 中完善存储空间低于 500MB 自动安全中止保护、相机断连被动中止保护、异常强退下的流式恢复逻辑以及单次录制 15 分钟滚动分片保护
+- [X] T020 运行全量单元测试套件（`AppTests`、`AudioTests`、`CameraTests`、`InferenceTests`、`GeometryTests`、`PerceptionTests`、`ReplayTests`），确保 100% 编译与逻辑通过（Zero Failures, Zero Errors）
+- [X] T021 审查全量代码注释与日志消息，确认完全符合项目宪章纯中文规范，更新规范追踪元数据
 
 ---
 

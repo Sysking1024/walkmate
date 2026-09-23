@@ -191,6 +191,60 @@ public final class SessionStorageManager: SessionStorageManagerProtocol, @unchec
         }
     }
     
+    /// 针对应用强退或意外中断的会话，从 telemetry.jsonl 流式解析并自愈元数据 (SC-003)
+    @discardableResult
+    public func recoverInterruptedSession(sessionId: String, existingMetadata: SessionMetadata? = nil) -> SessionMetadata? {
+        let folder = sessionFolderURL(for: sessionId)
+        let telemetryURL = folder.appendingPathComponent("telemetry.jsonl")
+        guard fileManager.fileExists(atPath: telemetryURL.path),
+              let content = try? String(contentsOf: telemetryURL, encoding: .utf8) else {
+            return existingMetadata
+        }
+        
+        var lineCount = 0
+        var lastTimestamp: Int64 = 0
+        var firstTimestamp: Int64 = 0
+        
+        content.enumerateLines { line, _ in
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return }
+            if let data = trimmed.data(using: .utf8),
+               let record = try? self.jsonDecoder.decode(FrameTelemetryRecord.self, from: data) {
+                if lineCount == 0 {
+                    firstTimestamp = record.timestampMs
+                }
+                lastTimestamp = record.timestampMs
+                lineCount += 1
+            }
+        }
+        
+        guard lineCount > 0 else { return existingMetadata }
+        
+        let startMs = existingMetadata?.startTimeMs ?? firstTimestamp
+        let endMs = lastTimestamp
+        let duration = max(0.0, Double(endMs - startMs) / 1000.0)
+        
+        // 统计图像快照总数
+        let framesDir = folder.appendingPathComponent("frames")
+        let imageCount = (try? fileManager.contentsOfDirectory(at: framesDir, includingPropertiesForKeys: nil).count) ?? 0
+        
+        let recovered = SessionMetadata(
+            sessionId: sessionId,
+            startTimeMs: startMs,
+            endTimeMs: endMs,
+            durationSeconds: duration,
+            totalTelemetryFrames: lineCount,
+            totalImageSnapshots: imageCount,
+            deviceInfo: existingMetadata?.deviceInfo ?? "iPhone (自愈恢复)",
+            appVersion: existingMetadata?.appVersion ?? "1.0.0",
+            algorithmConfig: existingMetadata?.algorithmConfig ?? [:]
+        )
+        
+        try? saveMetadata(recovered, sessionId: sessionId)
+        Log.info("成功自愈强退会话元数据: \(sessionId), 恢复 \(lineCount) 帧", category: .perception)
+        return recovered
+    }
+    
     // MARK: - 会话列表检索与格式化
     
     /// 枚举所有已记录的会话摘要，按创建时间由新到旧排序
@@ -214,7 +268,10 @@ public final class SessionStorageManager: SessionStorageManagerProtocol, @unchec
             }
             
             let sessionId = url.lastPathComponent
-            let metadata = try? loadMetadata(sessionId: sessionId)
+            var metadata = try? loadMetadata(sessionId: sessionId)
+            if metadata == nil || metadata?.endTimeMs == nil {
+                metadata = recoverInterruptedSession(sessionId: sessionId, existingMetadata: metadata)
+            }
             
             let creationDate = (try? url.resourceValues(forKeys: [.creationDateKey]))?.creationDate ?? Date()
             let totalFrames = metadata?.totalTelemetryFrames ?? 0

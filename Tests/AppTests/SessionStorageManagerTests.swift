@@ -193,4 +193,62 @@ final class SessionStorageManagerTests: XCTestCase {
             }
         }
     }
+    
+    /// 验证应用异常强退未正常封包时的流式元数据自愈恢复 (T019 / SC-003)
+    func testRecoverInterruptedSession() throws {
+        let sessionId = "session_interrupted_001"
+        let folder = try storageManager.createSessionFolder(sessionId: sessionId)
+        
+        // 模拟未正常关闭的 metadata (endTimeMs 为 nil)
+        let initialMetadata = SessionMetadata(
+            sessionId: sessionId,
+            startTimeMs: 1774340000000,
+            endTimeMs: nil,
+            durationSeconds: 0,
+            totalTelemetryFrames: 0,
+            totalImageSnapshots: 0
+        )
+        try storageManager.saveMetadata(initialMetadata, sessionId: sessionId)
+        
+        // 模拟已落盘的 3 帧时序数据
+        var jsonlData = ""
+        for i in 0..<3 {
+            let record = FrameTelemetryRecord(
+                timestampMs: 1774340000000 + Int64(i * 100),
+                frameIndex: i,
+                quaternion: QuaternionRecord(x: 0, y: 0, z: 0, w: 1),
+                eulerAngles: EulerAnglesRecord(roll: 0, pitch: 0, yaw: 0),
+                acceleration: SIMD3Record(x: 0, y: -9.8, z: 0),
+                groundPlane: [0, 1, 0, 1.4],
+                cameraHeight: 1.4,
+                rawObstacles: [],
+                hazardObstacles: [],
+                activeObstacleTarget: nil,
+                isPassable: true,
+                safeDepth: 5.0,
+                recommendedHeading: 0.0,
+                waypoints: [],
+                activeNavigationTarget: nil,
+                processingLatencyMs: 5.0,
+                hasImageSnapshot: false
+            )
+            let lineData = try JSONEncoder().encode(record)
+            jsonlData.append(String(data: lineData, encoding: .utf8)! + "\n")
+        }
+        try jsonlData.write(to: folder.appendingPathComponent("telemetry.jsonl"), atomically: true, encoding: .utf8)
+        
+        // 触发自愈
+        let recovered = storageManager.recoverInterruptedSession(sessionId: sessionId, existingMetadata: initialMetadata)
+        XCTAssertNotNil(recovered, "自愈后必须生成完整元数据")
+        XCTAssertEqual(recovered?.totalTelemetryFrames, 3, "自愈帧数必须为 3")
+        XCTAssertEqual(recovered?.endTimeMs, 1774340000200, "自愈结束时间戳必须对齐末帧")
+        XCTAssertGreaterThan(recovered?.durationSeconds ?? 0, 0, "时长必须大于 0")
+        
+        // 校验 listSessions() 此时正常展示该自愈会话
+        let sessions = storageManager.listSessions()
+        let target = sessions.first { $0.sessionId == sessionId }
+        XCTAssertNotNil(target)
+        XCTAssertEqual(target?.totalFrames, 3)
+    }
 }
+
