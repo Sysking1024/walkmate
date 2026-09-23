@@ -6,13 +6,18 @@ import SwiftUI
 struct TrainingSessionView: View {
     let kind: TrainingKind
     let onFinish: (TrainingResult) -> Void
+    /// 取消：不记录，回到训练列表
+    let onCancel: () -> Void
 
     @StateObject private var camera = CameraViewModel()
     @State private var session: TrainingSessionModel
 
-    init(kind: TrainingKind, onFinish: @escaping (TrainingResult) -> Void) {
+    @State private var confirmCancel = false
+
+    init(kind: TrainingKind, onFinish: @escaping (TrainingResult) -> Void, onCancel: @escaping () -> Void) {
         self.kind = kind
         self.onFinish = onFinish
+        self.onCancel = onCancel
         _session = State(initialValue: TrainingSessionModel(kind: kind))
     }
 
@@ -36,12 +41,24 @@ struct TrainingSessionView: View {
                     TrainingHistoryStore.shared.record(result)
                     onFinish(result)
                 }
+                WMButton(title: "取消训练", style: .subdued, height: 48) { confirmCancel = true }
+                    .accessibilityHint("放弃这次训练，不记录")
             }
             .wmPageInset()
             .wmTabBarClearance()
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
+        .alert("放弃这次训练？", isPresented: $confirmCancel) {
+            Button("放弃", role: .destructive) {
+                session.cancel()
+                if camera.connectionState == .connected || camera.connectionState == .connecting { camera.toggleConnection() }
+                onCancel()
+            }
+            Button("继续训练", role: .cancel) {}
+        } message: {
+            Text("这次的时长和避障不会记录。")
+        }
         .onAppear {
             session.start()
             AccessibilityFeedback.screenChanged("\(kind.title)训练")

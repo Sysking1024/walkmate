@@ -10,7 +10,7 @@ struct TrainingFlowView: View {
                 .navigationDestination(for: TrainingRoute.self) { route in
                     switch route {
                     case .session(let kind):
-                        TrainingSessionView(kind: kind) { result in path.append(.summary(result)) }
+                        TrainingSessionView(kind: kind, onFinish: { result in path.append(.summary(result)) }, onCancel: { path.removeAll() })
                     case .summary(let result):
                         TrainingSummaryView(result: result) { path.removeAll() }
                     }

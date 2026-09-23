@@ -64,6 +64,14 @@ final class TrainingSessionModel {
         )
     }
 
+    /// 取消训练：停掉计时、计步与伙伴，不留记录
+    func cancel() {
+        ticker?.invalidate(); ticker = nil
+        pedometer.stopUpdates()
+        companion.stop()
+        Log.info("训练已取消，不记录", category: .ui)
+    }
+
     /// 由界面在感知层障碍数变化时调用
     func updateObstacleCount(_ count: Int) {
         if lastObstacleCount > 0, count == 0 { obstaclesAvoided += 1 }
