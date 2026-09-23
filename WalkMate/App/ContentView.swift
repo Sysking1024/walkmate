@@ -43,12 +43,15 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     
     public let pipeline: CameraPipelineProtocol
     public let perceptionEngine: SpatialPerceptionEngineProtocol?
+    public let audioPlayer: SpatialAudioPlayerProtocol
     
     public init(
         pipeline: CameraPipelineProtocol = CameraPipeline(),
-        perceptionEngine: SpatialPerceptionEngineProtocol? = nil
+        perceptionEngine: SpatialPerceptionEngineProtocol? = nil,
+        audioPlayer: SpatialAudioPlayerProtocol = SpatialAudioPlayer.shared
     ) {
         self.pipeline = pipeline
+        self.audioPlayer = audioPlayer
         if let engine = perceptionEngine {
             self.perceptionEngine = engine
         } else {
@@ -92,7 +95,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func startPerception() {
         guard !isPerceiving else { return }
         isPerceiving = true
-        try? SpatialAudioPlayer.shared.start()
+        try? audioPlayer.start()
         perceptionEngine?.start()
         Log.info("已开启空间感知流水线与 3D 空间音频导航", category: .perception)
         UIAccessibility.post(notification: .announcement, argument: "已开启空间感知与音频导航")
@@ -102,7 +105,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     public func stopPerception() {
         guard isPerceiving else { return }
         isPerceiving = false
-        SpatialAudioPlayer.shared.reset()
+        audioPlayer.reset()
         perceptionEngine?.stop()
         Log.info("已停止空间感知流水线，空间音频已恢复静音", category: .perception)
         UIAccessibility.post(notification: .announcement, argument: "已停止空间感知")
@@ -167,7 +170,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         
         // 提取其中距离最近的一个危险障碍物
         let nearestHazard = forwardNearObstacles.min(by: { $0.distance < $1.distance })
-        SpatialAudioPlayer.shared.setObstacleTarget(position: nearestHazard?.position)
+        audioPlayer.setObstacleTarget(position: nearestHazard?.position)
     }
     
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didProducePassableRoute data: PassableRouteData) {
@@ -177,7 +180,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         
         // 导航首点指引：仅提取第 1 个航路点三维相对坐标驱动自然步频领路脚步声 (FR-009)
         let firstWaypoint = data.waypoints.first?.position
-        SpatialAudioPlayer.shared.setNavigationTarget(position: firstWaypoint)
+        audioPlayer.setNavigationTarget(position: firstWaypoint)
     }
     
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didEncounterError error: Error) {

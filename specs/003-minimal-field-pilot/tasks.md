@@ -78,10 +78,11 @@
 **独立测试验证**: 前方 0.8 米障碍物触发双音报警，身后 0.8 米障碍物完全静音；有效通行路线驱动正前方领路脚步声，路线受阻自动静音；停止感知后异步回调绝不唤醒音频。
 
 ### 1. 测试先行 (TDD) ⚠️ 在实现前编写测试用例
-- [ ] T007 [US3] 在 `Tests/AppTests/PilotViewModelTests.swift` 中扩展业务层前向扇区与避障导航过滤测试（断言身侧/身后障碍物静音过滤、前向 $130^\circ$ 且 $\le 1.0\text{m}$ 最近障碍物坐标提取并调用 `SpatialAudioPlayer.setObstacleTarget`、路线第 1 个航路点提取并调用 `SpatialAudioPlayer.setNavigationTarget`、无障碍物/无路线时传入 `nil` 静音；断言 `isPerceiving == false` 时收到异步感知回调被严格静默拦截）
+- [x] T007 [US3] 在 `Tests/AppTests/PilotViewModelTests.swift` 中扩展业务层前向扇区与避障导航过滤测试（断言身侧/身后障碍物静音过滤、前向 $130^\circ$ 且 $\le 1.0\text{m}$ 最近障碍物坐标提取并调用 `SpatialAudioPlayer.setObstacleTarget`、路线第 1 个航路点提取并调用 `SpatialAudioPlayer.setNavigationTarget`、无障碍物/无路线时传入 `nil` 静音；断言 `isPerceiving == false` 时收到异步感知回调被严格静默拦截）
 
 ### 2. 核心业务过滤实现
-- [ ] T008 [US3] 在 `WalkMate/App/ContentView.swift` 的 `CameraViewModel` 中接入 `SpatialAudioPlayer.shared`，在 `didProduceObstacles` 与 `didProducePassableRoute` 入口处统一加入 `guard isPerceiving else { return }` 异步门禁；实现前向 130° 扇区（$|\text{azimuth}| \le 65^\circ$）与 $\le 1.0\text{m}$ 最小距离筛选，在 `didProducePassableRoute` 中实现 `waypoints.first` 首航路点导引
+- [x] T008 [US3] 在 `WalkMate/App/ContentView.swift` 的 `CameraViewModel` 中接入 `SpatialAudioPlayer.shared`，在 `didProduceObstacles` 与 `didProducePassableRoute` 入口处统一加入 `guard isPerceiving else { return }` 异步门禁；实现前向 130° 扇区（$|\text{azimuth}| \le 65^\circ$）与 $\le 1.0\text{m}$ 最小距离筛选，在 `didProducePassableRoute` 中实现 `waypoints.first` 首航路点导引
+
 
 **检查点 (Checkpoint)**: 用户故事 3 交付！真机实测三大支柱（全屏预览 + 独立启停 + 前向避障与领路）全部打通形成闭环。
 
