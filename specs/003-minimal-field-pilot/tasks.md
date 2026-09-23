@@ -92,8 +92,9 @@
 
 **目标**: 全量测试套件 100% 绿灯回归、静态检查零警告、完成真机实测交付准备
 
-- [ ] T009 运行全工程自动化单元测试套件（执行 `xcodebuild test`，涵盖 `AppTests`, `AudioTests`, `CameraTests`, `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`），断言全量用例 100% 绿灯通过
-- [ ] T010 重新执行 `xcodegen generate` 并执行 `xcodebuild -destination "generic/platform=iOS" build`，确保零编译错误、零警告，输出真机部署最终 App 产物
+- [x] T009 运行全工程自动化单元测试套件（执行 `xcodebuild test`，涵盖 `AppTests`, `AudioTests`, `CameraTests`, `InferenceTests`, `GeometryTests`, `PerceptionTests`, `ToolkitTests`），断言全量用例 100% 绿灯通过
+- [x] T010 重新执行 `xcodegen generate` 并执行 `xcodebuild -destination "generic/platform=iOS" build`，确保零编译错误、零警告，输出真机部署最终 App 产物
+
 
 ---
 
