@@ -360,7 +360,7 @@ enum JourneyReactionStore {
     static func seeded(for journeyID: String) -> [(String, String)] {
         switch journeyID {
         case "j_1": return [("Momo", "第一次半开放就走得这么稳，太棒了！下次一起去金鹰。")]
-        case "j_2": return [("Doris", "办公室的路记熟了就不难了，加油！")]
+        case "j_2": return [("Doris", "湖边栈道那段听得我也想去走走，太美了！")]
         default: return []
         }
     }

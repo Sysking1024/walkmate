@@ -56,7 +56,7 @@ INVITATIONS = [("inv_1", "u_momo", "影石Insta360 仙林金鹰店", "9月25日 
 # (id, 用户, 标题, 时长, 公里, 留言, 赞, 评论, 转发, 随应用内置的视频文件名, 封面图键, 发布时间)
 JOURNEYS = [
     ("j_1", "u_doris", "记录我的第一次半开放户外探索", "0:19", 0.65, None, 52, 1, 5, "demo_highlight.mp4", "journey_cover_bamboo", 1758600000),
-    ("j_2", "u_zixuan", "第一次独自回到办公室", "0:22", 1.2, None, 31, 1, 2, "demo_office.mp4", "journey_cover_office", 1758500000),
+    ("j_2", "u_zixuan", "第一次独立去公园湖边散步", "0:52", 1.8, None, 31, 1, 2, "demo_outdoor.mp4", "journey_cover_outdoor", 1758500000),
 ]
 
 
