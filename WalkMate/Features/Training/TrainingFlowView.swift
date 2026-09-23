@@ -9,11 +9,11 @@ struct TrainingFlowView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            TrainingListView { path.append(.session) }
+            TrainingListView { kind in path.append(.session(kind)) }
                 .navigationDestination(for: TrainingRoute.self) { route in
                     switch route {
-                    case .session:
-                        TrainingSessionView { result in path.append(.summary(result)) }
+                    case .session(let kind):
+                        TrainingSessionView(kind: kind) { result in path.append(.summary(result)) }
                     case .summary(let result):
                         TrainingSummaryView(result: result, onDone: { path.removeAll() }, onViewGrowth: {
                             path.removeAll()
@@ -27,13 +27,15 @@ struct TrainingFlowView: View {
 }
 
 enum TrainingRoute: Hashable {
-    case session
+    case session(TrainingKind)
     case summary(TrainingResult)
 }
 
 /// 渐进式训练列表。对应设计稿「训练1」。
 struct TrainingListView: View {
-    let onStartIndoor: () -> Void
+    let onStart: (TrainingKind) -> Void
+
+    @State private var history = TrainingHistoryStore.shared
 
     /// 正在查看要求的档位
     @State private var requirementLevel: LockedLevel?
@@ -43,9 +45,9 @@ struct TrainingListView: View {
             VStack(spacing: 22) {
                 WMLogoHeader().padding(.top, 8)
                 WMPageTitle(text: "渐进式训练")
-                levelCard(title: "室内适应", subtitle: "indoor", detail: "静态障碍、方向判断、基础距离感", locked: false)
-                levelCard(title: "半开放环境", subtitle: "Semi-open", detail: "小区、校园等相对可控的内部路线", locked: true, level: .semiOpen)
-                levelCard(title: "户外独立出行", subtitle: "Outdoor", detail: "真实步行环境中的动态风险与路线练习", locked: true, level: .outdoor)
+                levelCard(title: "室内适应", subtitle: "indoor", detail: "静态障碍、方向判断、基础距离感", locked: false, kind: .indoor)
+                levelCard(title: "半开放环境", subtitle: "Semi-open", detail: "小区、校园等相对可控的内部路线", locked: !history.isSemiOpenUnlocked, kind: .neighborhood, level: .semiOpen)
+                levelCard(title: "户外独立出行", subtitle: "Outdoor", detail: "真实步行环境中的动态风险与路线练习", locked: !history.isOutdoorUnlocked, kind: nil, level: .outdoor)
             }
             .wmPageInset()
             .wmTabBarClearance()
@@ -57,7 +59,7 @@ struct TrainingListView: View {
         }
     }
 
-    private func levelCard(title: String, subtitle: String, detail: String, locked: Bool, level: LockedLevel? = nil) -> some View {
+    private func levelCard(title: String, subtitle: String, detail: String, locked: Bool, kind: TrainingKind?, level: LockedLevel? = nil) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Text(title)
@@ -79,8 +81,8 @@ struct TrainingListView: View {
             if locked {
                 WMButton(title: "查看要求", style: .subdued, height: 47) { requirementLevel = level }
                     .padding(.top, 12)
-            } else {
-                WMButton(title: "开始训练", style: .white, height: 47, action: onStartIndoor)
+            } else if let kind {
+                WMButton(title: "开始训练", style: .white, height: 47) { onStart(kind) }
                     .padding(.top, 12)
             }
         }

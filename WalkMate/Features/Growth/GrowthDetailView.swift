@@ -110,7 +110,7 @@ struct TrainingRecordList: View {
                         Text(Self.dateText(record.finishedAt))
                             .font(WalkMateTheme.Fonts.body)
                             .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                        Text("\(record.durationSeconds / 60) 分 \(record.durationSeconds % 60) 秒 · 避障 \(record.obstaclesAvoided) 次 · \(record.distanceMeters) 米")
+                        Text("\(record.kind.title) · \(record.durationSeconds / 60) 分 \(record.durationSeconds % 60) 秒 · 避障 \(record.obstaclesAvoided) 次 · \(record.distanceMeters) 米")
                             .font(WalkMateTheme.Fonts.caption)
                             .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
                     }

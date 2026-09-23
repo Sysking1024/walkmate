@@ -4,6 +4,7 @@ import Observation
 
 /// 一次训练的结果，交给总结页展示
 struct TrainingResult: Hashable {
+    let kind: TrainingKind
     let durationSeconds: Int
     let distanceMeters: Int
     let obstaclesAvoided: Int
@@ -23,6 +24,8 @@ struct TrainingResult: Hashable {
 @Observable
 final class TrainingSessionModel {
 
+    let kind: TrainingKind
+
     private(set) var elapsedSeconds = 0
     private(set) var distanceMeters = 0
     private(set) var obstaclesAvoided = 0
@@ -33,6 +36,8 @@ final class TrainingSessionModel {
     private let pedometer = CMPedometer()
     private var lastObstacleCount = 0
 
+    init(kind: TrainingKind) { self.kind = kind }
+
     func start() {
         startedAt = Date()
         ticker = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
@@ -40,7 +45,7 @@ final class TrainingSessionModel {
         }
         companion.start()
         startPedometer()
-        Log.info("训练开始", category: .ui)
+        Log.info("训练开始：\(kind.title)", category: .ui)
     }
 
     /// 结束训练，返回结果
@@ -50,6 +55,7 @@ final class TrainingSessionModel {
         companion.stop()
         Log.info("训练结束：\(elapsedSeconds) 秒，\(distanceMeters) 米，避障 \(obstaclesAvoided) 次，时刻 \(companion.moments.count) 个", category: .ui)
         return TrainingResult(
+            kind: kind,
             durationSeconds: elapsedSeconds,
             distanceMeters: distanceMeters,
             obstaclesAvoided: obstaclesAvoided,

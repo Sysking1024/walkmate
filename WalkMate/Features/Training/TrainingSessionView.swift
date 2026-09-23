@@ -4,16 +4,23 @@ import SwiftUI
 ///
 /// 相机预览与障碍数据来自避障线的 `CameraViewModel`；计时、距离、避障计数与伙伴会话由 `TrainingSessionModel` 托管。
 struct TrainingSessionView: View {
+    let kind: TrainingKind
     let onFinish: (TrainingResult) -> Void
 
     @StateObject private var camera = CameraViewModel()
-    @State private var session = TrainingSessionModel()
+    @State private var session: TrainingSessionModel
+
+    init(kind: TrainingKind, onFinish: @escaping (TrainingResult) -> Void) {
+        self.kind = kind
+        self.onFinish = onFinish
+        _session = State(initialValue: TrainingSessionModel(kind: kind))
+    }
 
     var body: some View {
         ScrollView {
             VStack(spacing: 18) {
                 WMLogoHeader().padding(.top, 8)
-                WMPageTitle(text: "室内基础避障")
+                WMPageTitle(text: kind.title)
 
                 HStack(spacing: 14) {
                     WMStatTile(label: "训练时间", value: session.elapsedText)

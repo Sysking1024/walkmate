@@ -14,15 +14,15 @@ struct GrowthView: View {
                     weeklyCard
                     WMSectionHeader(title: "我的路线")
                     NavigationLink {
-                        RouteDetailView(title: "小区路线", route: SeedData.neighborhoodRoute, completedCount: 2)
+                        RouteDetailView(title: "小区路线", route: SeedData.neighborhoodRoute, completedCount: history.records(of: .neighborhood).count)
                     } label: {
-                        routeRow(icon: "route_neighborhood", title: "小区路线", detail: "已完成 2 次")
+                        routeRow(icon: "route_neighborhood", title: "小区路线", detail: "已完成 \(history.records(of: .neighborhood).count) 次")
                     }
                     .buttonStyle(.plain)
                     NavigationLink {
                         IndoorRouteView()
                     } label: {
-                        routeRow(icon: "route_home", title: "室内训练路线", detail: "已完成 \(history.records.count) 次")
+                        routeRow(icon: "route_home", title: "室内训练路线", detail: "已完成 \(history.records(of: .indoor).count) 次")
                     }
                     .buttonStyle(.plain)
                 }
@@ -73,7 +73,7 @@ struct GrowthView: View {
         VStack(alignment: .leading, spacing: 0) {
             milestone(dot: 7, lineBelow: true, dimmed: true, time: "昨天", title: "训练大进步", detail: "室内 320m ·成功避障20次")
             milestone(dot: 14, lineBelow: true, highlight: true, time: "9月20日", title: "连续训练5天", detail: "解锁「KEEP GOING」徽章")
-            milestone(dot: 11, lineBelow: false, dimmed: false, time: "下一目标", title: "半开放路线", detail: "再完成2次室内训练即可解锁")
+            milestone(dot: 11, lineBelow: false, dimmed: false, time: "下一目标", title: history.nextGoalText.title, detail: history.nextGoalText.detail)
         }
     }
 

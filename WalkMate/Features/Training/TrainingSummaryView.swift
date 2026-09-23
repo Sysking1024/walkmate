@@ -20,7 +20,7 @@ struct TrainingSummaryView: View {
                 WMLogoHeader().padding(.top, 8)
                 VStack(alignment: .leading, spacing: 6) {
                     WMPageTitle(text: "今天又前进一步")
-                    Text("你完成了室内基础避障训练")
+                    Text("你完成了\(result.kind.title)训练")
                         .font(WalkMateTheme.Fonts.caption)
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
                 }
@@ -138,7 +138,7 @@ struct TrainingSummaryView: View {
         return "准备中"
     }
 
-    private var reelTitle: String { "\(Self.dateText(result.finishedAt, style: .short)) · 室内训练" }
+    private var reelTitle: String { "\(Self.dateText(result.finishedAt, style: .short)) · \(result.kind.title)" }
 
     // MARK: - 本次的时刻（回听）
 

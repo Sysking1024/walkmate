@@ -5,7 +5,7 @@ struct IndoorRouteView: View {
     @State private var history = TrainingHistoryStore.shared
 
     var body: some View {
-        let records = history.records
+        let records = history.records(of: .indoor)
         let totalSeconds = records.reduce(0) { $0 + $1.durationSeconds }
         let obstacles = records.reduce(0) { $0 + $1.obstaclesAvoided }
         ScrollView {
