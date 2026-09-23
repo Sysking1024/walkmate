@@ -211,15 +211,20 @@ struct WMFlowLayout: Layout {
     var spacing: CGFloat = 4
 
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let width = proposal.width ?? .infinity
+        let sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+        guard let width = proposal.width, width.isFinite else {
+            // 未给宽度时：理想宽度取最宽的一枚，高度按每枚一行估算
+            let widest = sizes.map(\.width).max() ?? 0
+            let height = sizes.reduce(CGFloat(0)) { $0 + $1.height } + spacing * CGFloat(max(0, sizes.count - 1))
+            return CGSize(width: widest, height: height)
+        }
         var x: CGFloat = 0, y: CGFloat = 0, rowHeight: CGFloat = 0
-        for subview in subviews {
-            let size = subview.sizeThatFits(.unspecified)
+        for size in sizes {
             if x > 0, x + size.width > width { x = 0; y += rowHeight + spacing; rowHeight = 0 }
             x += size.width + spacing
             rowHeight = max(rowHeight, size.height)
         }
-        return CGSize(width: width == .infinity ? x : width, height: y + rowHeight)
+        return CGSize(width: width, height: y + rowHeight)
     }
 
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
@@ -243,6 +248,7 @@ struct WMChip: View {
         Text(text)
             .font(WalkMateTheme.Fonts.chip)
             .tracking(0.7)
+            .lineLimit(1)
             .foregroundStyle(selected ? WalkMateTheme.Colors.chipText : WalkMateTheme.Colors.textSecondary)
             .padding(.horizontal, 8)
             .padding(.vertical, 4)
