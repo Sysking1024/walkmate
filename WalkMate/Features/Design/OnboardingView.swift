@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 首次启动的使用引导：三页，每页自动朗读，只有「下一步」和「跳过」两个按钮。
+/// 首次启动的使用引导：三页，只有「下一步」和「跳过」两个按钮。读屏交给系统旁白。
 /// 设置里的「帮助」可以重新打开。
 struct OnboardingView: View {
     let onFinish: () -> Void
@@ -12,8 +12,8 @@ struct OnboardingView: View {
          "先在家里练避障，再走小区，最后走上街道。手机连上全景相机，它就是你的眼睛。"),
         ("训练时怎么用",
          "训练页按「开始训练」，再按「连接相机」。停下三秒，它会问「要我说说这儿吗」。答「好」就听，答「不用」就安静。"),
-        ("每一页都会先告诉你",
-         "进入一页，伴行先说页名和第一个动作。开了旁白就交给旁白。语音、语速、字体、目标都在「个人」页。"),
+        ("用旁白读屏",
+         "打开系统旁白，每页第一个就是主要按钮。语音、语速、字体、目标都在「个人」页。"),
     ]
 
     var body: some View {
@@ -42,12 +42,6 @@ struct OnboardingView: View {
         }
         .wmPageInset()
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
-        .onAppear(perform: speakCurrent)
-        .onChange(of: index) { _, _ in speakCurrent() }
-    }
-
-    private func speakCurrent() {
-        PageNarrator.shared.announce("\(pages[index].title)。\(pages[index].body)", force: true)
     }
 
     private func next() {
@@ -55,15 +49,7 @@ struct OnboardingView: View {
     }
 
     private func finish() {
-        PageNarrator.shared.stop()
         AppSettings.shared.hasSeenGuide = true
         onFinish()
-    }
-}
-
-extension View {
-    /// 页面出现时朗读一段说明
-    func wmAnnounce(_ text: @escaping @autoclosure () -> String) -> some View {
-        onAppear { PageNarrator.shared.announce(text()) }
     }
 }

@@ -135,7 +135,7 @@ enum InfoPage {
                 ("伙伴什么时候开口", "训练中停下来大约 3 秒，伙伴会问「要我说说这儿吗」。答「好」就描述，答「不用」它会安静一会儿。也可以随时按「说说这儿」。"),
                 ("描述之后还能问", "描述完可以追问，比如「左手边是什么」。说「够了」就结束这轮。"),
                 ("集锦和分享", "训练结束后，留下的时刻会自动剪成带语音和字幕的短片，可以在总结页播放，也能分享给同伴。"),
-                ("设置里能调什么", "语音引导分详细、简洁、静音三档；语速与字体大小拖动滑杆即可，改动立即生效。"),
+                ("设置里能调什么", "语音引导分详细、简洁、静音三档，管的是训练中伙伴说多少；语速与字体大小拖动滑杆即可。读屏请用系统旁白。"),
             ]
         case .about:
             return [
@@ -185,6 +185,5 @@ struct InfoPageView: View {
             OnboardingView { showGuide = false }.preferredColorScheme(.dark)
         }
         .wmDetailNavigationBar(title: page.title)
-        .wmAnnounce(page.title)
     }
 }

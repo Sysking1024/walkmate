@@ -35,7 +35,6 @@ struct TrainingSummaryView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .wmAnnounce("训练结束，\(result.durationSeconds / 60) 分钟，避障 \(result.obstaclesAvoided) 次。按完成返回。")
         .task {
             await reel.build(from: result.moments)
             if case .ready(let url) = reel.state { TrainingHistoryStore.keepAsLatestReel(url) }

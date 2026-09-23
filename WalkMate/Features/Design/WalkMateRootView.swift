@@ -29,26 +29,8 @@ struct WalkMateRootView: View {
         // 字体大小设置改动时，环境变化会让整棵视图树重新求值，主题字体的缩放随之生效
         .dynamicTypeSize(settings.dynamicTypeSize)
         .fullScreenCover(isPresented: $showGuide) {
-            OnboardingView { showGuide = false; announceCurrentTab() }
+            OnboardingView { showGuide = false }
                 .preferredColorScheme(.dark)
-        }
-        .onAppear { if !showGuide { announceCurrentTab() } }
-        .onChange(of: selection) { _, _ in announceCurrentTab() }
-    }
-
-    // MARK: - 页面朗读
-
-    private func announceCurrentTab() {
-        PageNarrator.shared.announce(summary(for: selection))
-    }
-
-    /// 每个栏目进入时只说页名和第一个动作，让人马上知道往哪里按
-    private func summary(for tab: WalkMateTab) -> String {
-        switch tab {
-        case .home: return "首页，开始今天的训练。"
-        case .training: return "训练，室内适应，开始训练。"
-        case .community: return "社群，查看路线。"
-        case .profile: return "个人，设置。"
         }
     }
 }

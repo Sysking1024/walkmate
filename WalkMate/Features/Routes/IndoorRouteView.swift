@@ -43,7 +43,6 @@ struct IndoorRouteView: View {
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
         .wmDetailNavigationBar(title: "室内训练路线")
-        .wmAnnounce("室内训练路线，已完成 \(records.count) 次。")
     }
 
     private static func durationText(_ seconds: Int) -> String {

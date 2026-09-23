@@ -45,7 +45,6 @@ struct RouteDetailView: View {
             if let store { StoreRatingView(store: store) { showRating = false } }
         }
         .wmDetailNavigationBar(title: title)
-        .wmAnnounce("\(title)，\(distanceText)，\(route.averageObstacles) 处障碍。")
     }
 
     /// 店铺评分：实时均分与人数；评过就只显示自己的评分

@@ -44,7 +44,6 @@ struct TrainingSessionView: View {
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             session.start()
-            PageNarrator.shared.announce("\(kind.title)，连接相机。")
         }
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)
