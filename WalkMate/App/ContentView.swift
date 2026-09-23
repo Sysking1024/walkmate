@@ -91,11 +91,18 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         }
     }
     
-    /// 启动空间感知与 3D HRTF 空间音频
+    /// 启动空间感知与 3D 空间音频
     public func startPerception() {
         guard !isPerceiving else { return }
         isPerceiving = true
-        try? audioPlayer.start()
+        do {
+            try audioPlayer.start()
+            // 关键体验闭环：启动成功后立即播发一次即时声学确认音，确保视障测试者即刻获得听觉反馈
+            audioPlayer.playRewardSound()
+        } catch {
+            Log.error("空间音频启动失败: \(error.localizedDescription)", category: .audio)
+            self.latestError = "音频启动失败: \(error.localizedDescription)"
+        }
         perceptionEngine?.start()
         Log.info("已开启空间感知流水线与 3D 空间音频导航", category: .perception)
         UIAccessibility.post(notification: .announcement, argument: "已开启空间感知与音频导航")

@@ -141,7 +141,7 @@
 		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
 		717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassableRouteTests.swift; sourceTree = "<group>"; };
 		717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizerTests.swift; sourceTree = "<group>"; };
-		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
 		82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizer.swift; sourceTree = "<group>"; };
 		857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageRoutePlanner.swift; sourceTree = "<group>"; };
@@ -166,7 +166,7 @@
 		D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKitTests.swift; sourceTree = "<group>"; };
 		D43B9CFB19741A302829B9F6 /* AudioTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
-		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
+		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
 		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
 		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
 		E93BE0730790922553537549 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
@@ -615,7 +615,6 @@
 						ProvisioningStyle = Automatic;
 					};
 					D0C10D6348A3309AC5F5EA63 = {
-						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
 					};
 					D8A983DE875364D7AFB1F969 = {
@@ -790,6 +789,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",
@@ -814,6 +814,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",

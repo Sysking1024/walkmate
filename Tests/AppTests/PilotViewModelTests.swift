@@ -210,6 +210,7 @@ final class PilotViewModelTests: XCTestCase {
         viewModel.togglePerception()
         XCTAssertTrue(viewModel.isPerceiving)
         XCTAssertTrue(engine.startCalled)
+        XCTAssertTrue(audioPlayer.playRewardSoundCalled, "启动感知时必须立即触发即时确认提示音")
         
         // 第二次点击：停止感知
         viewModel.togglePerception()

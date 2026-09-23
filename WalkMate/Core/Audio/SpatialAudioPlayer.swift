@@ -163,12 +163,12 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         engine.connect(navigationPlayerNode, to: environmentNode, format: format)
         engine.connect(rewardPlayerNode, to: environmentNode, format: format)
         
-        // 启用系统最高质量 HRTF 双耳立体声算法
-        obstaclePlayerNode.renderingAlgorithm = .HRTFHQ
-        navigationPlayerNode.renderingAlgorithm = .HRTFHQ
-        rewardPlayerNode.renderingAlgorithm = .HRTFHQ
+        // 启用自适应声学生态渲染算法（根据耳机或机身扬声器动态匹配，耳机启用 HRTF，扬声器外放平滑退化为立体声）
+        obstaclePlayerNode.renderingAlgorithm = .auto
+        navigationPlayerNode.renderingAlgorithm = .auto
+        rewardPlayerNode.renderingAlgorithm = .auto
         
-        Log.info("空间音频节点图初始化完成，配置 .HRTFHQ 高精双耳渲染", category: .audio)
+        Log.info("空间音频节点图初始化完成，配置 .auto 自适应渲染", category: .audio)
     }
     
     // MARK: - 生命周期管理
@@ -184,8 +184,13 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         
         #if os(iOS)
         let session = AVAudioSession.sharedInstance()
-        try? session.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-        try? session.setActive(true)
+        do {
+            try session.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+            try session.setActive(true)
+            Log.info("AVAudioSession 成功激活为 .playback 模式，无视静音开关并支持混音", category: .audio)
+        } catch {
+            Log.error("AVAudioSession 激活失败: \(error.localizedDescription)", category: .audio)
+        }
         #endif
         
         try engine.start()

@@ -126,6 +126,12 @@ public enum ProceduralAudioSynthesizer {
         let frictionDecayPerSample = exp(-1.0 / (0.025 * sampleRateFloat))
         var frictionEnvelope: Float = 0.25
         
+        // 为 iPhone 自带扬声器外放增加 750Hz 触地瞬态冲击，兼顾微型喇叭频响 (避免纯低频外放静音)
+        var clickPhase: Float = 0.0
+        let clickInc = twoPi * 750.0 / sampleRateFloat
+        let clickDecayPerSample = exp(-1.0 / (0.008 * sampleRateFloat))
+        var clickEnvelope: Float = 0.35
+        
         for i in 0..<Int(frameCount) {
             let progress = Float(i) / Float(frameCount)
             // 频率从 120Hz 滑落至 70Hz
@@ -140,12 +146,17 @@ public enum ProceduralAudioSynthesizer {
             previousNoise = rawNoise
             let friction = diffNoise * frictionEnvelope
             
-            let rawSample = heelImpact + friction
+            // 触地瞬态冲击音（前 12ms 快速衰减）
+            let click = sin(clickPhase) * clickEnvelope
+            
+            let rawSample = heelImpact + friction + click
             channelData[i] = max(-1.0, min(1.0, rawSample))
             
             phase += phaseInc
+            clickPhase += clickInc
             heelEnvelope *= heelDecayPerSample
             frictionEnvelope *= frictionDecayPerSample
+            clickEnvelope *= clickDecayPerSample
         }
         
         return buffer
