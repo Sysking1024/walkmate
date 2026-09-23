@@ -43,16 +43,16 @@ struct HomeView: View {
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .wmCard(WalkMateTheme.Gradients.hero)
-        .overlay(alignment: .topTrailing) {
-            // 设计稿里的弧形光晕自带右上圆角，必须紧贴卡片右上角
+        // 弧形光晕放在内容之下、卡片渐变之上，贴齐右上角且不挡按钮
+        .background(alignment: .topTrailing) {
             Image("home_hero_glow")
                 .resizable().scaledToFit()
                 .frame(width: 120)
                 .opacity(0.9)
+                .allowsHitTesting(false)
                 .accessibilityHidden(true)
         }
-        .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
+        .wmCard(WalkMateTheme.Gradients.hero)
     }
 
     // MARK: - 今日任务
