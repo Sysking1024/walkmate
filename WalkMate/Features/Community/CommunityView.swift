@@ -24,11 +24,12 @@ struct CommunityView: View {
                     achievementCard
 
                     WMPageTitle(text: "无障碍探店")
-                    ForEach(ratingStore.stores) { store in
-                        storeCard(store)
-                    }
+                    // 好友邀约排在最前，店铺卡就嵌在邀约里；下面只列没被邀约的店
                     ForEach(communityStore.feed.invitations) { invitation in
                         inviteCard(invitation)
+                    }
+                    ForEach(ratingStore.stores.filter { store in !invitedStoreIDs.contains(store.id) }) { store in
+                        storeCard(store)
                     }
 
                     if let journey = communityStore.feed.journeys.first {
@@ -152,19 +153,28 @@ struct CommunityView: View {
 
     // MARK: - 邀约
 
+    private var invitedStoreIDs: Set<String> {
+        Set(communityStore.feed.invitations.compactMap(\.storeId))
+    }
+
     private func inviteCard(_ invitation: CommunityFeed.Invitation) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("好友邀你一起探索")
-                .font(WalkMateTheme.Fonts.body)
-                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-            HStack(alignment: .center, spacing: 12) {
-                WMAvatar(imageName: invitation.avatarKey, size: 56)
-                (Text("\(invitation.from) ").bold() + Text("想邀请你一起去 ") + Text(invitation.place).bold())
+            HStack(spacing: 12) {
+                WMAvatar(imageName: invitation.avatarKey, size: 48)
+                Text("\(invitation.from) 想邀请你一起去")
                     .font(WalkMateTheme.Fonts.body)
                     .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isHeader)
+
+            if let store = invitation.storeId.flatMap({ ratingStore.store(id: $0) }) {
+                storeCard(store)
+            } else {
+                Text(invitation.place)
+                    .font(WalkMateTheme.Fonts.body)
+                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+            }
 
             switch invitation.status {
             case "accepted":
