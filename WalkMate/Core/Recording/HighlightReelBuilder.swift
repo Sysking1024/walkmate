@@ -41,9 +41,10 @@ final class HighlightReelBuilder {
                 let speech = try await renderSpeech(moment.narration.text, index: index)
                 speeches.append(.init(audioURL: speech.audioURL, startMs: cursorMs))
                 cues += SubtitleComposer.compose(forSpeech: moment.narration.text, startMs: cursorMs, speechDurationMs: speech.durationMs)
-                if let clip = Self.clipRange(for: index, in: moments) {
+                if let clip = Self.clipRange(for: index, in: moments, maxSeconds: Double(speech.durationMs + paddingMs) / 1_000) {
+                    // 录下的预览是拼好的等矩形全景：按全景裁出竖向窗口并横扫，描述里的左右两边都会扫到
                     segments.append(.init(source: .video(clip.url, start: clip.start, end: clip.end),
-                                          durationMs: speech.durationMs + paddingMs, fill: true))
+                                          durationMs: speech.durationMs + paddingMs))
                 } else {
                     segments.append(.init(
                         source: .image(moment.frameURL),
@@ -85,7 +86,7 @@ final class HighlightReelBuilder {
     /// 取景范围：双鱼眼原图只看正前方那个圆的中心区域，避免扫到圆外的黑边；
     /// 等矩形全景则横扫整幅画面
     /// 这一刻在录下的视频里对应的区间：从它被描述的时间起，到下一刻或视频结束
-    private static func clipRange(for index: Int, in moments: [CompanionSession.Moment]) -> (url: URL, start: Double, end: Double)? {
+    private static func clipRange(for index: Int, in moments: [CompanionSession.Moment], maxSeconds: Double) -> (url: URL, start: Double, end: Double)? {
         let moment = moments[index]
         guard let url = moment.clipURL, let startMs = moment.clipStartMs, let durationMs = moment.clipDurationMs,
               FileManager.default.fileExists(atPath: url.path) else { return nil }
@@ -95,11 +96,12 @@ final class HighlightReelBuilder {
         if index + 1 < moments.count, moments[index + 1].clipURL == url {
             end = Double(moments[index + 1].narration.offsetMs - startMs) / 1_000
         }
-        start = min(max(0, start), total)
-        end = min(max(start, end), total)
-        // 区间太短就用整段，慢放也比静止好
-        if end - start < 1 { start = 0; end = total }
-        guard end > start else { return nil }
+        // 描述是对停下来那一刻说的：从开口描述前 1 秒起，按原速放到这段配音结束，不把后面走路的画面压缩进来
+        start = min(max(0, start - 1), total)
+        end = min(end, start + maxSeconds, total)
+        // 剩余素材不够时往前挪，尽量凑满原速时长
+        if end - start < maxSeconds { start = max(0, end - maxSeconds) }
+        guard end - start >= 0.5 else { return nil }
         return (url, start, end)
     }
 

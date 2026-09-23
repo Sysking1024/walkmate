@@ -55,6 +55,9 @@ public final class StreamPlayerBridge: NSObject, StreamPlayerBridgeProtocol {
     
     // 官方会话播放器实例（单例持久持有，杜绝重复创建导致的底层 _renderSession 冲突）
     public let player: INSCameraSessionPlayer
+
+    /// 预览渲染模式。训练页录集锦时切成 .planeStitch（拼好的等矩形全景），其余时候保持球面
+    public static var preferredDisplayType: INSDisplayType = .sphereStitch
     
     // 帧回调闭包
     public var onFrameDecoded: ((CVPixelBuffer, Int64) -> Void)?
@@ -90,7 +93,7 @@ public final class StreamPlayerBridge: NSObject, StreamPlayerBridgeProtocol {
         sessionPlayer.delegate = self
         sessionPlayer.dataSource = self
         sessionPlayer.needCameraPreviewStreamAutoRotate = true
-        sessionPlayer.render.renderModelType.displayType = .sphereStitch
+        sessionPlayer.render.renderModelType.displayType = Self.preferredDisplayType
     }
     
     deinit {
@@ -193,7 +196,7 @@ extension StreamPlayerBridge: INSCameraSessionPlayerDataSource {
     
     /// 配置全景拼接渲染模型参数（对齐官方 SDK RecordViewController 实现）
     public func updateRenderModelType(to player: INSCameraSessionPlayer, renderModelType: INSRenderModelType) -> INSRenderModelType {
-        renderModelType.displayType = .sphereStitch
+        renderModelType.displayType = Self.preferredDisplayType
         renderModelType.imageLayout = .horizontalMerged
         renderModelType.isHalfFisheye = false
         renderModelType.isSelfieVideo = false

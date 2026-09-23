@@ -16,7 +16,7 @@ enum TrainingClipComposer {
     /// 竖屏输出尺寸，对齐主流短视频平台
     static let renderSize = CGSize(width: 1080, height: 1920)
     /// 从全景图纵向截取的比例。取中间 62% 的水平带，避开等矩形投影上下两极的拉伸畸变。
-    static let verticalFieldRatio: CGFloat = 0.62
+    static let verticalFieldRatio: CGFloat = 0.7
 
     /// 一个画面片段：画面来源、在成片中占用的时长，以及取景方向。
     struct FrameSegment {

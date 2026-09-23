@@ -190,9 +190,12 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         #if os(iOS)
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+            // 训练中语音指令开着麦克风时会话已是 playAndRecord，改类别会因优先级不足失败；沿用即可，同样外放且混音
+            if session.category != .playAndRecord {
+                try session.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+            }
             try session.setActive(true)
-            Log.info("AVAudioSession 成功激活为 .playback 模式，无视静音开关并支持混音", category: .audio)
+            Log.info("AVAudioSession 已激活（\(session.category.rawValue)），无视静音开关并支持混音", category: .audio)
         } catch {
             Log.error("AVAudioSession 激活失败: \(error.localizedDescription)", category: .audio)
         }

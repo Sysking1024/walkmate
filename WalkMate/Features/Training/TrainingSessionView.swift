@@ -60,9 +60,12 @@ struct TrainingSessionView: View {
         .toolbar(.hidden, for: .navigationBar)
         .modifier(TrainingSessionChrome(confirmCancel: $confirmCancel, session: session, camera: camera, onCancel: onCancel))
         .onAppear {
+            // 训练中预览显示拼好的整幅全景：集锦从这个视图录，描述里的左右两边都在画面里
+            StreamPlayerBridge.preferredDisplayType = .planeStitch
             session.start()
             AccessibilityFeedback.pageSwitched()
         }
+        .onDisappear { StreamPlayerBridge.preferredDisplayType = .sphereStitch }
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)
         }
@@ -91,7 +94,7 @@ struct TrainingSessionView: View {
     private var cameraCard: some View {
         ZStack {
             if camera.connectionState == .connected, let preview = camera.previewView {
-                CameraPreviewRepresentable(previewView: preview)
+                PanoramaPreviewHost(previewView: preview)
             } else {
                 Image("training_camera_sample")
                     .resizable().scaledToFill()
@@ -110,7 +113,8 @@ struct TrainingSessionView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 440)
+        // 连上后是 2:1 的全景条；没连上时保持设计稿的高卡片
+        .frame(height: camera.connectionState == .connected ? 179 : 440)
         .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if camera.connectionState == .connected {

@@ -41,6 +41,7 @@
 		5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */; };
 		57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */ = {isa = PBXBuildFile; fileRef = E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */; };
 		60C1E09DDF869D4C8BFD1E41 /* CommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3CE22079AF7BD2C53612E5 /* CommunityView.swift */; };
+		654D557BAEE37289A0909FD5 /* PanoramaPreviewHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A207F47FCCB413081F90BFC /* PanoramaPreviewHost.swift */; };
 		6A01649963AB2BEAAD6845EC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5498756E59D2F84A66C26DF /* Log.swift */; };
 		6B9B31479560946252636A2D /* TrainingSessionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2271546842394562E692B9 /* TrainingSessionView.swift */; };
 		6F0E4083F8E58A3740D2910F /* ConversationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D063BD2D47E4B75201BDCB /* ConversationModels.swift */; };
@@ -192,6 +193,7 @@
 		226F2B37F75FEF3DD4E034F7 /* WalkMateTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateTabBar.swift; sourceTree = "<group>"; };
 		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
 		296297A21A536E58CD824C1E /* PilotViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotViewModelTests.swift; sourceTree = "<group>"; };
+		2A207F47FCCB413081F90BFC /* PanoramaPreviewHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramaPreviewHost.swift; sourceTree = "<group>"; };
 		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
 		32AB8B2CA6663C3AFB9E8902 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		345A9B31CBA25A47500E06C8 /* TrainingSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSummaryView.swift; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 		1D917A105E0B658D6A88AE55 /* Training */ = {
 			isa = PBXGroup;
 			children = (
+				2A207F47FCCB413081F90BFC /* PanoramaPreviewHost.swift */,
 				1F5BBE716BF5361AD6E2BD39 /* TrainingFlowView.swift */,
 				F438DFF83F548487E48E13B2 /* TrainingSessionModel.swift */,
 				BB2271546842394562E692B9 /* TrainingSessionView.swift */,
@@ -1045,6 +1048,7 @@
 				AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */,
 				39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */,
 				A540B4901BEC12A1E5D07B11 /* OnboardingView.swift in Sources */,
+				654D557BAEE37289A0909FD5 /* PanoramaPreviewHost.swift in Sources */,
 				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
 				7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */,
 				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,

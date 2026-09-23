@@ -25,9 +25,9 @@ final class ClipRecorder {
 
     func start(capturing view: UIView, to url: URL) {
         guard !isRecording, view.bounds.width > 0, view.bounds.height > 0 else { return }
-        // 按 2 倍像素录，宽高取偶数，H.264 要求
-        let width = Int(view.bounds.width * 2) / 2 * 2
-        let height = Int(view.bounds.height * 2) / 2 * 2
+        // 视图本身已按放大尺寸布局（见 PanoramaPreviewHost），按 1 倍像素截；宽高取偶数，H.264 要求
+        let width = Int(view.bounds.width) / 2 * 2
+        let height = Int(view.bounds.height) / 2 * 2
         try? FileManager.default.removeItem(at: url)
         do {
             let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
@@ -35,7 +35,7 @@ final class ClipRecorder {
                 AVVideoCodecKey: AVVideoCodecType.h264,
                 AVVideoWidthKey: width,
                 AVVideoHeightKey: height,
-                AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 6_000_000],
+                AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 24_000_000],
             ])
             input.expectsMediaDataInRealTime = true
             let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
@@ -89,7 +89,7 @@ final class ClipRecorder {
         let width = CVPixelBufferGetWidth(buffer), height = CVPixelBufferGetHeight(buffer)
 
         // 截取当前已经显示在屏幕上的那一帧（不等下一次刷新，避免阻塞渲染）
-        let renderer = UIGraphicsImageRenderer(size: view.bounds.size, format: { let f = UIGraphicsImageRendererFormat(); f.scale = 2; return f }())
+        let renderer = UIGraphicsImageRenderer(size: view.bounds.size, format: { let f = UIGraphicsImageRendererFormat(); f.scale = 1; return f }())
         let image = renderer.image { _ in view.drawHierarchy(in: view.bounds, afterScreenUpdates: false) }
         guard let cgImage = image.cgImage else { return }
 
