@@ -44,10 +44,11 @@
 **独立测试验证**: 启动应用，确认主屏无遥测卡片，视频预览区填满屏幕；点击左下角按钮顺利连接/断开相机，右下角按钮在未连接时禁用、连接后激活。
 
 ### 1. 测试先行 (TDD) ⚠️ 在实现前编写测试用例
-- [ ] T003 [P] [US1] 创建 `Tests/AppTests/PilotViewModelTests.swift` 并编写全屏 UI 与双按钮状态测试（断言相机连接状态机流转、左下角连接/断开切换指令、以及右下角感知按钮在未连接时禁用、已连接时激活）
+- [x] T003 [P] [US1] 创建 `Tests/AppTests/PilotViewModelTests.swift` 并编写全屏 UI 与双按钮状态测试（断言相机连接状态机流转、左下角连接/断开切换指令、以及右下角感知按钮在未连接时禁用、已连接时激活）
 
 ### 2. 核心界面实现
-- [ ] T004 [US1] 重构 `WalkMate/App/ContentView.swift` 界面布局：移除 `SensorTelemetryCard` 引用与 `ScrollView`，采用 `ZStack` 将 `PanoramicStreamView(previewView: viewModel.previewView, isConnected: ..., isFullScreen: true)` 铺满全屏背景（`.ignoresSafeArea()`），底部左下角固定放置相机连接/断开按钮，右下角固定放置开始/停止感知按钮，触控靶心尺寸严格设为 $56\times 56\text{pt}$（满足 $\ge 48\text{pt}$ 无障碍底线），对比度严格 $\ge 4.5:1$，配置 VoiceOver 语义标签、交互提示与状态语音播报
+- [x] T004 [US1] 重构 `WalkMate/App/ContentView.swift` 界面布局：移除 `SensorTelemetryCard` 引用与 `ScrollView`，采用 `ZStack` 将 `PanoramicStreamView(previewView: viewModel.previewView, isConnected: ..., isFullScreen: true)` 铺满全屏背景（`.ignoresSafeArea()`），底部左下角固定放置相机连接/断开按钮，右下角固定放置开始/停止感知按钮，触控靶心尺寸严格设为 $56\times 56\text{pt}$（满足 $\ge 48\text{pt}$ 无障碍底线），对比度严格 $\ge 4.5:1$，配置 VoiceOver 语义标签、交互提示与状态语音播报
+
 
 **检查点 (Checkpoint)**: 用户故事 1 交付！界面纯净全屏呈现，相机推流与双按钮触控完全独立可用。
 

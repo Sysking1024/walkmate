@@ -56,10 +56,13 @@ public struct CameraPreviewRepresentable: UIViewRepresentable {
 public struct PanoramicStreamView: View {
     public let previewView: UIView?
     public let isConnected: Bool
+    /// 是否以全屏沉浸式模式呈现（为 true 时取消 2:1 比例与圆角截断，铺满整个背景）
+    public let isFullScreen: Bool
     
-    public init(previewView: UIView?, isConnected: Bool) {
+    public init(previewView: UIView?, isConnected: Bool, isFullScreen: Bool = false) {
         self.previewView = previewView
         self.isConnected = isConnected
+        self.isFullScreen = isFullScreen
     }
     
     public var body: some View {
@@ -79,14 +82,30 @@ public struct PanoramicStreamView: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity)
-        .aspectRatio(2.0, contentMode: .fit) // 1080P/全景 2:1 标准画幅
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
-        )
+        .frame(maxWidth: .infinity, maxHeight: isFullScreen ? .infinity : nil)
+        .modifier(PanoramicPresentationModifier(isFullScreen: isFullScreen))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(isConnected ? "全景实时画面监控区域，画面推流正常" : "全景画面监控区域，当前未连接")
     }
 }
+
+/// 视图修饰符：根据是否全屏沉浸式决定是否应用 2:1 画幅比与圆角边框
+private struct PanoramicPresentationModifier: ViewModifier {
+    let isFullScreen: Bool
+    
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if isFullScreen {
+            content
+        } else {
+            content
+                .aspectRatio(2.0, contentMode: .fit) // 1080P/全景 2:1 标准画幅
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                )
+        }
+    }
+}
+

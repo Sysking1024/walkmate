@@ -9,21 +9,39 @@ import Combine
 import SwiftUI
 import UIKit
 
-/// 主视图模型：桥接底层相机管道事件与 SwiftUI 响应式状态
+//
+//  ContentView.swift
+//  WalkMate
+//
+//  Created by Antigravity on 2026-09-22（修订于 2026-09-23）.
+//
+
+import Combine
+import SwiftUI
+import UIKit
+
+/// 主视图模型：桥接底层相机管道事件与 SwiftUI 响应式状态，实现启停解耦与业务层前向避障导引
 public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, SpatialPerceptionDelegate {
     
+    // MARK: - 响应式状态 (Published Properties)
+    
     @Published public var connectionState: CameraConnectionState = .noConnection
-    @Published public var telemetry: SensorTelemetry = .offline
+    @Published public var isPerceiving: Bool = false
     @Published public var previewView: UIView?
     @Published public var latestError: String?
     
-    // 空间感知数据输出快照
+    // 空间感知数据输出快照 (保留供无障碍与调试观测)
     @Published public var latestObstacles: ObstacleData?
     @Published public var latestRoute: PassableRouteData?
     
-    // 底层相机数据管道
+    /// 感知主控按钮是否可用（仅当相机连接成功后方可点击）
+    public var isPerceptionEnabled: Bool {
+        return connectionState == .connected
+    }
+    
+    // MARK: - 底层组件依赖
+    
     public let pipeline: CameraPipelineProtocol
-    // 空间感知核心引擎
     public let perceptionEngine: SpatialPerceptionEngineProtocol?
     
     public init(
@@ -46,13 +64,48 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         self.perceptionEngine?.delegate = self
     }
     
-    /// 触发连接/断开切换
+    // MARK: - 用户交互指令 (Actions)
+    
+    /// 触发相机连接/断开切换
     public func toggleConnection() {
         if connectionState == .connected || connectionState == .connecting {
+            if isPerceiving {
+                stopPerception()
+            }
             pipeline.disconnect()
         } else {
             pipeline.connect()
         }
+    }
+    
+    /// 触发大模型空间感知与空间音频的开启/停止
+    public func togglePerception() {
+        guard connectionState == .connected else { return }
+        if isPerceiving {
+            stopPerception()
+        } else {
+            startPerception()
+        }
+    }
+    
+    /// 启动空间感知与 3D HRTF 空间音频
+    public func startPerception() {
+        guard !isPerceiving else { return }
+        isPerceiving = true
+        try? SpatialAudioPlayer.shared.start()
+        perceptionEngine?.start()
+        Log.info("已开启空间感知流水线与 3D 空间音频导航", category: .perception)
+        UIAccessibility.post(notification: .announcement, argument: "已开启空间感知与音频导航")
+    }
+    
+    /// 停止空间感知并使空间音频立即静音
+    public func stopPerception() {
+        guard isPerceiving else { return }
+        isPerceiving = false
+        SpatialAudioPlayer.shared.reset()
+        perceptionEngine?.stop()
+        Log.info("已停止空间感知流水线，空间音频已恢复静音", category: .perception)
+        UIAccessibility.post(notification: .announcement, argument: "已停止空间感知")
     }
     
     // MARK: - CameraPipelineDelegate 回调
@@ -61,31 +114,38 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
         self.connectionState = state
         self.previewView = pipeline.previewView
         
-        // 状态变更触发针对视障用户的屏幕朗读通知与感知引擎生命周期联动
+        // 掉线安全自愈：相机异常断开或连接失败时，若感知正在运行则强制安全停止并静音
+        if state == .failed || state == .noConnection {
+            if isPerceiving {
+                stopPerception()
+            } else {
+                perceptionEngine?.stop()
+            }
+        }
+        
+        // 状态变更触发针对视障用户的屏幕朗读通知
         let announcement: String
         switch state {
         case .connected:
-            announcement = "全景相机连接成功，已开启实时视频流与空间感知流水线"
-            perceptionEngine?.start()
+            announcement = "全景相机连接成功"
         case .connecting:
             announcement = "正在连接全景相机，请稍候"
         case .failed:
             announcement = "全景相机连接失败，请检查Wi-Fi连接"
-            perceptionEngine?.stop()
         case .noConnection:
             announcement = "全景相机已断开连接"
-            perceptionEngine?.stop()
         }
         UIAccessibility.post(notification: .announcement, argument: announcement)
     }
     
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didReceiveFrame frame: PanoramicFrame) {
-        // 实时视频与姿态对齐帧驱动空间感知引擎计算流水线
+        // 关键门禁：仅当感知处于开启状态时，才将视频帧送入模型流水线
+        guard isPerceiving else { return }
         perceptionEngine?.processFrame(frame)
     }
     
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didUpdateTelemetry telemetry: SensorTelemetry) {
-        self.telemetry = telemetry
+        // 维持遥测静默接收（主界面不再渲染冗余 HUD）
     }
     
     public func cameraPipeline(_ pipeline: CameraPipelineProtocol, didEncounterError error: Error) {
@@ -96,11 +156,28 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     // MARK: - SpatialPerceptionDelegate 回调
     
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didProduceObstacles data: ObstacleData) {
+        // 关键门禁：杜绝停止感知后后台上一帧异步飞行结果唤醒音频
+        guard isPerceiving else { return }
         self.latestObstacles = data
+        
+        // 业务层前向 130° 扇区 (|azimuth| <= 65°) 与 1 米近身双重过滤 (FR-008)
+        let forwardNearObstacles = data.obstacles.filter { obstacle in
+            abs(obstacle.azimuth) <= 65.0 && obstacle.distance <= 1.0
+        }
+        
+        // 提取其中距离最近的一个危险障碍物
+        let nearestHazard = forwardNearObstacles.min(by: { $0.distance < $1.distance })
+        SpatialAudioPlayer.shared.setObstacleTarget(position: nearestHazard?.position)
     }
     
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didProducePassableRoute data: PassableRouteData) {
+        // 关键门禁：杜绝停止感知后后台上一帧异步飞行结果唤醒音频
+        guard isPerceiving else { return }
         self.latestRoute = data
+        
+        // 导航首点指引：仅提取第 1 个航路点三维相对坐标驱动自然步频领路脚步声 (FR-009)
+        let firstWaypoint = data.waypoints.first?.position
+        SpatialAudioPlayer.shared.setNavigationTarget(position: firstWaypoint)
     }
     
     public func perceptionEngine(_ engine: SpatialPerceptionEngineProtocol, didEncounterError error: Error) {
@@ -108,141 +185,110 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     }
 }
 
-/// 主控制界面
+/// 极简真机实测主界面 (Minimal Field Pilot)
 public struct ContentView: View {
     @StateObject private var viewModel = CameraViewModel()
     
     public init() {}
     
     public var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // 全景实时流渲染监控区
-                    PanoramicStreamView(
-                        previewView: viewModel.previewView,
-                        isConnected: viewModel.connectionState == .connected
-                    )
+        ZStack {
+            // 1. 全屏沉浸式全景推流预览背景 (FR-001 / SC-001)
+            PanoramicStreamView(
+                previewView: viewModel.previewView,
+                isConnected: viewModel.connectionState == .connected,
+                isFullScreen: true
+            )
+            .ignoresSafeArea()
+            
+            // 2. 界面顶部异常提示条 (若存在)
+            if let error = viewModel.latestError {
+                VStack {
+                    HStack {
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .foregroundColor(.red)
+                        Text(error)
+                            .font(.footnote)
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.black.opacity(0.75))
+                    .clipShape(Capsule())
+                    .padding(.top, 16)
                     
-                    // 设备连接主控制按钮（触控尺寸严格 >= 48x48pt，对比度 >= 4.5:1）
+                    Spacer()
+                }
+            }
+            
+            // 3. 界面底部极简双按钮主控区域 (FR-003 / FR-004 / FR-005)
+            VStack {
+                Spacer()
+                
+                HStack(spacing: 20) {
+                    // 左下角：相机连接/断开按钮
                     Button(action: {
                         viewModel.toggleConnection()
                     }) {
-                        HStack(spacing: 12) {
-                            Image(systemName: buttonIconName)
+                        HStack(spacing: 8) {
+                            Image(systemName: connectionButtonIcon)
                                 .font(.system(size: 20, weight: .bold))
-                            Text(buttonTitle)
-                                .font(.system(size: 18, weight: .bold))
+                            Text(connectionButtonTitle)
+                                .font(.system(size: 16, weight: .bold))
                         }
                         .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(minHeight: 52) // 严格大于 48 像素无障碍规范
-                        .background(buttonBackgroundColor)
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .shadow(color: buttonBackgroundColor.opacity(0.3), radius: 6, y: 3)
+                        .frame(minWidth: 120, minHeight: 56) // 触控靶心 >= 56pt，远超 48pt 底线
+                        .background(connectionButtonColor)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.4), radius: 6, y: 3)
                     }
-                    .accessibilityLabel(buttonTitle)
-                    .accessibilityHint(viewModel.connectionState == .connected ? "点击将安全关闭实时推流并断开相机连接" : "点击将发起与 Insta360 全景相机的 Wi-Fi 通信连接")
+                    .accessibilityLabel("相机连接控制，当前状态：\(connectionButtonTitle)")
+                    .accessibilityHint(viewModel.connectionState == .connected ? "双击断开全景相机连接" : "双击发起与全景相机的 Wi-Fi 通信连接")
                     
-                    // 六轴传感器遥测数据 HUD
-                    SensorTelemetryCard(telemetry: viewModel.telemetry)
+                    Spacer()
                     
-                    // 空间感知数据 HUD 卡片 (当相机处于连接推流状态时呈现)
-                    if viewModel.connectionState == .connected {
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Image(systemName: "dot.radiowaves.left.and.right")
-                                    .foregroundColor(.green)
-                                Text("全向空间感知状态")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                Spacer()
-                                Text(viewModel.latestObstacles != nil ? "实时解算中" : "就绪")
-                                    .font(.caption)
-                                    .foregroundColor(.gray)
-                            }
-                            
-                            HStack(spacing: 20) {
-                                VStack(alignment: .leading) {
-                                    Text("检出障碍物")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                    Text("\(viewModel.latestObstacles?.obstacles.count ?? 0) 个")
-                                        .font(.title3)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                }
-                                
-                                Divider().frame(height: 30)
-                                
-                                VStack(alignment: .leading) {
-                                    Text("通行状态")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                    Text(viewModel.latestRoute?.isPathAvailable == true ? "畅通" : "受阻")
-                                        .font(.title3)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(viewModel.latestRoute?.isPathAvailable == true ? .green : .orange)
-                                }
-                                
-                                Divider().frame(height: 30)
-                                
-                                VStack(alignment: .leading) {
-                                    Text("安全纵深")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                    Text(String(format: "%.1f m", viewModel.latestRoute?.safeDepth ?? 0.0))
-                                        .font(.title3)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(.white)
-                                }
-                            }
+                    // 右下角：感知大模型与 3D 空间音频启停主控按钮
+                    Button(action: {
+                        viewModel.togglePerception()
+                    }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: perceptionButtonIcon)
+                                .font(.system(size: 20, weight: .bold))
+                            Text(perceptionButtonTitle)
+                                .font(.system(size: 16, weight: .bold))
                         }
-                        .padding(16)
-                        .background(Color(red: 0.14, green: 0.14, blue: 0.16))
-                        .clipShape(RoundedRectangle(cornerRadius: 14))
-                        .accessibilityElement(children: .combine)
-                        .accessibilityLabel("空间感知指标：检出障碍物 \(viewModel.latestObstacles?.obstacles.count ?? 0) 个，通行状态 \(viewModel.latestRoute?.isPathAvailable == true ? "畅通" : "受阻")，安全纵深 \(String(format: "%.1f", viewModel.latestRoute?.safeDepth ?? 0.0)) 米")
+                        .foregroundColor(.white)
+                        .frame(minWidth: 120, minHeight: 56) // 触控靶心 >= 56pt
+                        .background(perceptionButtonColor)
+                        .clipShape(Capsule())
+                        .shadow(color: Color.black.opacity(0.4), radius: 6, y: 3)
                     }
-                    
-                    // 异常提示条 (若存在)
-                    if let error = viewModel.latestError {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.red)
-                            Text(error)
-                                .font(.footnote)
-                                .foregroundColor(.red)
-                        }
-                        .padding(.top, 4)
-                    }
+                    .disabled(!viewModel.isPerceptionEnabled)
+                    .accessibilityLabel("空间感知与音频导航主控，当前状态：\(perceptionButtonTitle)")
+                    .accessibilityHint(viewModel.isPerceptionEnabled ? (viewModel.isPerceiving ? "双击停止大模型感知并静音" : "双击启动大模型感知与空间音频领路") : "相机未连接，当前不可用")
                 }
-                .padding(20)
+                .padding(.horizontal, 24)
+                .padding(.bottom, 28)
             }
-            .background(Color(red: 0.07, green: 0.07, blue: 0.08).ignoresSafeArea()) // 全局深黑背景
-            .navigationTitle("WalkMate 空间感知")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color(red: 0.07, green: 0.07, blue: 0.08), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
         }
     }
     
-    // 按钮标题
-    private var buttonTitle: String {
+    // MARK: - 相机连接按钮视觉计算属性
+    
+    private var connectionButtonTitle: String {
         switch viewModel.connectionState {
         case .connected:
-            return "断开相机连接"
+            return "断开"
         case .connecting:
-            return "正在连接中..."
+            return "连接中"
         case .failed:
-            return "连接失败 (点击重试)"
+            return "重试"
         case .noConnection:
-            return "连接全景相机"
+            return "连接相机"
         }
     }
     
-    // 按钮图标
-    private var buttonIconName: String {
+    private var connectionButtonIcon: String {
         switch viewModel.connectionState {
         case .connected:
             return "bolt.horizontal.slash.fill"
@@ -255,17 +301,34 @@ public struct ContentView: View {
         }
     }
     
-    // 按钮背景色
-    private var buttonBackgroundColor: Color {
+    private var connectionButtonColor: Color {
         switch viewModel.connectionState {
         case .connected:
-            return Color(red: 0.85, green: 0.25, blue: 0.2) // 沉稳红色
+            return Color(red: 0.85, green: 0.25, blue: 0.2) // 醒目红
         case .connecting:
-            return Color(red: 0.85, green: 0.55, blue: 0.1) // 琥珀橙色
+            return Color(red: 0.85, green: 0.55, blue: 0.1) // 琥珀橙
         case .failed:
             return Color(red: 0.75, green: 0.2, blue: 0.2)  // 警告红
         case .noConnection:
-            return Color(red: 0.15, green: 0.45, blue: 0.9) // 标准无障碍高对比度蓝
+            return Color(red: 0.15, green: 0.45, blue: 0.9) // 高对比度无障碍深蓝
         }
     }
+    
+    // MARK: - 感知启停按钮视觉计算属性
+    
+    private var perceptionButtonTitle: String {
+        return viewModel.isPerceiving ? "停止感知" : "开始感知"
+    }
+    
+    private var perceptionButtonIcon: String {
+        return viewModel.isPerceiving ? "stop.fill" : "play.fill"
+    }
+    
+    private var perceptionButtonColor: Color {
+        guard viewModel.isPerceptionEnabled else {
+            return Color.gray.opacity(0.4) // 禁用灰色
+        }
+        return viewModel.isPerceiving ? Color(red: 0.85, green: 0.25, blue: 0.2) : Color(red: 0.15, green: 0.65, blue: 0.35) // 运行红 / 启动绿
+    }
 }
+
