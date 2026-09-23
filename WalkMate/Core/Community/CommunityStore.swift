@@ -57,7 +57,7 @@ enum SeedData {
                              obstacles: [[0.3, 0.8], [0.6, 0.5], [0.65, 0.25]],
                              steps: ["出小区南门右转，沿人行道直行约 400 米", "路口有过街音响提示，直行过马路", "沿商场外墙走到玻璃门入口，门口有两级台阶"])),
         StoreSummary(
-            id: "s_duck_soup", name: "南京鸭血粉丝汤店", category: "美食", distanceKm: 1.4, coverKey: "store_insta360",
+            id: "s_duck_soup", name: "南京鸭血粉丝汤店", category: "美食", distanceKm: 1.4, coverKey: "store_duck_soup",
             averageScore: 4.5, visitorCount: 21, tags: ["店员友善", "菜单可朗读", "有盲道", "店内安静"],
             route: RouteInfo(start: "小区南门", end: "鸭血粉丝汤店", distanceMeters: 1400, averageObstacles: 4,
                              points: [[0.1, 0.8], [0.4, 0.78], [0.45, 0.45], [0.8, 0.4], [0.85, 0.2]],
