@@ -15,12 +15,18 @@ final class AppSettings {
     var speechRate: Double { didSet { save("speechRate", speechRate); apply() } }
     /// 字体大小 0 到 1
     var textScale: Double { didSet { save("textScale", textScale); apply() } }
+    /// 每日训练时长目标（分钟），首页「完成」环按它计算
+    var dailyGoalMinutes: Int { didSet { UserDefaults.standard.set(dailyGoalMinutes, forKey: "walkmate.dailyGoalMinutes") } }
+    /// 每日成功避障目标（次）
+    var dailyGoalObstacles: Int { didSet { UserDefaults.standard.set(dailyGoalObstacles, forKey: "walkmate.dailyGoalObstacles") } }
 
     private init() {
         let defaults = UserDefaults.standard
         guidance = defaults.object(forKey: "walkmate.guidance") as? Double ?? 0.5
         speechRate = defaults.object(forKey: "walkmate.speechRate") as? Double ?? 0.5
         textScale = defaults.object(forKey: "walkmate.textScale") as? Double ?? 0.4
+        dailyGoalMinutes = defaults.object(forKey: "walkmate.dailyGoalMinutes") as? Int ?? 20
+        dailyGoalObstacles = defaults.object(forKey: "walkmate.dailyGoalObstacles") as? Int ?? 15
         apply()
     }
 

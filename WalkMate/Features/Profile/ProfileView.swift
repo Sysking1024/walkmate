@@ -48,6 +48,9 @@ struct ProfileView: View {
             divider
             sliderRow("字体大小", value: $settings.textScale)
             divider
+            NavigationLink { TrainingGoalView() } label: { navLabel("训练目标") }
+                .buttonStyle(.plain)
+            divider
             navRow("联系客服", page: .support)
             divider
             navRow("帮助", page: .help)
@@ -92,17 +95,17 @@ struct ProfileView: View {
     }
 
     private func navRow(_ title: String, page: InfoPage) -> some View {
-        NavigationLink {
-            InfoPageView(page: page)
-        } label: {
-            HStack {
-                Text(title).font(WalkMateTheme.Fonts.body).foregroundStyle(.white)
-                Spacer()
-                Image("icon_chevron").resizable().scaledToFit().frame(height: 14).foregroundStyle(.white)
-            }
-            .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
+        NavigationLink { InfoPageView(page: page) } label: { navLabel(title) }
+            .buttonStyle(.plain)
+    }
+
+    private func navLabel(_ title: String) -> some View {
+        HStack {
+            Text(title).font(WalkMateTheme.Fonts.body).foregroundStyle(.white)
+            Spacer()
+            Image("icon_chevron").resizable().scaledToFit().frame(height: 14).foregroundStyle(.white)
         }
-        .buttonStyle(.plain)
+        .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
     }
 }
 

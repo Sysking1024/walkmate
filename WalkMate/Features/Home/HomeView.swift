@@ -10,10 +10,12 @@ struct HomeView: View {
     let onOpenCommunity: () -> Void
 
     @State private var history = TrainingHistoryStore.shared
+    @State private var settings = AppSettings.shared
     @State private var showGrowth = false
+    @State private var showGoals = false
 
-    /// 每日训练目标分钟数，闭环里的「完成」按它计算
-    private let dailyGoalMinutes = 20
+    private var dailyGoalMinutes: Int { settings.dailyGoalMinutes }
+    private var dailyGoalObstacles: Int { settings.dailyGoalObstacles }
 
     var body: some View {
         NavigationStack {
@@ -31,6 +33,7 @@ struct HomeView: View {
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(isPresented: $showGrowth) { GrowthDetailView() }
+            .navigationDestination(isPresented: $showGoals) { TrainingGoalView() }
         }
         .tint(WalkMateTheme.Colors.textPrimary)
     }
@@ -71,8 +74,6 @@ struct HomeView: View {
     private var todayObstacles: Int {
         history.records.filter { Calendar.current.isDateInToday($0.finishedAt) }.reduce(0) { $0 + $1.obstaclesAvoided }
     }
-    /// 每日避障目标次数
-    private let dailyGoalObstacles = 15
     private var minutesProgress: Double { min(1, Double(todayMinutes) / Double(dailyGoalMinutes)) }
     private var obstaclesProgress: Double { min(1, Double(todayObstacles) / Double(dailyGoalObstacles)) }
     /// 今日完成度：时长与避障两项目标的平均
@@ -81,7 +82,7 @@ struct HomeView: View {
     private var loopSection: some View {
         VStack(spacing: 12) {
             WMSectionHeader(title: "今日康复闭环", action: "查看成长") { showGrowth = true }
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 14) {
                 HStack {
                     WMRing(progress: minutesProgress, value: "\(todayMinutes)", caption: "分钟")
                     Spacer()
@@ -92,6 +93,20 @@ struct HomeView: View {
                 Text(encouragement)
                     .font(WalkMateTheme.Fonts.body)
                     .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                Button { showGoals = true } label: {
+                    HStack(spacing: 6) {
+                        Text("今日目标：\(dailyGoalMinutes) 分钟 · 避障 \(dailyGoalObstacles) 次")
+                        Spacer()
+                        Text("调整")
+                        Image("icon_chevron").resizable().scaledToFit().frame(height: 10)
+                    }
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(Color.white.opacity(0.6))
+                    .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("今日目标，\(dailyGoalMinutes) 分钟，避障 \(dailyGoalObstacles) 次")
+                .accessibilityHint("轻点两下调整目标")
             }
             .padding(WalkMateTheme.Layout.cardPadding)
             .frame(maxWidth: .infinity, alignment: .leading)

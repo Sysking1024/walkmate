@@ -61,6 +61,7 @@
 		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
 		A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD40245303E20078AC0F4304 /* sample_erp_1.jpg */; };
 		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
+		AC0E6EF4C11E7503117DBD84 /* TrainingGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */; };
 		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
 		B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */; };
 		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
@@ -146,6 +147,7 @@
 /* Begin PBXFileReference section */
 		0481058FC670F3EFE55ACB35 /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		078AD588D52A975F451A55FC /* SpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRenderer.swift; sourceTree = "<group>"; };
+		0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingGoalView.swift; sourceTree = "<group>"; };
 		0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionConversation.swift; sourceTree = "<group>"; };
 		163B3A52D1818515C19C0071 /* WalkMateRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateRootView.swift; sourceTree = "<group>"; };
 		19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSceneNarrator.swift; sourceTree = "<group>"; };
@@ -555,6 +557,7 @@
 			children = (
 				416790C1B2A40F17BB58AB03 /* GrowthDetailView.swift */,
 				B47BD89BD31282BAEA68A58C /* GrowthView.swift */,
+				0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */,
 			);
 			path = Growth;
 			sourceTree = "<group>";
@@ -882,6 +885,7 @@
 				E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */,
 				DD3B106550B53C36CABAD84A /* TrainingClipComposer.swift in Sources */,
 				F6B68397D9A5250E4D0387DE /* TrainingFlowView.swift in Sources */,
+				AC0E6EF4C11E7503117DBD84 /* TrainingGoalView.swift in Sources */,
 				18F9F34BD1306305FCA84437 /* TrainingHistoryStore.swift in Sources */,
 				7A190CEC82AF238930A76F1D /* TrainingSessionModel.swift in Sources */,
 				6B9B31479560946252636A2D /* TrainingSessionView.swift in Sources */,
