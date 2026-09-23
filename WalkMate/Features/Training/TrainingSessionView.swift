@@ -48,6 +48,10 @@ struct TrainingSessionView: View {
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)
         }
+        // 相机一连上就开启队友的空间感知与避障提示音，训练里不用再多按一个键
+        .onChange(of: camera.connectionState) { _, state in
+            if state == .connected { camera.startPerception() }
+        }
     }
 
     /// 相机画面卡。未连接时显示示意图与连接按钮，连接后显示实时预览。
@@ -77,7 +81,7 @@ struct TrainingSessionView: View {
         .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if camera.connectionState == .connected {
-                Text("已连接 · \(String(format: "%.0f", camera.telemetry.fps)) 帧")
+                Text(camera.isPerceiving ? "已连接 · 避障中" : "已连接")
                     .font(WalkMateTheme.Fonts.chip)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10).padding(.vertical, 6)
@@ -94,7 +98,7 @@ struct TrainingSessionView: View {
         switch camera.connectionState {
         case .noConnection: return "先把手机连上相机热点，再连接相机"
         case .connecting: return "正在连接相机"
-        case .failed: return "连接失败，检查是否已连上相机热点"
+        case .failed: return camera.latestError ?? "连接失败，检查是否已连上相机热点"
         case .connected: return "已连接"
         }
     }

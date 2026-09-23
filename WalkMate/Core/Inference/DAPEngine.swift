@@ -54,6 +54,11 @@ public final class DAPEngine: DAPEngineProtocol {
         let finalURL: URL
         if let url = modelURL {
             finalURL = url
+        } else if let compiledBundleURL = Bundle.main.url(forResource: "dap_256x512_int8", withExtension: "mlmodelc") {
+            // iOS 应用真机打包时，Xcode 会自动将 mlpackage 编译为 App Bundle 根目录下的 mlmodelc
+            finalURL = compiledBundleURL
+        } else if let compiledFrameworkURL = Bundle(for: DAPEngine.self).url(forResource: "dap_256x512_int8", withExtension: "mlmodelc") {
+            finalURL = compiledFrameworkURL
         } else if let bundleURL = Bundle.main.url(forResource: "dap_256x512_int8", withExtension: "mlpackage") {
             finalURL = bundleURL
         } else if let frameworkBundleURL = Bundle(for: DAPEngine.self).url(forResource: "dap_256x512_int8", withExtension: "mlpackage") {
@@ -84,7 +89,7 @@ public final class DAPEngine: DAPEngineProtocol {
                 }
             }
             guard let validURL = foundURL else {
-                Log.error("未找到 dap_256x512_int8.mlpackage 模型资源", category: .perception)
+                Log.error("未找到 dap_256x512_int8 模型资源 (已检索 mlmodelc 与 mlpackage)", category: .perception)
                 throw DAPEngineError.modelNotFound("dap_256x512_int8.mlpackage")
             }
             finalURL = validURL
