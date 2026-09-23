@@ -28,6 +28,8 @@
 	<string>WalkMate 需要使用蓝牙辅助建立与相机的通信连接。</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>WalkMate 需要使用本地网络连接并拉取 Insta360 全景相机视频流与传感器数据。</string>
+	<key>NSMotionUsageDescription</key>
+	<string>用于统计训练中的步行距离。</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

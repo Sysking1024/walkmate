@@ -1,0 +1,13 @@
+{
+  "images": [
+    {
+      "filename": "avatar_momo.png",
+      "idiom": "universal",
+      "scale": "1x"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  }
+}
