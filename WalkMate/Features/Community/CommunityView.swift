@@ -195,43 +195,28 @@ struct CommunityView: View {
 
     private func journeyCard(_ journey: CommunityFeed.Journey) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                Button {
-                    if let url = history.latestReelURL { player = AVPlayer(url: url) }
-                } label: {
-                    ZStack(alignment: .bottomLeading) {
-                        Image("journey_thumbnail").resizable().scaledToFill()
-                        WalkMateTheme.Gradients.coverShade
-                        Image("journey_play_badge").resizable().scaledToFit().frame(width: 32).padding(10)
-                    }
-                    .frame(width: 130, height: 130)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            // 封面通栏，点了就播；标题在封面下方
+            Button {
+                if let url = history.latestReelURL { player = AVPlayer(url: url) }
+            } label: {
+                ZStack(alignment: .bottomLeading) {
+                    Image("journey_thumbnail").resizable().scaledToFill()
+                    WalkMateTheme.Gradients.coverShade
+                    Image("journey_play_badge").resizable().scaledToFit().frame(width: 40).padding(14)
                 }
-                .buttonStyle(.plain)
-                .disabled(history.latestReelURL == nil)
-                .accessibilityLabel("播放旅程视频")
-
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(journey.title)
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    Text(journey.duration)
-                    Text("步行 \(Int(journey.distanceKm)) km · 解锁新区域")
-                    if let note = journey.note {
-                        Text(note)
-                            .font(.system(size: 9))
-                            .foregroundStyle(Color(hex: 0x1B3320))
-                            .padding(8)
-                            .background(WalkMateTheme.Colors.chipBackground)
-                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    }
-                }
-                .font(.system(size: 9, weight: .medium))
-                .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 190)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
-            .accessibilityElement(children: .combine)
+            .buttonStyle(.plain)
+            .disabled(history.latestReelURL == nil)
+            .accessibilityLabel("播放旅程视频，\(journey.title)")
 
-            // 作者与互动单独一排，触控目标不小于 48 点
+            Text(journey.title)
+                .font(WalkMateTheme.Fonts.body)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+
+            // 作者与互动一排，触控目标不小于 48 点
             HStack(spacing: 8) {
                 WMAvatar(imageName: journey.avatarKey, size: 28)
                 Text(journey.user)
