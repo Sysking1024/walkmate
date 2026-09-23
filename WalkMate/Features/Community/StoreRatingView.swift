@@ -51,6 +51,7 @@ struct StoreRatingView: View {
             .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
         }
         .preferredColorScheme(.dark)
+        .onAppear { AccessibilityFeedback.screenChanged("为\(store.name)打分") }
     }
 
     // MARK: - 总体评分
@@ -182,6 +183,7 @@ struct StoreRatingView: View {
             createdAt: Date()
         )
         submitted = true
+        AccessibilityFeedback.done("已提交 \(score) 星评分")
         Task {
             await ratingStore.submit(rating)
             try? await Task.sleep(nanoseconds: 700_000_000)

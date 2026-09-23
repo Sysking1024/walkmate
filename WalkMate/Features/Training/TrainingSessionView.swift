@@ -44,6 +44,7 @@ struct TrainingSessionView: View {
         .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             session.start()
+            AccessibilityFeedback.screenChanged("\(kind.title)训练")
         }
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)

@@ -168,5 +168,6 @@ extension View {
             .toolbar(.visible, for: .navigationBar)
             .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .onAppear { AccessibilityFeedback.screenChanged(title) }
     }
 }

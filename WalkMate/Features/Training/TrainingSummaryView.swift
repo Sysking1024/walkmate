@@ -37,6 +37,7 @@ struct TrainingSummaryView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear { AccessibilityFeedback.screenChanged("训练总结") }
         .task {
             await reel.build(from: result.moments)
             if case .ready(let url) = reel.state { history.attachReel(url, toRecordFinishedAt: result.finishedAt) }
@@ -214,6 +215,7 @@ struct TrainingSummaryView: View {
             let url = TrainingHistoryStore.reelURL(for: history.records.first { $0.id == record.id } ?? record) ?? reelURL
             await community.shareJourney(record: history.records.first { $0.id == record.id } ?? record, reelURL: url)
             sharing = false
+            AccessibilityFeedback.done("已分享到社群")
         }
     }
 
@@ -251,6 +253,7 @@ struct ReelPlayerView: View {
                 try? await Task.sleep(nanoseconds: delay)
                 player.play()
             }
+            .onAppear { AccessibilityFeedback.screenChanged("视频播放") }
             .onDisappear { player.pause() }
     }
 }

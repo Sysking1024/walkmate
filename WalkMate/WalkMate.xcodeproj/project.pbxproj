@@ -26,6 +26,7 @@
 		21D515771155C77C57B0F41B /* BadgePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA6B6F95FDC47E0F21F287 /* BadgePlayer.swift */; };
 		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
 		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		282D46C1612E6802FC8E8A07 /* AccessibilityFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36003FD0D08821B39A8981D6 /* AccessibilityFeedback.swift */; };
 		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
 		33A9F7596E53A48D2D8DFABC /* StandstillDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57AA775962CDD3FDDD2B6C6 /* StandstillDetector.swift */; };
 		39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */; };
@@ -191,6 +192,7 @@
 		32AB8B2CA6663C3AFB9E8902 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		345A9B31CBA25A47500E06C8 /* TrainingSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSummaryView.swift; sourceTree = "<group>"; };
 		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		36003FD0D08821B39A8981D6 /* AccessibilityFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityFeedback.swift; sourceTree = "<group>"; };
 		38BA6B6F95FDC47E0F21F287 /* BadgePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgePlayer.swift; sourceTree = "<group>"; };
 		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
 		3A9DDE964BA9A3B3C81F9807 /* WalkMateTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateTheme.swift; sourceTree = "<group>"; };
@@ -392,6 +394,7 @@
 		4432DAE926F37FC743F74DF7 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				36003FD0D08821B39A8981D6 /* AccessibilityFeedback.swift */,
 				D6B9A860A46380CF609A639D /* AppSettings.swift */,
 			);
 			path = Settings;
@@ -1005,6 +1008,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */,
+				282D46C1612E6802FC8E8A07 /* AccessibilityFeedback.swift in Sources */,
 				538778870FA9468F3F184FEA /* AddFriendView.swift in Sources */,
 				10800832B68FBECF3D186F98 /* AppSettings.swift in Sources */,
 				515E43DC458A24C6BAB2D26E /* BackendClient.swift in Sources */,

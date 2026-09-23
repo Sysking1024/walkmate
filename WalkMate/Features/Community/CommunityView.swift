@@ -196,9 +196,9 @@ struct CommunityView: View {
                     .frame(maxWidth: .infinity, minHeight: 48)
             default:
                 HStack(spacing: 14) {
-                    Button("拒绝") { Task { await communityStore.respond(to: invitation.id, accepted: false) } }
+                    Button("拒绝") { Task { await communityStore.respond(to: invitation.id, accepted: false); AccessibilityFeedback.done("已拒绝邀约") } }
                         .buttonStyle(GhostPillButtonStyle())
-                    Button("同意") { Task { await communityStore.respond(to: invitation.id, accepted: true) } }
+                    Button("同意") { Task { await communityStore.respond(to: invitation.id, accepted: true); AccessibilityFeedback.done("已同意，任务已加到首页") } }
                         .buttonStyle(GreenPillButtonStyle(opacity: 0.4))
                 }
             }
@@ -246,6 +246,7 @@ struct CommunityView: View {
                 Button {
                     if isLiked { liked.remove(journey.id) } else { liked.insert(journey.id) }
                     JourneyReactionStore.saveLikes(liked)
+                    AccessibilityFeedback.done(isLiked ? "已取消点赞" : "已点赞")
                 } label: {
                     reactionLabel("icon_like", count: journey.likes + (isLiked ? 1 : 0), highlighted: isLiked)
                 }
@@ -420,7 +421,10 @@ struct JourneyCommentSheet: View {
             .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
         }
         .preferredColorScheme(.dark)
-        .onAppear { comments = JourneyReactionStore.loadComments(for: journey.id) }
+        .onAppear {
+            comments = JourneyReactionStore.loadComments(for: journey.id)
+            AccessibilityFeedback.screenChanged("评论")
+        }
     }
 
     private func send() {
@@ -429,6 +433,7 @@ struct JourneyCommentSheet: View {
         comments.append(text)
         JourneyReactionStore.saveComments(comments, for: journey.id)
         draft = ""
+        AccessibilityFeedback.done("评论已发送")
         Log.info("已写下一条旅程评论", category: .ui)
     }
 }

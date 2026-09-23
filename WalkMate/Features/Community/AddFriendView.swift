@@ -88,6 +88,7 @@ struct AddFriendView: View {
     private func send(_ candidate: Candidate) {
         sent.insert(candidate.id)
         UserDefaults.standard.set(Array(sent), forKey: "walkmate.friendRequests")
+        AccessibilityFeedback.done("已向 \(candidate.name) 发送好友请求")
         Log.info("已发送好友请求：\(candidate.name)", category: .ui)
     }
 }

@@ -42,6 +42,7 @@ struct OnboardingView: View {
         }
         .wmPageInset()
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
+        .onAppear { AccessibilityFeedback.screenChanged("使用引导") }
     }
 
     private func next() {

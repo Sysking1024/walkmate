@@ -29,6 +29,7 @@ struct WalkMateRootView: View {
         // 字体大小只通过主题字体的缩放系数生效；切换栏目时页面重建即可拿到新字号
         .id(settings.textScale)
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
+        .onChange(of: selection) { _, tab in AccessibilityFeedback.screenChanged(tab.title) }
         .fullScreenCover(isPresented: $showGuide) {
             OnboardingView { showGuide = false }
                 .preferredColorScheme(.dark)
