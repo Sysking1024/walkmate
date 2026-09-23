@@ -14,6 +14,7 @@ struct CommunityView: View {
     @State private var liked: Set<String> = JourneyReactionStore.loadLikes()
     @State private var commentTarget: CommunityFeed.Journey?
     @State private var deleteTarget: CommunityFeed.Journey?
+    @State private var routeTarget: StoreSummary?
 
     var body: some View {
         NavigationStack {
@@ -52,6 +53,9 @@ struct CommunityView: View {
             }
             .scrollIndicators(.hidden)
             .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(item: $routeTarget) { store in
+                RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
+            }
         }
         .tint(WalkMateTheme.Colors.textPrimary)
         .fullScreenCover(item: $player) { player in
@@ -151,16 +155,25 @@ struct CommunityView: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel("\(store.name)，\(store.category)，距离 \(String(format: "%.1f", store.distanceKm)) 公里，无障碍评分 \(String(format: "%.1f", store.averageScore))，\(store.visitorCount) 位视障用户去过，\(store.tags.joined(separator: "，"))")
 
-            NavigationLink {
-                RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
-            } label: {
-                Text("查看路线")
-            }
-            .buttonStyle(WhitePillButtonStyle())
+            Text("查看路线")
+                .font(WalkMateTheme.Fonts.body).tracking(1.6)
+                .foregroundStyle(Color(hex: 0x2C823D))
+                .frame(maxWidth: .infinity, minHeight: 48)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    Log.info("点了查看路线：\(store.name)", category: .ui)
+                    routeTarget = store
+                }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel("查看路线，\(store.name)")
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)
         .wmCard(WalkMateTheme.Gradients.storeCard)
+        .contentShape(Rectangle())
+        .zIndex(1)
     }
 
     private func chipRows(_ tags: [String]) -> some View {
@@ -456,3 +469,4 @@ struct JourneyCommentSheet: View {
         Log.info("已写下一条旅程评论", category: .ui)
     }
 }
+

@@ -12,6 +12,7 @@ enum AccessibilityFeedback {
 
     /// 进入了新页面：读屏播「已进入 X」并把焦点移到新页面
     static func screenChanged(_ title: String) {
+        Log.info("已进入 \(title)", category: .ui)
         haptic.impactOccurred()
         guard UIAccessibility.isVoiceOverRunning else { return }
         // 稍等页面挂上，再播报，否则会被上一页的收尾播报吞掉
