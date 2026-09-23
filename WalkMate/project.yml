@@ -102,6 +102,18 @@ targets:
       - TestTarget
     sources:
       - path: ../Tests/AppTests
+    dependencies:
+      - framework: Frameworks/SSZipArchive.xcframework
+
+  ReplayTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/ReplayTests
+        excludes:
+          - "Datasets/**"
+    dependencies:
+      - framework: Frameworks/SSZipArchive.xcframework
 
 schemes:
   WalkMate:
@@ -120,6 +132,7 @@ schemes:
         - ToolkitTests
         - AudioTests
         - AppTests
+        - ReplayTests
 
 
 
