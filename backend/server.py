@@ -126,6 +126,18 @@ class Handler(BaseHTTPRequestHandler):
         finally:
             conn.close()
 
+    def do_DELETE(self):
+        parts = [p for p in urlparse(self.path).path.split("/") if p]
+        conn = connect()
+        try:
+            if len(parts) == 2 and parts[0] == "journeys":
+                conn.execute("DELETE FROM journeys WHERE id = ?", (parts[1],))
+                conn.commit()
+                return self.respond(200, {"id": parts[1]})
+            self.respond(404, {"error": "not found"})
+        finally:
+            conn.close()
+
     def do_POST(self):
         parts = [p for p in urlparse(self.path).path.split("/") if p]
         conn = connect()

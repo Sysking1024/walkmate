@@ -62,6 +62,9 @@ final class TrainingHistoryStore {
     static let shared = TrainingHistoryStore()
 
     private(set) var records: [TrainingRecord] = []
+
+    /// 短于这个时长的训练不记录，多半是误触开始又马上结束
+    static let minimumRecordedSeconds = 10
     private let fileURL: URL
     private let backend = BackendClient.shared
 
@@ -73,6 +76,17 @@ final class TrainingHistoryStore {
             records = saved
         }
         seedDemoHistoryIfNeeded()
+        purgeTooShortRecords()
+    }
+
+    /// 清掉早期误触留下的极短记录
+    private func purgeTooShortRecords() {
+        let before = records.count
+        records.removeAll { $0.durationSeconds < Self.minimumRecordedSeconds }
+        if records.count != before {
+            persist()
+            Log.info("已清理 \(before - records.count) 条短于 \(Self.minimumRecordedSeconds) 秒的训练记录", category: .general)
+        }
     }
 
     /// 首次启动写入一段演示历史，让本周记录、徽章、路线与档位解锁互相对得上：

@@ -68,6 +68,10 @@ struct BackendClient {
         ])
     }
 
+    func deleteJourney(id: String) async throws {
+        let _: UploadReceipt = try await send(request(path: "journeys/\(id)", method: "DELETE", body: nil))
+    }
+
     func uploadSession(_ record: TrainingRecord) async throws {
         let _: UploadReceipt = try await post("sessions", body: [
             "id": record.id.uuidString, "durationSeconds": record.durationSeconds, "distanceMeters": record.distanceMeters,

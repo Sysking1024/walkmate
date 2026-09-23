@@ -13,6 +13,7 @@ struct CommunityView: View {
     /// 本机是否给旅程点过赞，只存本地
     @State private var liked: Set<String> = JourneyReactionStore.loadLikes()
     @State private var commentTarget: CommunityFeed.Journey?
+    @State private var deleteTarget: CommunityFeed.Journey?
 
     var body: some View {
         NavigationStack {
@@ -61,6 +62,17 @@ struct CommunityView: View {
         }
         .sheet(item: $commentTarget) { journey in
             JourneyCommentSheet(journey: journey) { commentTarget = nil }
+        }
+        .alert("删除这条旅程？", isPresented: Binding(get: { deleteTarget != nil }, set: { if !$0 { deleteTarget = nil } })) {
+            Button("删除", role: .destructive) {
+                if let journey = deleteTarget {
+                    Task { await communityStore.deleteJourney(journey); AccessibilityFeedback.done("旅程已删除") }
+                }
+                deleteTarget = nil
+            }
+            Button("取消", role: .cancel) { deleteTarget = nil }
+        } message: {
+            Text(deleteTarget.map { "「\($0.title)」会从大家的旅程里移除。" } ?? "")
         }
         .task {
             await communityStore.refresh()
@@ -264,17 +276,25 @@ struct CommunityView: View {
                 .accessibilityLabel("评论，\(commentCount) 条")
             }
 
-            // 自己的旅程可以转发到别的应用
-            if journey.user == "Doris", let video {
-                ShareLink(item: video) {
-                    Text("分享我的旅程")
-                        .font(WalkMateTheme.Fonts.body).tracking(1.6)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity, minHeight: 47)
-                        .background(WalkMateTheme.Gradients.primaryButton)
-                        .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+            // 自己的旅程：可以转发到别的应用，也可以删除
+            if communityStore.isMine(journey) {
+                HStack(spacing: 14) {
+                    if let video {
+                        ShareLink(item: video) {
+                            Text("分享我的旅程")
+                                .font(WalkMateTheme.Fonts.body).tracking(1.6)
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 47)
+                                .background(WalkMateTheme.Gradients.primaryButton)
+                                .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                        }
+                        .accessibilityHint("把这段集锦发给同伴")
+                    }
+                    Button("删除") { deleteTarget = journey }
+                        .buttonStyle(GhostPillButtonStyle())
+                        .frame(maxWidth: 110)
+                        .accessibilityLabel("删除这条旅程")
                 }
-                .accessibilityHint("把这段集锦发给同伴")
             }
         }
         .padding(WalkMateTheme.Layout.cardPadding)

@@ -12,6 +12,9 @@ struct TrainingSummaryView: View {
     @State private var history = TrainingHistoryStore.shared
     @State private var community = CommunityStore.shared
     @State private var sharing = false
+    /// 集锦去留：nil 未决定
+    @State private var reelKept: Bool?
+    @State private var confirmLeave = false
 
     var body: some View {
         ScrollView {
@@ -29,8 +32,8 @@ struct TrainingSummaryView: View {
                 momentsSection
                 if history.records(of: result.kind).count == 1 { achievementSection }
 
-                WMButton(title: "完成", height: 61, action: onDone)
                 shareButton
+                WMButton(title: "完成", height: 61, action: finish)
             }
             .wmPageInset()
             .wmTabBarClearance()
@@ -40,7 +43,14 @@ struct TrainingSummaryView: View {
         .onAppear { AccessibilityFeedback.screenChanged("训练总结") }
         .task {
             await reel.build(from: result.moments)
-            if case .ready(let url) = reel.state { history.attachReel(url, toRecordFinishedAt: result.finishedAt) }
+            if case .ready = reel.state, currentRecord?.reelFileName != nil { reelKept = true }
+        }
+        .alert("这段集锦要留下吗？", isPresented: $confirmLeave) {
+            Button("保存并分享到社群") { if case .ready(let url) = reel.state { keepAndShare(url) }; onDone() }
+            Button("不要了，删掉", role: .destructive) { discardReel(); onDone() }
+            Button("再想想", role: .cancel) {}
+        } message: {
+            Text("不保存的话视频会直接删除。")
         }
         .fullScreenCover(item: $player) { player in
             ReelPlayerView(player: player) { self.player = nil }
@@ -184,39 +194,74 @@ struct TrainingSummaryView: View {
 
     // MARK: - 分享
 
-    /// 集锦剪好后：「分享到社群」发进大家的旅程；「发给朋友」走系统分享
+    /// 集锦剪好后先问要不要留：留下就保存并分享到社群，不留就删掉
     @ViewBuilder private var shareButton: some View {
         if case .ready(let url) = reel.state {
-            let shared = currentRecord.map { community.hasShared(recordID: $0.id) } ?? false
-            WMButton(title: shared ? "已分享到社群" : (sharing ? "正在分享" : "分享到社群"), style: shared ? .subdued : .primary, height: 61) {
-                shareToCommunity(url)
+            switch reelKept {
+            case nil:
+                VStack(spacing: 10) {
+                    Text("这段集锦要留下吗？")
+                        .font(WalkMateTheme.Fonts.body)
+                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    HStack(spacing: 14) {
+                        WMButton(title: sharing ? "正在保存" : "保存并分享到社群", height: 61) { keepAndShare(url) }
+                            .disabled(sharing)
+                        WMButton(title: "不要了", style: .subdued, height: 61, action: discardReel)
+                    }
+                }
+            case true?:
+                Text("已保存并分享到社群")
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.accentSoft)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                ShareLink(item: url) {
+                    Text("发给朋友")
+                        .font(WalkMateTheme.Fonts.body).tracking(1.6)
+                        .foregroundStyle(Color(hex: 0xD9D9D9))
+                        .frame(maxWidth: .infinity, minHeight: 61)
+                        .wmCard(WalkMateTheme.Gradients.card, radius: WalkMateTheme.Radius.button, dimmed: true)
+                }
+                .accessibilityHint("用系统分享把集锦发给同伴")
+            case false?:
+                Text("集锦已删除")
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                    .frame(maxWidth: .infinity, minHeight: 48)
             }
-            .disabled(shared || sharing)
-            ShareLink(item: url) {
-                Text("发给朋友")
-                    .font(WalkMateTheme.Fonts.body).tracking(1.6)
-                    .foregroundStyle(Color(hex: 0xD9D9D9))
-                    .frame(maxWidth: .infinity, minHeight: 61)
-                    .wmCard(WalkMateTheme.Gradients.card, radius: WalkMateTheme.Radius.button, dimmed: true)
-            }
-            .accessibilityHint("用系统分享把集锦发给同伴")
         }
+    }
+
+    /// 点「完成」：集锦还没决定去留就先问一句
+    private func finish() {
+        if case .ready = reel.state, reelKept == nil { confirmLeave = true } else { onDone() }
+    }
+
+    /// 保存到记录、分享到社群
+    private func keepAndShare(_ reelURL: URL) {
+        guard let record = currentRecord else { return }
+        sharing = true
+        history.attachReel(reelURL, toRecordFinishedAt: result.finishedAt)
+        Task {
+            let saved = history.records.first { $0.id == record.id } ?? record
+            let url = TrainingHistoryStore.reelURL(for: saved) ?? reelURL
+            await community.shareJourney(record: saved, reelURL: url)
+            sharing = false
+            reelKept = true
+            AccessibilityFeedback.done("已保存并分享到社群")
+        }
+    }
+
+    /// 不要这段集锦：删掉临时文件
+    private func discardReel() {
+        if case .ready(let url) = reel.state { try? FileManager.default.removeItem(at: url) }
+        reelKept = false
+        AccessibilityFeedback.done("集锦已删除")
+        Log.info("使用者放弃了这次的集锦", category: .recording)
     }
 
     private var currentRecord: TrainingRecord? {
         history.records.first { $0.finishedAt == result.finishedAt }
-    }
-
-    private func shareToCommunity(_ reelURL: URL) {
-        guard let record = currentRecord else { return }
-        sharing = true
-        Task {
-            // 集锦已挂到记录上时用记录里的那份，保证社群与记录指向同一文件
-            let url = TrainingHistoryStore.reelURL(for: history.records.first { $0.id == record.id } ?? record) ?? reelURL
-            await community.shareJourney(record: history.records.first { $0.id == record.id } ?? record, reelURL: url)
-            sharing = false
-            AccessibilityFeedback.done("已分享到社群")
-        }
     }
 
     private static func dateText(_ date: Date, style: DateFormatter.Style = .long) -> String {

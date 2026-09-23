@@ -14,6 +14,8 @@ final class CommunityStore {
     /// 本机分享到社群的旅程，排在最前
     private(set) var sharedJourneys: [CommunityFeed.Journey] = []
     private let sharedFileURL: URL
+    /// 本机删掉的旅程 ID（含后端里自己那条），刷新后仍不显示
+    private var deletedJourneyIDs: Set<String> = Set(UserDefaults.standard.stringArray(forKey: "walkmate.deletedJourneys") ?? [])
     private let backend = BackendClient.shared
     private let responsesKey = "walkmate.invitationResponses"
 
@@ -53,7 +55,25 @@ final class CommunityStore {
     /// 社群里看到的全部旅程：自己分享的在前，其余按后端顺序；同一条不重复
     var journeys: [CommunityFeed.Journey] {
         let sharedIDs = Set(sharedJourneys.map(\.id))
-        return sharedJourneys + feed.journeys.filter { !sharedIDs.contains($0.id) }
+        return (sharedJourneys + feed.journeys.filter { !sharedIDs.contains($0.id) })
+            .filter { !deletedJourneyIDs.contains($0.id) }
+    }
+
+    /// 是否本人发布的旅程
+    func isMine(_ journey: CommunityFeed.Journey) -> Bool { journey.user == "Doris" }
+
+    /// 删除自己发的旅程：本地文件与记录一起清掉，并通知后端
+    func deleteJourney(_ journey: CommunityFeed.Journey) async {
+        deletedJourneyIDs.insert(journey.id)
+        UserDefaults.standard.set(Array(deletedJourneyIDs), forKey: "walkmate.deletedJourneys")
+        if let index = sharedJourneys.firstIndex(where: { $0.id == journey.id }) {
+            let removed = sharedJourneys.remove(at: index)
+            if let data = try? JSONEncoder().encode(sharedJourneys) { try? data.write(to: sharedFileURL) }
+            if let cover = removed.coverFileName { try? FileManager.default.removeItem(at: Self.reelsDirectory.appendingPathComponent(cover)) }
+        }
+        Log.info("已删除旅程：\(journey.title)", category: .ui)
+        do { try await backend.deleteJourney(id: journey.id) }
+        catch { Log.warning("旅程删除未同步到后端：\(error)", category: .general) }
     }
 
     /// 某条旅程是否已由本机分享

@@ -38,6 +38,12 @@ struct TrainingSessionView: View {
                 WMButton(title: "结束训练", height: 61) {
                     let result = session.finish()
                     if camera.connectionState == .connected { camera.toggleConnection() }
+                    // 太短的训练不记录，直接回列表
+                    guard result.durationSeconds >= TrainingHistoryStore.minimumRecordedSeconds else {
+                        AccessibilityFeedback.done("训练不足 \(TrainingHistoryStore.minimumRecordedSeconds) 秒，未记录")
+                        onCancel()
+                        return
+                    }
                     TrainingHistoryStore.shared.record(result)
                     onFinish(result)
                 }
