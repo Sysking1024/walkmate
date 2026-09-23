@@ -35,9 +35,9 @@
 
 **目标**：构建纯代码参数化音频合成器与基础 `AVAudioEngine` 3D 声学环境节点，阻塞所有后续用户故事。
 
-- [ ] T002 [P] [测试先行] 编写纯代码参数化音频合成器测试套件 `Tests/AudioTests/ProceduralAudioSynthesizerTests.swift`，断言金属音（4410点）、脚步音（3528点）与奖励和弦音（17640点）的 PCM 采样点数、44.1kHz 单声道格式及 $[-1.0, 1.0]$ 幅度有效性
-- [ ] T003 [P] 实现纯代码数学参数化音频合成器 `WalkMate/Core/Audio/ProceduralAudioSynthesizer.swift`，基于 DSP 物理建模在内存中实时生成三种标准 PCM Buffer，使 T002 测试通过
-- [ ] T004 实现空间音频播放器基础骨架 `WalkMate/Core/Audio/SpatialAudioPlayer.swift`，初始化 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（配置 `.HRTFHQ` 双耳模式），复用 `SpatialAudioKit.toSpatialAudioRenderParams` 实现坐标映射（默认点声源包围盒 `0.2m`），挂载 3 个专用 `AVAudioPlayerNode`，提供 `start()`、`stop()` 与 `reset()` 生命周期契约方法
+- [X] T002 [P] [测试先行] 编写纯代码参数化音频合成器测试套件 `Tests/AudioTests/ProceduralAudioSynthesizerTests.swift`，断言金属音（4410点）、脚步音（3528点）与奖励和弦音（17640点）的 PCM 采样点数、44.1kHz 单声道格式及 $[-1.0, 1.0]$ 幅度有效性
+- [X] T003 [P] 实现纯代码数学参数化音频合成器 `WalkMate/Core/Audio/ProceduralAudioSynthesizer.swift`，基于 DSP 物理建模在内存中实时生成三种标准 PCM Buffer，使 T002 测试通过
+- [X] T004 实现空间音频播放器基础骨架 `WalkMate/Core/Audio/SpatialAudioPlayer.swift`，初始化 `AVAudioEngine` 与 `AVAudioEnvironmentNode`（配置 `.HRTFHQ` 双耳模式），复用 `SpatialAudioKit.toSpatialAudioRenderParams` 实现坐标映射（默认点声源包围盒 `0.2m`），挂载 3 个专用 `AVAudioPlayerNode`，提供 `start()`、`stop()` 与 `reset()` 生命周期契约方法
 
 **检查点**：基础音频图与内存声音合成器就绪，全部通过基础编译与测试。
 

@@ -21,6 +21,7 @@ public enum Log {
     // 按业务分类的专属 Logger 实例
     private static let cameraLogger = Logger(subsystem: subsystem, category: "Camera")
     private static let perceptionLogger = Logger(subsystem: subsystem, category: "Perception")
+    private static let audioLogger = Logger(subsystem: subsystem, category: "Audio")
     private static let uiLogger = Logger(subsystem: subsystem, category: "UI")
     private static let generalLogger = Logger(subsystem: subsystem, category: "General")
     
@@ -76,6 +77,8 @@ public enum Log {
             return cameraLogger
         case .perception:
             return perceptionLogger
+        case .audio:
+            return audioLogger
         case .ui:
             return uiLogger
         case .general:
@@ -87,6 +90,7 @@ public enum Log {
     public enum Category: String {
         case camera = "相机管道"
         case perception = "空间感知"
+        case audio = "空间音频"
         case ui = "用户界面"
         case general = "基础通用"
     }
