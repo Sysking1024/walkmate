@@ -75,6 +75,7 @@ struct TrainingSessionView: View {
         // 相机一连上就开启队友的空间感知与避障提示音，训练里不用再多按一个键
         .onChange(of: camera.connectionState) { _, state in
             if state == .connected { camera.startPerception() }
+            session.companion.captureView = state == .connected ? camera.previewView : nil
         }
     }
 

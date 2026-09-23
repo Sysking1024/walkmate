@@ -2,6 +2,7 @@ import AVFoundation
 import CoreImage
 import CoreVideo
 import Foundation
+import UIKit
 import Observation
 
 /// 伙伴会话：把实时全景帧、驻足检测、对谈状态机、场景描述与朗读串成运行中的闭环。
@@ -20,6 +21,10 @@ final class CompanionSession {
         let id = UUID()
         let frameURL: URL
         let narration: SceneNarration
+        /// 这次对谈期间录下的拼接预览视频，以及它开始录制的墙钟毫秒
+        var clipURL: URL?
+        var clipStartMs: Int?
+        var clipDurationMs: Int?
     }
 
     private(set) var stage: ConversationStage = .silent
@@ -45,6 +50,11 @@ final class CompanionSession {
     private let speech = SpeechRenderer()
     private let ciContext = CIContext()
     private let listener = VoiceCommandListener()
+    private let recorder = ClipRecorder()
+    /// 拼接预览视图，由训练页在相机连上后交给会话；对谈期间录它
+    weak var captureView: UIView?
+    /// 本次录制开始前已有的时刻数，停止时把视频挂到之后新增的时刻上
+    private var momentsBeforeRecording = 0
     /// 唤醒时顺带问的问题，描述完立刻作答
     private var pendingQuestion: String?
 
@@ -113,12 +123,19 @@ final class CompanionSession {
     }
 
     func stop() {
+        if recorder.isRecording { syncStageAfterStop() }
         listener.stop()
         isListening = false
         if let subscription { FrameBus.shared.unsubscribe(subscription) }
         subscription = nil
         ticker?.invalidate(); ticker = nil
         speech.stopSpeaking()
+    }
+
+    /// 训练结束时对谈可能还没收尾：先收掉录制
+    private func syncStageAfterStop() {
+        conversation.dismiss(nowMs: nowMs)
+        syncStage()
     }
 
     // MARK: - 帧与时钟
@@ -142,7 +159,24 @@ final class CompanionSession {
 
     private var nowMs: Int { Int(Date().timeIntervalSince1970 * 1_000) }
 
-    private func syncStage() { stage = conversation.stage }
+    private func syncStage() {
+        stage = conversation.stage
+        // 对谈一开始就录预览，回到静默时停下并挂到这轮留下的时刻上
+        if stage != .silent, !recorder.isRecording, let captureView {
+            momentsBeforeRecording = moments.count
+            recorder.start(capturing: captureView, to: Self.momentsDirectory.appendingPathComponent("clip_\(nowMs).mp4"))
+        } else if stage == .silent, recorder.isRecording {
+            let startMs = recorder.startedAtMs
+            Task { @MainActor in
+                guard let clip = await recorder.stop() else { return }
+                for index in momentsBeforeRecording..<moments.count {
+                    moments[index].clipURL = clip.url
+                    moments[index].clipStartMs = startMs
+                    moments[index].clipDurationMs = clip.durationMs
+                }
+            }
+        }
+    }
 
     // MARK: - 对谈流程
 

@@ -41,11 +41,16 @@ final class HighlightReelBuilder {
                 let speech = try await renderSpeech(moment.narration.text, index: index)
                 speeches.append(.init(audioURL: speech.audioURL, startMs: cursorMs))
                 cues += SubtitleComposer.compose(forSpeech: moment.narration.text, startMs: cursorMs, speechDurationMs: speech.durationMs)
-                segments.append(.init(
-                    source: .image(moment.frameURL),
-                    durationMs: speech.durationMs + paddingMs,
-                    viewRange: Self.viewRange(forFrameAt: moment.frameURL)
-                ))
+                if let clip = Self.clipRange(for: index, in: moments) {
+                    segments.append(.init(source: .video(clip.url, start: clip.start, end: clip.end),
+                                          durationMs: speech.durationMs + paddingMs, fill: true))
+                } else {
+                    segments.append(.init(
+                        source: .image(moment.frameURL),
+                        durationMs: speech.durationMs + paddingMs,
+                        viewRange: Self.viewRange(forFrameAt: moment.frameURL)
+                    ))
+                }
                 cursorMs += speech.durationMs + paddingMs
             }
 
@@ -79,6 +84,25 @@ final class HighlightReelBuilder {
 
     /// 取景范围：双鱼眼原图只看正前方那个圆的中心区域，避免扫到圆外的黑边；
     /// 等矩形全景则横扫整幅画面
+    /// 这一刻在录下的视频里对应的区间：从它被描述的时间起，到下一刻或视频结束
+    private static func clipRange(for index: Int, in moments: [CompanionSession.Moment]) -> (url: URL, start: Double, end: Double)? {
+        let moment = moments[index]
+        guard let url = moment.clipURL, let startMs = moment.clipStartMs, let durationMs = moment.clipDurationMs,
+              FileManager.default.fileExists(atPath: url.path) else { return nil }
+        let total = Double(durationMs) / 1_000
+        var start = Double(moment.narration.offsetMs - startMs) / 1_000
+        var end = total
+        if index + 1 < moments.count, moments[index + 1].clipURL == url {
+            end = Double(moments[index + 1].narration.offsetMs - startMs) / 1_000
+        }
+        start = min(max(0, start), total)
+        end = min(max(start, end), total)
+        // 区间太短就用整段，慢放也比静止好
+        if end - start < 1 { start = 0; end = total }
+        guard end > start else { return nil }
+        return (url, start, end)
+    }
+
     private static func viewRange(forFrameAt url: URL) -> ClosedRange<CGFloat>? {
         guard let source = CGImageSourceCreateWithURL(url as CFURL, nil),
               let image = CGImageSourceCreateThumbnailAtIndex(source, 0, [

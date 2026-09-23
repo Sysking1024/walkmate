@@ -99,6 +99,7 @@
 		E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839DCF58737B54707405439 /* ToolModels.swift */; };
 		E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */; };
 		EA861847E607B54465C201DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044702FEF2781A714A52AF5 /* ContentView.swift */; };
+		EAE863645E056BA4EB47CEA8 /* ClipRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E03938247C6878231B6B004F /* ClipRecorder.swift */; };
 		EF66D8B621602D0ABF6CB379 /* ResilientSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */; };
 		F00FD760EF7D51263E7BD83C /* QwenSceneNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */; };
 		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
@@ -268,6 +269,7 @@
 		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
 		DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingClipComposer.swift; sourceTree = "<group>"; };
 		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
+		E03938247C6878231B6B004F /* ClipRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipRecorder.swift; sourceTree = "<group>"; };
 		E04D3A2BCAF067391142B571 /* CommunityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityStore.swift; sourceTree = "<group>"; };
 		E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Secrets.example.plist; sourceTree = "<group>"; };
 		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
@@ -608,6 +610,7 @@
 		A8E567C04E2BB87009B4C71C /* Recording */ = {
 			isa = PBXGroup;
 			children = (
+				E03938247C6878231B6B004F /* ClipRecorder.swift */,
 				B0CCF4D2782B552CC5D74DBD /* HighlightReelBuilder.swift */,
 				DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */,
 			);
@@ -1020,6 +1023,7 @@
 				515E43DC458A24C6BAB2D26E /* BackendClient.swift in Sources */,
 				21D515771155C77C57B0F41B /* BadgePlayer.swift in Sources */,
 				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
+				EAE863645E056BA4EB47CEA8 /* ClipRecorder.swift in Sources */,
 				9B0C7E92BD343CDB16EC88B4 /* CommunityStore.swift in Sources */,
 				60C1E09DDF869D4C8BFD1E41 /* CommunityView.swift in Sources */,
 				D29483E2C3A526662360F9DD /* CompanionConversation.swift in Sources */,

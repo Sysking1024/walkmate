@@ -37,11 +37,14 @@ enum TrainingClipComposer {
         /// 需要这个参数的原因：手持拍摄时持相机的人本身处在画面正中，
         /// 剪片时要让取景避开他，只拍周围的环境。
         let viewRange: ClosedRange<CGFloat>?
+        /// 素材本身已是普通透视画面（比如录下的拼接预览）：居中铺满输出，不当全景裁带
+        let fill: Bool
 
-        init(source: Source, durationMs: Int, viewRange: ClosedRange<CGFloat>? = nil) {
+        init(source: Source, durationMs: Int, viewRange: ClosedRange<CGFloat>? = nil, fill: Bool = false) {
             self.source = source
             self.durationMs = durationMs
             self.viewRange = viewRange
+            self.fill = fill
         }
 
         /// 静帧片段的便捷构造，横扫整幅画面
@@ -140,6 +143,7 @@ enum TrainingClipComposer {
                 image: image,
                 viewCenter: viewCenter(for: segment, progress: position.progress),
                 sweepProgress: position.progress,
+                fill: segment.fill,
                 subtitle: activeSubtitle(atTimeMs: timeMs, cues: cues),
                 into: buffer
             )
@@ -191,7 +195,7 @@ enum TrainingClipComposer {
     /// 因此裁出一个竖向窗口，随时间缓慢横移，既规避变形又让画面有运镜感。
     ///
     /// - Parameter viewCenter: 窗口中心的横向位置（0 到 1）。为 nil 时由 `sweepProgress` 决定，横扫整幅画面。
-    private static func draw(image: CGImage, viewCenter: CGFloat?, sweepProgress: Double = 0, subtitle: String?, into buffer: CVPixelBuffer) {
+    private static func draw(image: CGImage, viewCenter: CGFloat?, sweepProgress: Double = 0, fill: Bool = false, subtitle: String?, into buffer: CVPixelBuffer) {
         CVPixelBufferLockBaseAddress(buffer, [])
         defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
 
@@ -207,6 +211,25 @@ enum TrainingClipComposer {
 
         context.setFillColor(CGColor(red: 0, green: 0, blue: 0, alpha: 1))
         context.fill(CGRect(origin: .zero, size: renderSize))
+
+        if fill {
+            // 普通画面：按输出宽高比居中裁切后铺满
+            let targetAspect = renderSize.width / renderSize.height
+            let imageAspect = CGFloat(image.width) / CGFloat(image.height)
+            let cropRect: CGRect
+            if imageAspect > targetAspect {
+                let w = CGFloat(image.height) * targetAspect
+                cropRect = CGRect(x: (CGFloat(image.width) - w) / 2, y: 0, width: w, height: CGFloat(image.height))
+            } else {
+                let h = CGFloat(image.width) / targetAspect
+                cropRect = CGRect(x: 0, y: (CGFloat(image.height) - h) / 2, width: CGFloat(image.width), height: h)
+            }
+            if let cropped = image.cropping(to: cropRect) {
+                context.draw(cropped, in: CGRect(origin: .zero, size: renderSize))
+            }
+            if let subtitle { drawSubtitle(subtitle, in: context) }
+            return
+        }
 
         // 等矩形全景的上下两极被严重拉伸，只取中间一条水平带，
         // 既避开畸变区，也让横向可推移的范围更长、运镜更明显
