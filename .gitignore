@@ -32,7 +32,7 @@ Package.pins
 *~
 *.orig
 tmp/
-WalkMate/Frameworks/
+WalkMate/Frameworks
 *.mlpackage
 WalkMate/Resources/Models/*.mlpackage
 
