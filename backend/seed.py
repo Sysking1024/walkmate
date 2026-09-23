@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS stores (
   id TEXT PRIMARY KEY, name TEXT NOT NULL, category TEXT NOT NULL, distance_km REAL NOT NULL, cover_key TEXT NOT NULL,
   baseline_score REAL NOT NULL, baseline_visitors INTEGER NOT NULL, baseline_tags TEXT NOT NULL, route TEXT NOT NULL, sort_order INTEGER NOT NULL);
 CREATE TABLE IF NOT EXISTS reviews (id TEXT PRIMARY KEY, store_id TEXT NOT NULL, device_id TEXT NOT NULL, score INTEGER NOT NULL, tags TEXT NOT NULL, comment TEXT, created_at INTEGER NOT NULL);
-CREATE TABLE IF NOT EXISTS invitations (id TEXT PRIMARY KEY, from_user TEXT NOT NULL, place TEXT NOT NULL, time TEXT NOT NULL, message TEXT);
+CREATE TABLE IF NOT EXISTS invitations (id TEXT PRIMARY KEY, from_user TEXT NOT NULL, place TEXT NOT NULL, time TEXT NOT NULL, message TEXT, store_id TEXT);
 CREATE TABLE IF NOT EXISTS invitation_responses (invitation_id TEXT NOT NULL, device_id TEXT NOT NULL, accepted INTEGER NOT NULL, created_at INTEGER NOT NULL, PRIMARY KEY (invitation_id, device_id));
 CREATE TABLE IF NOT EXISTS journeys (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, title TEXT NOT NULL, duration TEXT NOT NULL, distance_km REAL NOT NULL, note TEXT, likes INTEGER, comments INTEGER, shares INTEGER);
 CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, device_id TEXT NOT NULL, duration_seconds INTEGER, distance_meters INTEGER, obstacles_avoided INTEGER, moments_count INTEGER, finished_at INTEGER);
@@ -51,7 +51,7 @@ STORES = [
      2),
 ]
 
-INVITATIONS = [("inv_1", "u_momo", "上野公园", "9月25日 星期六 早上9:30出发", "想去感受秋天。")]
+INVITATIONS = [("inv_1", "u_momo", "影石Insta360 仙林金鹰店", "9月25日 星期六 早上9:30出发", "想去摸摸新相机，顺便逛逛金鹰。", "s_insta360")]
 
 JOURNEYS = [("j_1", "u_doris", "第一次独立去购物", "4:28", 15.0, "第一次独自去商业中心，有点紧张！但是去了之后发现真的很有趣！", 52, 12, 5)]
 
@@ -65,7 +65,7 @@ def ensure_seeded(db_path):
         for s in STORES:
             conn.execute("INSERT INTO stores VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                          (s[0], s[1], s[2], s[3], s[4], s[5], s[6], json.dumps(s[7], ensure_ascii=False), json.dumps(s[8], ensure_ascii=False), s[9]))
-        conn.executemany("INSERT INTO invitations VALUES (?, ?, ?, ?, ?)", INVITATIONS)
+        conn.executemany("INSERT INTO invitations VALUES (?, ?, ?, ?, ?, ?)", INVITATIONS)
         conn.executemany("INSERT INTO journeys VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", JOURNEYS)
         # 预置几条评分，让店铺一开始就有真实来源的分数与标签
         now = int(time.time())

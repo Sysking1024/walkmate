@@ -107,7 +107,7 @@ class Handler(BaseHTTPRequestHandler):
                                           (r["id"], device)).fetchone()
                     invitations.append({
                         "id": r["id"], "from": r["from_name"], "avatarKey": r["avatar"], "place": r["place"],
-                        "time": r["time"], "message": r["message"],
+                        "time": r["time"], "message": r["message"], "storeId": r["store_id"],
                         "status": None if status is None else ("accepted" if status["accepted"] else "declined"),
                     })
                 journeys = [dict(r) for r in conn.execute(

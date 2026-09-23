@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var history = TrainingHistoryStore.shared
     @State private var settings = AppSettings.shared
     @State private var community = CommunityStore.shared
+    @State private var ratingStore = StoreRatingStore.shared
     @State private var showGrowth = false
 
     var body: some View {
@@ -72,6 +73,8 @@ struct HomeView: View {
         let title: String
         let detail: String
         let done: Bool
+        /// 有店铺的任务可以点进路线页
+        var store: StoreSummary? = nil
     }
 
     /// 每日目标两项 + 已同意的好友邀约
@@ -83,7 +86,8 @@ struct HomeView: View {
                      detail: "已 \(todayObstacles) 次", done: todayObstacles >= settings.dailyGoalObstacles),
         ]
         for invitation in community.feed.invitations where invitation.status == "accepted" {
-            items.append(TaskItem(id: invitation.id, title: "和 \(invitation.from) 去\(invitation.place)", detail: invitation.time, done: false))
+            items.append(TaskItem(id: invitation.id, title: "和 \(invitation.from) 去\(invitation.place)", detail: invitation.time, done: false,
+                                  store: invitation.storeId.flatMap { ratingStore.store(id: $0) }))
         }
         return items
     }
@@ -104,6 +108,29 @@ struct HomeView: View {
                 .accessibilityLabel("今日，训练 \(todayMinutes) 分钟，避障 \(todayObstacles) 次，完成 \(Int(todayProgress * 100))%")
                 Divider().overlay(WalkMateTheme.Colors.divider)
                 ForEach(Array(tasks.enumerated()), id: \.element.id) { index, task in
+                    if let store = task.store {
+                        NavigationLink {
+                            RouteDetailView(title: "去\(store.name)", route: store.route, store: store)
+                        } label: {
+                            taskRow(task)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityHint("轻点两下查看路线")
+                    } else {
+                        taskRow(task)
+                    }
+                    if index < tasks.count - 1 {
+                        Divider().overlay(WalkMateTheme.Colors.divider)
+                    }
+                }
+            }
+            .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
+            .padding(.vertical, 6)
+            .wmCard()
+        }
+    }
+
+    private func taskRow(_ task: TaskItem) -> some View {
                     HStack(spacing: 14) {
                         Image(systemName: task.done ? "checkmark.circle.fill" : "circle")
                             .font(.system(size: 26, weight: .medium))
@@ -118,20 +145,14 @@ struct HomeView: View {
                                 .foregroundStyle(task.done ? WalkMateTheme.Colors.accentSoft : WalkMateTheme.Colors.textSecondary)
                         }
                         Spacer()
+                        if task.store != nil {
+                            Image("icon_chevron").resizable().scaledToFit().frame(height: 12).foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                        }
                     }
                     .padding(.vertical, 12)
                     .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(task.done ? "已完成" : "未完成")，\(task.title)，\(task.detail)")
-                    if index < tasks.count - 1 {
-                        Divider().overlay(WalkMateTheme.Colors.divider)
-                    }
-                }
-            }
-            .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
-            .padding(.vertical, 6)
-            .wmCard()
-        }
     }
 
     // MARK: - 本周

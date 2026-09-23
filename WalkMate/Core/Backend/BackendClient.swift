@@ -143,6 +143,8 @@ struct CommunityFeed: Codable, Equatable {
     struct Achievement: Codable, Equatable { let user: String; let avatarKey: String; let crown: String?; let note: String }
     struct Invitation: Codable, Equatable, Identifiable {
         let id: String; let from: String; let avatarKey: String; let place: String; let time: String; let message: String?
+        /// 去处对应的店铺，有则任务清单里可直接进路线
+        var storeId: String?
         var status: String?
     }
     struct Journey: Codable, Equatable {
