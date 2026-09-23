@@ -28,11 +28,15 @@ struct GrowthDetailView: View {
         let days = history.minutesPerDay
         let peak = max(days.map(\.minutes).max() ?? 0, 1)
         return VStack(alignment: .leading, spacing: 16) {
-            Text("本周每日训练").font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
+            HStack(alignment: .firstTextBaseline) {
+                Text("本周每日训练").font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                Spacer()
+                Text("单位：分钟").font(WalkMateTheme.Fonts.caption).foregroundStyle(WalkMateTheme.Colors.textSecondary)
+            }
             HStack(alignment: .bottom, spacing: 10) {
                 ForEach(Array(days.enumerated()), id: \.offset) { _, day in
                     VStack(spacing: 6) {
-                        Text(day.minutes > 0 ? "\(day.minutes)" : "")
+                        Text(day.minutes > 0 ? "\(day.minutes)分" : "")
                             .font(WalkMateTheme.Fonts.ringCaption)
                             .foregroundStyle(WalkMateTheme.Colors.accentSoft)
                         RoundedRectangle(cornerRadius: 6, style: .continuous)
