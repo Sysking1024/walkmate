@@ -171,8 +171,7 @@ public final class CameraPipeline: NSObject, CameraPipelineProtocol {
         Log.info("开始通过 Wi-Fi Socket 连接 Insta360 全景相机...", category: .camera)
         currentState = .connecting
         
-        // 关键防护：先安全关闭旧 Socket 句柄以清理可能的残留异常状态，随后发起全新 Socket 握手
-        INSCameraManager.socket().shutdown()
+        // 发起官方 Socket 握手
         INSCameraManager.socket().setup()
     }
     

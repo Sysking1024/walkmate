@@ -42,7 +42,7 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
     // MARK: - 底层组件依赖
     
     public let pipeline: CameraPipelineProtocol
-    public let perceptionEngine: SpatialPerceptionEngineProtocol?
+    public var perceptionEngine: SpatialPerceptionEngineProtocol?
     public let audioPlayer: SpatialAudioPlayerProtocol
     
     public init(
@@ -103,6 +103,20 @@ public final class CameraViewModel: ObservableObject, CameraPipelineDelegate, Sp
             Log.error("空间音频启动失败: \(error.localizedDescription)", category: .audio)
             self.latestError = "音频启动失败: \(error.localizedDescription)"
         }
+        
+        // 容错自愈：若冷启动阶段感知引擎因资源加载延迟等原因未就绪，在此自动进行二次懒加载重试
+        if perceptionEngine == nil {
+            do {
+                let engine = try SpatialPerceptionEngine()
+                engine.delegate = self
+                self.perceptionEngine = engine
+                Log.info("空间感知引擎延迟初始化成功", category: .perception)
+            } catch {
+                Log.error("空间感知引擎延迟初始化失败: \(error.localizedDescription)", category: .perception)
+                self.latestError = "感知引擎加载失败: \(error.localizedDescription)"
+            }
+        }
+        
         perceptionEngine?.start()
         Log.info("已开启空间感知流水线与 3D 空间音频导航", category: .perception)
         UIAccessibility.post(notification: .announcement, argument: "已开启空间感知与音频导航")
