@@ -229,8 +229,11 @@ struct ReelPlayerView: View {
                     .clipShape(Capsule())
                     .padding()
             }
-            .onAppear {
+            .task {
                 SpeechRenderer.activatePlaybackSession()
+                // 开着读屏时，读屏会先播报页面，等它说完再开始，免得盖住视频里的声音
+                let delay: UInt64 = UIAccessibility.isVoiceOverRunning ? 3_000_000_000 : 300_000_000
+                try? await Task.sleep(nanoseconds: delay)
                 player.play()
             }
             .onDisappear { player.pause() }

@@ -18,8 +18,10 @@
 		1423ABB0AFEE4E9D8864539A /* RouteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1C1150ED91E77F05ED468B7 /* RouteDetailView.swift */; };
 		144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */; };
 		16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */; };
+		18597312060ACBD51B7F0530 /* badge_first_step.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 1D6940E1483DC0509263596C /* badge_first_step.m4a */; };
 		18F9F34BD1306305FCA84437 /* TrainingHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1733F19D67FCD1194FEC9D6 /* TrainingHistoryStore.swift */; };
 		198FCBD3C7B0013A13C8F98B /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8086479D3BFE182A93FCC02E /* ProfileView.swift */; };
+		21D515771155C77C57B0F41B /* BadgePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38BA6B6F95FDC47E0F21F287 /* BadgePlayer.swift */; };
 		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
 		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
@@ -58,11 +60,13 @@
 		970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB665524D4B1FD6014B271D /* InferenceTests.swift */; };
 		99EFA20E4A674E9BF378FCCD /* StoreRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B41C852A2403A14BC1F9823 /* StoreRatingView.swift */; };
 		9B0C7E92BD343CDB16EC88B4 /* CommunityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04D3A2BCAF067391142B571 /* CommunityStore.swift */; };
+		9F84BA706CB636D5CFBDC08B /* badge_meet_friend.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 9181E51F13BE6CC8F12AB1AD /* badge_meet_friend.m4a */; };
 		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
 		A540B4901BEC12A1E5D07B11 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9BA35958ADA9A3450BF5B5 /* OnboardingView.swift */; };
 		A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD40245303E20078AC0F4304 /* sample_erp_1.jpg */; };
 		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
 		AC0E6EF4C11E7503117DBD84 /* TrainingGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */; };
+		AD0BB228066B9B8AB3ED8114 /* badge_obstacles_10.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 913987A5928403B9AD691BE9 /* badge_obstacles_10.m4a */; };
 		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
 		B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */; };
 		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
@@ -155,6 +159,7 @@
 		0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionConversation.swift; sourceTree = "<group>"; };
 		163B3A52D1818515C19C0071 /* WalkMateRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateRootView.swift; sourceTree = "<group>"; };
 		19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSceneNarrator.swift; sourceTree = "<group>"; };
+		1D6940E1483DC0509263596C /* badge_first_step.m4a */ = {isa = PBXFileReference; path = badge_first_step.m4a; sourceTree = "<group>"; };
 		1F5BBE716BF5361AD6E2BD39 /* TrainingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFlowView.swift; sourceTree = "<group>"; };
 		2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalProjector.swift; sourceTree = "<group>"; };
 		226F2B37F75FEF3DD4E034F7 /* WalkMateTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateTabBar.swift; sourceTree = "<group>"; };
@@ -163,6 +168,7 @@
 		32AB8B2CA6663C3AFB9E8902 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		345A9B31CBA25A47500E06C8 /* TrainingSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSummaryView.swift; sourceTree = "<group>"; };
 		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		38BA6B6F95FDC47E0F21F287 /* BadgePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgePlayer.swift; sourceTree = "<group>"; };
 		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
 		3A9DDE964BA9A3B3C81F9807 /* WalkMateTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateTheme.swift; sourceTree = "<group>"; };
 		40C583E912BC4D513B945E3D /* SubtitleComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitleComposer.swift; sourceTree = "<group>"; };
@@ -196,6 +202,8 @@
 		8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PerceptionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAPEngine.swift; sourceTree = "<group>"; };
 		8E9DC37EDA69B0CA5B3ED2A9 /* ResilientSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResilientSceneNarrator.swift; sourceTree = "<group>"; };
+		913987A5928403B9AD691BE9 /* badge_obstacles_10.m4a */ = {isa = PBXFileReference; path = badge_obstacles_10.m4a; sourceTree = "<group>"; };
+		9181E51F13BE6CC8F12AB1AD /* badge_meet_friend.m4a */ = {isa = PBXFileReference; path = badge_meet_friend.m4a; sourceTree = "<group>"; };
 		91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKit.swift; sourceTree = "<group>"; };
 		9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundPlaneEstimator.swift; sourceTree = "<group>"; };
@@ -392,6 +400,7 @@
 				87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */,
 				E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */,
 				B79A3479AFC700BF195D5D23 /* Secrets.plist */,
+				82AB4A00175EC55A49D08DEC /* Badges */,
 				5963BB14B99ECD1C284830FA /* Demo */,
 			);
 			path = Resources;
@@ -429,6 +438,7 @@
 			isa = PBXGroup;
 			children = (
 				4D35D66323BFEE76D76511FA /* Backend */,
+				D77149FBB32151448C899925 /* Badges */,
 				69A8918F85B5A915D5308FCE /* Camera */,
 				3698E1223EB8BBD1AF727260 /* Community */,
 				5C9B6722D221D5316DABEB6E /* Conversation */,
@@ -489,6 +499,16 @@
 			path = Community;
 			sourceTree = "<group>";
 		};
+		82AB4A00175EC55A49D08DEC /* Badges */ = {
+			isa = PBXGroup;
+			children = (
+				1D6940E1483DC0509263596C /* badge_first_step.m4a */,
+				9181E51F13BE6CC8F12AB1AD /* badge_meet_friend.m4a */,
+				913987A5928403B9AD691BE9 /* badge_obstacles_10.m4a */,
+			);
+			path = Badges;
+			sourceTree = "<group>";
+		};
 		8818118738EE0199F16FF11A /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -547,6 +567,14 @@
 				72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D77149FBB32151448C899925 /* Badges */ = {
+			isa = PBXGroup;
+			children = (
+				38BA6B6F95FDC47E0F21F287 /* BadgePlayer.swift */,
+			);
+			path = Badges;
 			sourceTree = "<group>";
 		};
 		DD8B47801B1216A13BF4A80E /* GeometryTests */ = {
@@ -803,6 +831,9 @@
 				0249C9D2701148DB977E04D8 /* Design.xcassets in Resources */,
 				57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */,
 				1246EFA6046078A93D7DB6C1 /* Secrets.plist in Resources */,
+				18597312060ACBD51B7F0530 /* badge_first_step.m4a in Resources */,
+				9F84BA706CB636D5CFBDC08B /* badge_meet_friend.m4a in Resources */,
+				AD0BB228066B9B8AB3ED8114 /* badge_obstacles_10.m4a in Resources */,
 				8479A4E13002BC4EDFBB779E /* bgm.m4a in Resources */,
 				C6CF3DCE7C6950E6706BA730 /* demo_highlight.mp4 in Resources */,
 				A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */,
@@ -856,6 +887,7 @@
 				538778870FA9468F3F184FEA /* AddFriendView.swift in Sources */,
 				10800832B68FBECF3D186F98 /* AppSettings.swift in Sources */,
 				515E43DC458A24C6BAB2D26E /* BackendClient.swift in Sources */,
+				21D515771155C77C57B0F41B /* BadgePlayer.swift in Sources */,
 				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
 				9B0C7E92BD343CDB16EC88B4 /* CommunityStore.swift in Sources */,
 				60C1E09DDF869D4C8BFD1E41 /* CommunityView.swift in Sources */,

@@ -215,20 +215,27 @@ struct HomeView: View {
         }
     }
 
+    /// 徽章是一个按钮：点一下播放它的专属旋律并报名字
     private func badgeTile(_ image: String, _ title: String) -> some View {
-        VStack(spacing: 4) {
-            Image(image).resizable().scaledToFit().frame(height: 66)
-            Text(title)
-                .font(WalkMateTheme.Fonts.caption)
-                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+        Button {
+            BadgePlayer.shared.play(soundName: image, title: title)
+        } label: {
+            VStack(spacing: 4) {
+                Image(image).resizable().scaledToFit().frame(height: 66)
+                Text(title)
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            .padding(.horizontal, 6)
+            .frame(maxWidth: .infinity, minHeight: 110)
+            .wmCard(WalkMateTheme.Gradients.badgeTile)
         }
-        .padding(.horizontal, 6)
-        .frame(maxWidth: .infinity, minHeight: 110)
-        .wmCard(WalkMateTheme.Gradients.badgeTile)
+        .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("徽章，\(title)")
+        .accessibilityHint("轻点两下听它的旋律")
     }
 
     private func routeRow(icon: String, title: String, detail: String) -> some View {
