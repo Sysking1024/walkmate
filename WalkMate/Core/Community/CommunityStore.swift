@@ -162,7 +162,7 @@ enum SeedData {
         journeys: [
             .init(id: "j_1", title: "记录我的第一次半开放户外探索", duration: "0:19", distanceKm: 0.65, note: nil, likes: 52, comments: 1, shares: 5,
                   user: "Doris", avatarKey: "avatar_doris_small", videoFileName: "demo_highlight.mp4", coverKey: "journey_cover_bamboo"),
-            .init(id: "j_2", title: "第一次独立去公园湖边散步", duration: "0:52", distanceKm: 1.8, note: nil, likes: 31, comments: 1, shares: 2,
+            .init(id: "j_2", title: "第一次独立去公园湖边散步", duration: "0:10", distanceKm: 1.8, note: nil, likes: 31, comments: 1, shares: 2,
                   user: "子璇爸爸", avatarKey: "avatar_zixuan", videoFileName: "demo_outdoor.mp4", coverKey: "journey_cover_outdoor"),
         ]
     )

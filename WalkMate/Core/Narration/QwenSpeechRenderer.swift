@@ -69,7 +69,8 @@ struct QwenSpeechRenderer {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: [
             "model": model,
-            "input": ["text": text, "voice": voice],
+            // 明确语种：不指定时模型偶尔把整句判成日语朗读
+            "input": ["text": text, "voice": voice, "language_type": "Chinese"],
         ])
 
         let (data, response) = try await session.data(for: request)

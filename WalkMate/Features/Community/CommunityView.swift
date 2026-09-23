@@ -152,11 +152,8 @@ struct CommunityView: View {
     }
 
     private func chipRows(_ tags: [String]) -> some View {
-        let rows = stride(from: 0, to: tags.count, by: 2).map { Array(tags[$0..<min($0 + 2, tags.count)]) }
-        return VStack(alignment: .leading, spacing: 4) {
-            ForEach(Array(rows.enumerated()), id: \.offset) { _, row in
-                HStack(spacing: 4) { ForEach(row, id: \.self) { WMChip(text: $0) } }
-            }
+        WMFlowLayout(spacing: 4) {
+            ForEach(tags, id: \.self) { WMChip(text: $0) }
         }
     }
 

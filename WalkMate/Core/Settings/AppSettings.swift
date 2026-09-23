@@ -39,12 +39,6 @@ final class AppSettings {
         guidance < 0.33 ? .detailed : (guidance < 0.67 ? .brief : .muted)
     }
 
-    /// 对应系统动态字体档位，与主题缩放同步
-    var dynamicTypeSize: DynamicTypeSize {
-        let sizes: [DynamicTypeSize] = [.small, .medium, .large, .xLarge, .xxLarge, .xxxLarge]
-        return sizes[min(5, max(0, Int((textScale * 5).rounded())))]
-    }
-
     private func save(_ key: String, _ value: Double) { UserDefaults.standard.set(value, forKey: "walkmate.\(key)") }
 
     /// 把偏好写到各模块的可调参数上
@@ -57,9 +51,9 @@ final class AppSettings {
         CompanionSession.autoPromptEnabled = guidanceLevel != .muted
         // 系统合成器语速区间约 0.3 到 0.65 听感自然，把滑杆映射进去
         SpeechRenderer.speechRate = Float(0.3 + speechRate * 0.35)
-        // 0.4 为默认档（原尺寸），向左最小八五折，向右最大一点三倍
+        // 0.4 为默认档（原尺寸），向左最小九折，向右最大一点二倍；再大就会撑破设计稿的布局
         WalkMateTheme.Fonts.scale = textScale < 0.4
-            ? 0.85 + (textScale / 0.4) * 0.15
-            : 1 + ((textScale - 0.4) / 0.6) * 0.3
+            ? 0.9 + (textScale / 0.4) * 0.1
+            : 1 + ((textScale - 0.4) / 0.6) * 0.2
     }
 }

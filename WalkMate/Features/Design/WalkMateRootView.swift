@@ -26,8 +26,8 @@ struct WalkMateRootView: View {
                 .padding(.bottom, 8)
         }
         .preferredColorScheme(.dark)
-        // 字体大小设置改动时，环境变化会让整棵视图树重新求值，主题字体的缩放随之生效
-        .dynamicTypeSize(settings.dynamicTypeSize)
+        // 字体大小只通过主题字体的缩放系数生效；切换栏目时页面重建即可拿到新字号
+        .id(settings.textScale)
         .fullScreenCover(isPresented: $showGuide) {
             OnboardingView { showGuide = false }
                 .preferredColorScheme(.dark)
