@@ -79,10 +79,10 @@
 **独立测试标准**：调用 `playRewardSound()`，单次播发暖心和弦；脚步声音量平滑淡出压低至 30%，和弦播完后音量平滑恢复 100%。
 
 ### 测试先行
-- [ ] T009 [P] [US3] 编写康复激励音单次触发与脚步声压音让位测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证单次和弦触发、播放期间脚步声音量平滑压低至 30% 与播完恢复 100%）
+- [X] T009 [P] [US3] 编写康复激励音单次触发与脚步声压音让位测试用例于 `Tests/AudioTests/SpatialAudioPlayerTests.swift`（验证单次和弦触发、播放期间脚步声音量平滑压低至 30% 与播完恢复 100%）
 
 ### 实现
-- [ ] T010 [US3] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `playRewardSound()`，调度和弦专用节点并在发声期间自动对脚步声节点执行音量 Ducking 压低至 30% 与平滑恢复，使 T009 测试通过
+- [X] T010 [US3] 在 `WalkMate/Core/Audio/SpatialAudioPlayer.swift` 中实现 `playRewardSound()`，调度和弦专用节点并在发声期间自动对脚步声节点执行音量 Ducking 压低至 30% 与平滑恢复，使 T009 测试通过
 
 **检查点**：三大用户故事全量实现，具备防撞双音、领路脚步、康复激励完整体验。
 

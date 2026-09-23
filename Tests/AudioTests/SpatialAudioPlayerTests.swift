@@ -215,4 +215,41 @@ final class SpatialAudioPlayerTests: XCTestCase {
         
         player.stop()
     }
+    
+    // MARK: - 测试 7: 康复训练达标激励和弦音播放与脚步声压音让位验证 (T009 - US3)
+    func testRewardSoundPlaybackAndDucking() throws {
+        let player = SpatialAudioPlayer()
+        try player.start()
+        
+        // 1. 激活导航脚步声，初始音量应为 1.0 (100%)
+        player.setNavigationTarget(position: SIMD3<Float>(0.0, 0.0, -2.0))
+        let expInit = expectation(description: "脚步声激活")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            XCTAssertTrue(player.isNavigationActive)
+            XCTAssertEqual(player.navigationPlayerNode.volume, 1.0, accuracy: 0.01)
+            expInit.fulfill()
+        }
+        wait(for: [expInit], timeout: 0.2)
+        
+        // 2. 触发康复激励音，断言脚步声音量被平滑压低至 0.3 (30%)
+        player.playRewardSound()
+        let expDucking = expectation(description: "激励音播放期间脚步声被压低至 30%")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            XCTAssertTrue(player.isRewardActive, "激励音当前应处于激活播放态")
+            XCTAssertEqual(player.navigationPlayerNode.volume, 0.3, accuracy: 0.01, "播放激励音期间脚步声音量必须降为 30%")
+            expDucking.fulfill()
+        }
+        wait(for: [expDucking], timeout: 0.2)
+        
+        // 3. 和弦时长 0.4s 播完后，脚步声音量应自动恢复至 1.0 (100%)
+        let expRestore = expectation(description: "激励音播完脚步声音量恢复至 100%")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+            XCTAssertFalse(player.isRewardActive, "0.4s 后激励音播放完毕应自动结束")
+            XCTAssertEqual(player.navigationPlayerNode.volume, 1.0, accuracy: 0.01, "激励音播完后脚步声音量必须恢复至 100%")
+            expRestore.fulfill()
+        }
+        wait(for: [expRestore], timeout: 0.6)
+        
+        player.stop()
+    }
 }

@@ -105,6 +105,15 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     private var navigationCadenceWorkItem: DispatchWorkItem?
     private var navigationTargetPosition: SIMD3<Float>?
     
+    // MARK: - 康复激励音状态机 (US3)
+    private var _isRewardActive: Bool = false
+    public var isRewardActive: Bool {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        return _isRewardActive
+    }
+    private var rewardDuckingWorkItem: DispatchWorkItem?
+    
     // MARK: - 压音调度状态 (Ducking Coordinator)
     private var isObstacleDucking: Bool = false
     private var isRewardDucking: Bool = false
@@ -191,10 +200,18 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
             return
         }
         _isRunning = false
+        _isNavigationActive = false
+        _navigationStepCount = 0
+        _obstacleAlertPhase = .idle
+        _isRewardActive = false
+        isObstacleDucking = false
+        isRewardDucking = false
         stateLock.unlock()
         
         cancelObstacleAlertInternal()
         stopNavigationCadenceInternal()
+        rewardDuckingWorkItem?.cancel()
+        rewardDuckingWorkItem = nil
         
         obstaclePlayerNode.stop()
         navigationPlayerNode.stop()
@@ -210,6 +227,7 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         _isNavigationActive = false
         _navigationStepCount = 0
         _obstacleAlertPhase = .idle
+        _isRewardActive = false
         isObstacleDucking = false
         isRewardDucking = false
         stateLock.unlock()
@@ -218,6 +236,8 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         obstacleAlertWorkItem = nil
         navigationCadenceWorkItem?.cancel()
         navigationCadenceWorkItem = nil
+        rewardDuckingWorkItem?.cancel()
+        rewardDuckingWorkItem = nil
         obstacleTargetPosition = nil
         navigationTargetPosition = nil
         
@@ -462,9 +482,46 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
         }
     }
     
-    // MARK: - 占位方法（由后续用户故事 Phase 5 实现）
+    // MARK: - 用户故事 3: 行走康复训练达标激励音与自动让位 (US3)
     
+    /// 触发播放上行大三和弦激励和声（发声期间脚步声自动压低至 30%，播完自动恢复）
     public func playRewardSound() {
-        // 后续由 T010 [US3] 完整实现
+        audioQueue.async { [weak self] in
+            guard let self = self, self.isRunning else { return }
+            
+            self.rewardDuckingWorkItem?.cancel()
+            
+            self.stateLock.lock()
+            self._isRewardActive = true
+            self.stateLock.unlock()
+            
+            // 压低领路脚步声音量至 30% 让位
+            self.isRewardDucking = true
+            self.updateFootstepDucking()
+            
+            // 播放 0.4s 和弦音
+            self.rewardPlayerNode.scheduleBuffer(self.rewardChimeBuffer, at: nil, options: [])
+            if !self.rewardPlayerNode.isPlaying && self.isRunning {
+                self.rewardPlayerNode.play()
+            }
+            Log.info("触发康复训练达标激励和弦音，领路脚步声压音至 30%", category: .audio)
+            
+            // 0.4s 播完后恢复音量与状态
+            let completionItem = DispatchWorkItem { [weak self] in
+                guard let self = self else { return }
+                
+                self.stateLock.lock()
+                self._isRewardActive = false
+                self.stateLock.unlock()
+                
+                self.isRewardDucking = false
+                self.updateFootstepDucking()
+                self.rewardDuckingWorkItem = nil
+                Log.info("康复激励音播放完毕，领路脚步声音量恢复 100%", category: .audio)
+            }
+            
+            self.rewardDuckingWorkItem = completionItem
+            self.audioQueue.asyncAfter(deadline: .now() + 0.4, execute: completionItem)
+        }
     }
 }
