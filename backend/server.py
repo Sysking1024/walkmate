@@ -111,7 +111,8 @@ class Handler(BaseHTTPRequestHandler):
                         "status": None if status is None else ("accepted" if status["accepted"] else "declined"),
                     })
                 journeys = [dict(r) for r in conn.execute(
-                    "SELECT j.title, j.duration, j.distance_km AS distanceKm, j.note, j.likes, j.comments, j.shares, u.name AS user, u.avatar_key AS avatarKey FROM journeys j JOIN users u ON u.id = j.user_id")]
+                    "SELECT j.id, j.title, j.duration, j.distance_km AS distanceKm, j.note, j.likes, j.comments, j.shares, u.name AS user, u.avatar_key AS avatarKey, "
+                    "j.video_file_name AS videoFileName, j.cover_key AS coverKey FROM journeys j JOIN users u ON u.id = j.user_id ORDER BY j.created_at DESC")]
                 return self.respond(200, {"achievements": achievements, "invitations": invitations, "journeys": journeys})
 
             if parts == ["sessions"]:
@@ -145,6 +146,14 @@ class Handler(BaseHTTPRequestHandler):
                 print(f"[INFO] 收到评分：店铺 {parts[1]}，{score} 星，设备 {device}")
                 return self.respond(200, store_summary(conn, parts[1]))
 
+            if parts == ["journeys"]:
+                journey_id = body.get("id") or str(uuid.uuid4())
+                conn.execute(
+                    "INSERT OR REPLACE INTO journeys (id, user_id, title, duration, distance_km, note, likes, comments, shares, video_file_name, cover_key, created_at) "
+                    "VALUES (?, 'u_doris', ?, ?, ?, NULL, 0, 0, 0, NULL, NULL, ?)",
+                    (journey_id, body.get("title", "我的旅程"), body.get("duration", "0:00"), float(body.get("distanceKm", 0)), int(body.get("createdAt", time.time()))))
+                conn.commit()
+                return self.respond(200, {"id": journey_id})
             if len(parts) == 3 and parts[0] == "invitations" and parts[2] == "respond":
                 accepted = 1 if body.get("accepted") else 0
                 conn.execute(

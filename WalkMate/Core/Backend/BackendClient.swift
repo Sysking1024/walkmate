@@ -61,6 +61,13 @@ struct BackendClient {
         let _: InvitationResponse = try await post("invitations/\(invitationID)/respond", body: ["accepted": accepted])
     }
 
+    func publishJourney(_ journey: CommunityFeed.Journey, createdAt: Date) async throws {
+        let _: UploadReceipt = try await post("journeys", body: [
+            "id": journey.id, "title": journey.title, "duration": journey.duration, "distanceKm": journey.distanceKm,
+            "createdAt": Int(createdAt.timeIntervalSince1970),
+        ])
+    }
+
     func uploadSession(_ record: TrainingRecord) async throws {
         let _: UploadReceipt = try await post("sessions", body: [
             "id": record.id.uuidString, "durationSeconds": record.durationSeconds, "distanceMeters": record.distanceMeters,
@@ -147,9 +154,16 @@ struct CommunityFeed: Codable, Equatable {
         var storeId: String?
         var status: String?
     }
-    struct Journey: Codable, Equatable {
+    struct Journey: Codable, Equatable, Identifiable {
+        let id: String
         let title: String; let duration: String; let distanceKm: Double; let note: String?
         let likes: Int; let comments: Int; let shares: Int; let user: String; let avatarKey: String
+        /// 随应用内置的视频文件名（后端旅程），或本机 reels 目录里的文件名（自己分享的）
+        var videoFileName: String?
+        /// 资源目录里的封面图键
+        var coverKey: String?
+        /// 本机生成的封面文件名（自己分享的旅程）
+        var coverFileName: String?
     }
     var achievements: [Achievement]
     var invitations: [Invitation]

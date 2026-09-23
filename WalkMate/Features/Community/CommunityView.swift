@@ -11,9 +11,8 @@ struct CommunityView: View {
     @State private var history = TrainingHistoryStore.shared
     @State private var player: AVPlayer?
     /// 本机是否给旅程点过赞，只存本地
-    @AppStorage("walkmate.likedJourney") private var likedJourney = false
-    @State private var showComments = false
-    @State private var myComments = JourneyCommentStore.load()
+    @State private var liked: Set<String> = JourneyReactionStore.loadLikes()
+    @State private var commentTarget: CommunityFeed.Journey?
 
     var body: some View {
         NavigationStack {
@@ -42,8 +41,8 @@ struct CommunityView: View {
                         storeCard(store)
                     }
 
-                    if let journey = communityStore.feed.journeys.first {
-                        WMPageTitle(text: "我的旅程")
+                    WMPageTitle(text: "大家的旅程")
+                    ForEach(communityStore.journeys) { journey in
                         journeyCard(journey)
                     }
                 }
@@ -60,8 +59,8 @@ struct CommunityView: View {
         .fullScreenCover(item: $player) { player in
             ReelPlayerView(player: player) { self.player = nil }
         }
-        .sheet(isPresented: $showComments) {
-            JourneyCommentSheet(comments: $myComments) { showComments = false }
+        .sheet(item: $commentTarget) { journey in
+            JourneyCommentSheet(journey: journey) { commentTarget = nil }
         }
         .task {
             await communityStore.refresh()
@@ -211,16 +210,23 @@ struct CommunityView: View {
         .wmCard(WalkMateTheme.Gradients.communityCard)
     }
 
-    // MARK: - 我的旅程
+    // MARK: - 大家的旅程
 
     private func journeyCard(_ journey: CommunityFeed.Journey) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
+        let video = CommunityStore.videoURL(for: journey)
+        let isLiked = liked.contains(journey.id)
+        let commentCount = journey.comments + JourneyReactionStore.loadComments(for: journey.id).count
+        return VStack(alignment: .leading, spacing: 14) {
             // 封面通栏，点了就播；标题在封面下方
             Button {
-                if let url = history.latestReelURL { player = AVPlayer(url: url) }
+                if let video { player = AVPlayer(url: video) }
             } label: {
                 ZStack(alignment: .bottomLeading) {
-                    Image("journey_thumbnail").resizable().scaledToFill()
+                    if let cover = CommunityStore.coverImage(for: journey) {
+                        Image(uiImage: cover).resizable().scaledToFill()
+                    } else {
+                        Image("journey_thumbnail").resizable().scaledToFill()
+                    }
                     WalkMateTheme.Gradients.coverShade
                     Image("journey_play_badge").resizable().scaledToFit().frame(width: 40).padding(14)
                 }
@@ -229,8 +235,8 @@ struct CommunityView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
             }
             .buttonStyle(.plain)
-            .disabled(history.latestReelURL == nil)
-            .accessibilityLabel("播放旅程视频，\(journey.title)")
+            .disabled(video == nil)
+            .accessibilityLabel("播放旅程视频，\(journey.title)，\(journey.user) 分享")
 
             Text(journey.title)
                 .font(WalkMateTheme.Fonts.body)
@@ -246,28 +252,28 @@ struct CommunityView: View {
                     .fixedSize()
                 Spacer(minLength: 8)
                 Button {
-                    likedJourney.toggle()
+                    if isLiked { liked.remove(journey.id) } else { liked.insert(journey.id) }
+                    JourneyReactionStore.saveLikes(liked)
                 } label: {
-                    reactionLabel("icon_like", count: journey.likes + (likedJourney ? 1 : 0), highlighted: likedJourney)
+                    reactionLabel("icon_like", count: journey.likes + (isLiked ? 1 : 0), highlighted: isLiked)
                 }
                 .buttonStyle(.plain)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel(likedJourney ? "取消点赞，\(journey.likes + 1) 个赞" : "点赞，\(journey.likes) 个赞")
+                .accessibilityLabel(isLiked ? "取消点赞，\(journey.likes + 1) 个赞" : "点赞，\(journey.likes) 个赞")
 
                 Button {
-                    showComments = true
+                    commentTarget = journey
                 } label: {
-                    reactionLabel("icon_comment", count: journey.comments + myComments.count, highlighted: !myComments.isEmpty)
+                    reactionLabel("icon_comment", count: commentCount, highlighted: commentCount > journey.comments)
                 }
                 .buttonStyle(.plain)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("评论，\(journey.comments + myComments.count) 条")
-
+                .accessibilityLabel("评论，\(commentCount) 条")
             }
 
-            // 只有本机已经剪出过集锦，才有东西可分享
-            if let latestReel = history.latestReelURL {
-                ShareLink(item: latestReel) {
+            // 自己的旅程可以转发到别的应用
+            if journey.user == "Doris", let video {
+                ShareLink(item: video) {
                     Text("分享我的旅程")
                         .font(WalkMateTheme.Fonts.body).tracking(1.6)
                         .foregroundStyle(.white)
@@ -275,7 +281,7 @@ struct CommunityView: View {
                         .background(WalkMateTheme.Gradients.primaryButton)
                         .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
                 }
-                .accessibilityHint("把最近一次训练的集锦发给同伴")
+                .accessibilityHint("把这段集锦发给同伴")
             }
         }
         .padding(WalkMateTheme.Layout.cardPadding)
@@ -340,30 +346,44 @@ struct GhostPillButtonStyle: ButtonStyle {
     }
 }
 
-/// 本机写下的旅程评论，只存本地
-enum JourneyCommentStore {
-    private static let key = "walkmate.journeyComments"
-    static func load() -> [String] { UserDefaults.standard.stringArray(forKey: key) ?? [] }
-    static func save(_ comments: [String]) { UserDefaults.standard.set(comments, forKey: key) }
+/// 本机的点赞与评论，按旅程 ID 存在本地
+enum JourneyReactionStore {
+    private static let likesKey = "walkmate.likedJourneys"
+    private static let commentsKey = "walkmate.journeyComments."
+
+    static func loadLikes() -> Set<String> { Set(UserDefaults.standard.stringArray(forKey: likesKey) ?? []) }
+    static func saveLikes(_ likes: Set<String>) { UserDefaults.standard.set(Array(likes), forKey: likesKey) }
+    static func loadComments(for journeyID: String) -> [String] { UserDefaults.standard.stringArray(forKey: commentsKey + journeyID) ?? [] }
+    static func saveComments(_ comments: [String], for journeyID: String) { UserDefaults.standard.set(comments, forKey: commentsKey + journeyID) }
+
+    /// 演示用的好友评论，与各旅程的评论数对应
+    static func seeded(for journeyID: String) -> [(String, String)] {
+        switch journeyID {
+        case "j_1": return [("Momo", "第一次半开放就走得这么稳，太棒了！下次一起去金鹰。")]
+        case "j_2": return [("Doris", "办公室的路记熟了就不难了，加油！")]
+        default: return []
+        }
+    }
 }
 
-/// 评论弹层：已有评论列表 + 一个输入框
+/// 评论弹层：好友评论 + 本机写的评论 + 一个输入框
 struct JourneyCommentSheet: View {
-    @Binding var comments: [String]
+    let journey: CommunityFeed.Journey
     let onClose: () -> Void
 
+    @State private var comments: [String] = []
     @State private var draft = ""
 
-    /// 演示用的好友评论，与旅程的评论数 1 对应
-    static let seeded: [(String, String)] = [("Momo", "第一次半开放就走得这么稳，太棒了！下次一起去金鹰。")]
+    private var seeded: [(String, String)] { JourneyReactionStore.seeded(for: journey.id) }
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     WMPageTitle(text: "评论")
+                    Text(journey.title).font(WalkMateTheme.Fonts.caption).foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
                     // 好友留下的评论（演示数据）在前，本机写的在后
-                    ForEach(Array((Self.seeded + comments.map { ("我", $0) }).enumerated()), id: \.offset) { _, entry in
+                    ForEach(Array((seeded + comments.map { ("我", $0) }).enumerated()), id: \.offset) { _, entry in
                         VStack(alignment: .leading, spacing: 6) {
                             Text(entry.0)
                                 .font(WalkMateTheme.Fonts.caption)
@@ -408,13 +428,14 @@ struct JourneyCommentSheet: View {
             .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
         }
         .preferredColorScheme(.dark)
+        .onAppear { comments = JourneyReactionStore.loadComments(for: journey.id) }
     }
 
     private func send() {
         let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
         comments.append(text)
-        JourneyCommentStore.save(comments)
+        JourneyReactionStore.saveComments(comments, for: journey.id)
         draft = ""
         Log.info("已写下一条旅程评论", category: .ui)
     }

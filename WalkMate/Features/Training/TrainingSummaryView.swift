@@ -10,6 +10,8 @@ struct TrainingSummaryView: View {
     @State private var player: AVPlayer?
     @State private var speech = SpeechRenderer()
     @State private var history = TrainingHistoryStore.shared
+    @State private var community = CommunityStore.shared
+    @State private var sharing = false
 
     var body: some View {
         ScrollView {
@@ -189,16 +191,37 @@ struct TrainingSummaryView: View {
 
     // MARK: - 分享
 
+    /// 集锦剪好后：「分享到社群」发进大家的旅程；「发给朋友」走系统分享
     @ViewBuilder private var shareButton: some View {
         if case .ready(let url) = reel.state {
+            let shared = currentRecord.map { community.hasShared(recordID: $0.id) } ?? false
+            WMButton(title: shared ? "已分享到社群" : (sharing ? "正在分享" : "分享到社群"), style: shared ? .subdued : .primary, height: 61) {
+                shareToCommunity(url)
+            }
+            .disabled(shared || sharing)
             ShareLink(item: url) {
-                Text("分享到同伴社群")
+                Text("发给朋友")
                     .font(WalkMateTheme.Fonts.body).tracking(1.6)
                     .foregroundStyle(Color(hex: 0xD9D9D9))
                     .frame(maxWidth: .infinity, minHeight: 61)
                     .wmCard(WalkMateTheme.Gradients.card, radius: WalkMateTheme.Radius.button, dimmed: true)
             }
-            .accessibilityHint("把带语音朗读的集锦发给同伴")
+            .accessibilityHint("用系统分享把集锦发给同伴")
+        }
+    }
+
+    private var currentRecord: TrainingRecord? {
+        history.records.first { $0.finishedAt == result.finishedAt }
+    }
+
+    private func shareToCommunity(_ reelURL: URL) {
+        guard let record = currentRecord else { return }
+        sharing = true
+        Task {
+            // 集锦已挂到记录上时用记录里的那份，保证社群与记录指向同一文件
+            let url = TrainingHistoryStore.reelURL(for: history.records.first { $0.id == record.id } ?? record) ?? reelURL
+            await community.shareJourney(record: history.records.first { $0.id == record.id } ?? record, reelURL: url)
+            sharing = false
         }
     }
 

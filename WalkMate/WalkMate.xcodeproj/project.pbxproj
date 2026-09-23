@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00432EC53DDFA546C2A0D604 /* demo_office.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 965F67B85094C4AB3B8AB0F1 /* demo_office.mp4 */; };
 		0249C9D2701148DB977E04D8 /* Design.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 503C6647DA69C5970507239D /* Design.xcassets */; };
 		057E4A04B1817479BFAF9C15 /* HighlightReelBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CCF4D2782B552CC5D74DBD /* HighlightReelBuilder.swift */; };
 		05FCDF059CFCABB7EC8E4013 /* PerceptionAudioIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117593E93A9E84FC113FF610 /* PerceptionAudioIntegrationTests.swift */; };
@@ -232,6 +233,7 @@
 		9181E51F13BE6CC8F12AB1AD /* badge_meet_friend.m4a */ = {isa = PBXFileReference; path = badge_meet_friend.m4a; sourceTree = "<group>"; };
 		91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKit.swift; sourceTree = "<group>"; };
+		965F67B85094C4AB3B8AB0F1 /* demo_office.mp4 */ = {isa = PBXFileReference; path = demo_office.mp4; sourceTree = "<group>"; };
 		9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundPlaneEstimator.swift; sourceTree = "<group>"; };
 		9D3CE22079AF7BD2C53612E5 /* CommunityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView.swift; sourceTree = "<group>"; };
 		9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorTelemetryCard.swift; sourceTree = "<group>"; };
@@ -416,6 +418,7 @@
 			isa = PBXGroup;
 			children = (
 				03D5859BF64D38F567317BE1 /* demo_highlight.mp4 */,
+				965F67B85094C4AB3B8AB0F1 /* demo_office.mp4 */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -944,6 +947,7 @@
 				AD0BB228066B9B8AB3ED8114 /* badge_obstacles_10.m4a in Resources */,
 				8479A4E13002BC4EDFBB779E /* bgm.m4a in Resources */,
 				C6CF3DCE7C6950E6706BA730 /* demo_highlight.mp4 in Resources */,
+				00432EC53DDFA546C2A0D604 /* demo_office.mp4 in Resources */,
 				A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */,
 				95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */,
 				DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */,

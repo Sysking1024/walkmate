@@ -1,5 +1,7 @@
+import AVFoundation
 import Foundation
 import Observation
+import UIKit
 
 /// 社群动态，离线优先：内置种子兜底，后端可达时覆盖；邀约响应本地先生效再同步
 @MainActor
@@ -9,10 +11,18 @@ final class CommunityStore {
     static let shared = CommunityStore()
 
     private(set) var feed: CommunityFeed = SeedData.feed
+    /// 本机分享到社群的旅程，排在最前
+    private(set) var sharedJourneys: [CommunityFeed.Journey] = []
+    private let sharedFileURL: URL
     private let backend = BackendClient.shared
     private let responsesKey = "walkmate.invitationResponses"
 
     private init() {
+        sharedFileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("shared_journeys.json")
+        if let data = try? Data(contentsOf: sharedFileURL),
+           let saved = try? JSONDecoder().decode([CommunityFeed.Journey].self, from: data) {
+            sharedJourneys = saved
+        }
         // 恢复本地已作出的邀约响应，避免刷新前显示成未处理
         if let saved = UserDefaults.standard.dictionary(forKey: responsesKey) as? [String: String] {
             for (id, status) in saved { setStatus(status, for: id) }
@@ -38,6 +48,74 @@ final class CommunityStore {
         Log.info("邀约 \(invitationID) 已\(accepted ? "同意" : "拒绝")", category: .ui)
         do { try await backend.respond(invitationID: invitationID, accepted: accepted) }
         catch { Log.warning("邀约响应同步失败：\(error)", category: .general) }
+    }
+
+    /// 社群里看到的全部旅程：自己分享的在前，其余按后端顺序；同一条不重复
+    var journeys: [CommunityFeed.Journey] {
+        let sharedIDs = Set(sharedJourneys.map(\.id))
+        return sharedJourneys + feed.journeys.filter { !sharedIDs.contains($0.id) }
+    }
+
+    /// 某条旅程是否已由本机分享
+    func hasShared(recordID: UUID) -> Bool { sharedJourneys.contains { $0.id == recordID.uuidString } }
+
+    /// 把一次训练的集锦分享到社群：抽一帧做封面，记在本地，并把元数据发给后端
+    func shareJourney(record: TrainingRecord, reelURL: URL) async {
+        let id = record.id.uuidString
+        guard !sharedJourneys.contains(where: { $0.id == id }) else { return }
+        let coverName = "\(id).jpg"
+        await Self.makeCover(from: reelURL, to: Self.reelsDirectory.appendingPathComponent(coverName))
+        let journey = CommunityFeed.Journey(
+            id: id, title: "\(Self.dateText(record.finishedAt)) \(record.kind.title)",
+            duration: String(format: "%d:%02d", record.durationSeconds / 60, record.durationSeconds % 60),
+            distanceKm: Double(record.distanceMeters) / 1000, note: nil, likes: 0, comments: 0, shares: 0,
+            user: "Doris", avatarKey: "avatar_doris_small",
+            videoFileName: reelURL.lastPathComponent, coverKey: nil, coverFileName: coverName)
+        sharedJourneys.insert(journey, at: 0)
+        if let data = try? JSONEncoder().encode(sharedJourneys) { try? data.write(to: sharedFileURL) }
+        Log.info("已把旅程分享到社群：\(journey.title)", category: .ui)
+        do { try await backend.publishJourney(journey, createdAt: record.finishedAt) }
+        catch { Log.warning("旅程发布到后端失败，保留在本地：\(error)", category: .general) }
+    }
+
+    /// 一条旅程的视频与封面在本机的位置
+    static var reelsDirectory: URL {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("reels", isDirectory: true)
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
+    }
+
+    static func videoURL(for journey: CommunityFeed.Journey) -> URL? {
+        guard let name = journey.videoFileName else { return nil }
+        let local = reelsDirectory.appendingPathComponent(name)
+        if FileManager.default.fileExists(atPath: local.path) { return local }
+        return Bundle.main.url(forResource: (name as NSString).deletingPathExtension, withExtension: (name as NSString).pathExtension)
+    }
+
+    static func coverImage(for journey: CommunityFeed.Journey) -> UIImage? {
+        if let name = journey.coverFileName, let image = UIImage(contentsOfFile: reelsDirectory.appendingPathComponent(name).path) { return image }
+        if let key = journey.coverKey { return UIImage(named: key) }
+        return nil
+    }
+
+    /// 从视频第 1 秒抽一帧存成封面
+    private static func makeCover(from video: URL, to target: URL) async {
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: video))
+        generator.appliesPreferredTrackTransform = true
+        generator.maximumSize = CGSize(width: 900, height: 900)
+        do {
+            let (image, _) = try await generator.image(at: CMTime(seconds: 1, preferredTimescale: 600))
+            try UIImage(cgImage: image).jpegData(compressionQuality: 0.85)?.write(to: target)
+        } catch {
+            Log.warning("封面抽帧失败：\(error)", category: .recording)
+        }
+    }
+
+    private static func dateText(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "M月d日"
+        return formatter.string(from: date)
     }
 
     private func setStatus(_ status: String, for id: String) {
@@ -81,6 +159,11 @@ enum SeedData {
             .init(user: "刘佳佳", avatarKey: "avatar_liujiajia", crown: "crown_bronze", note: "第一次独立乘坐地铁"),
         ],
         invitations: [.init(id: "inv_1", from: "Momo", avatarKey: "avatar_momo", place: "影石Insta360 仙林金鹰店", time: "9月25日 星期六 早上9:30出发", message: "想去摸摸新相机，顺便逛逛金鹰。", storeId: "s_insta360", status: nil)],
-        journeys: [.init(title: "记录我的第一次半开放户外探索", duration: "4:28", distanceKm: 15, note: "第一次独自去商业中心，有点紧张！但是去了之后发现真的很有趣！", likes: 52, comments: 1, shares: 5, user: "Doris", avatarKey: "avatar_doris_small")]
+        journeys: [
+            .init(id: "j_1", title: "记录我的第一次半开放户外探索", duration: "0:19", distanceKm: 0.65, note: nil, likes: 52, comments: 1, shares: 5,
+                  user: "Doris", avatarKey: "avatar_doris_small", videoFileName: "demo_highlight.mp4", coverKey: "journey_cover_bamboo"),
+            .init(id: "j_2", title: "第一次独自回到办公室", duration: "0:22", distanceKm: 1.2, note: nil, likes: 31, comments: 1, shares: 2,
+                  user: "子璇爸爸", avatarKey: "avatar_zixuan", videoFileName: "demo_office.mp4", coverKey: "journey_cover_office"),
+        ]
     )
 }
