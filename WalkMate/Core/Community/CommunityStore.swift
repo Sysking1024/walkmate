@@ -81,6 +81,6 @@ enum SeedData {
             .init(user: "刘佳佳", avatarKey: "avatar_liujiajia", crown: "crown_bronze", note: "第一次独立乘坐地铁"),
         ],
         invitations: [.init(id: "inv_1", from: "Momo", avatarKey: "avatar_momo", place: "影石Insta360 仙林金鹰店", time: "9月25日 星期六 早上9:30出发", message: "想去摸摸新相机，顺便逛逛金鹰。", storeId: "s_insta360", status: nil)],
-        journeys: [.init(title: "记录我的第一次半开放户外探索", duration: "4:28", distanceKm: 15, note: "第一次独自去商业中心，有点紧张！但是去了之后发现真的很有趣！", likes: 52, comments: 12, shares: 5, user: "Doris", avatarKey: "avatar_doris_small")]
+        journeys: [.init(title: "记录我的第一次半开放户外探索", duration: "4:28", distanceKm: 15, note: "第一次独自去商业中心，有点紧张！但是去了之后发现真的很有趣！", likes: 52, comments: 1, shares: 5, user: "Doris", avatarKey: "avatar_doris_small")]
     )
 }

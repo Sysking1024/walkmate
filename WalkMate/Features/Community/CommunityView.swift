@@ -354,24 +354,29 @@ struct JourneyCommentSheet: View {
 
     @State private var draft = ""
 
+    /// 演示用的好友评论，与旅程的评论数 1 对应
+    static let seeded: [(String, String)] = [("Momo", "第一次半开放就走得这么稳，太棒了！下次一起去金鹰。")]
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     WMPageTitle(text: "评论")
-                    if comments.isEmpty {
-                        Text("还没有评论，说点什么吧")
-                            .font(WalkMateTheme.Fonts.caption)
-                            .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
-                    } else {
-                        ForEach(Array(comments.enumerated()), id: \.offset) { _, comment in
-                            Text(comment)
+                    // 好友留下的评论（演示数据）在前，本机写的在后
+                    ForEach(Array((Self.seeded + comments.map { ("我", $0) }).enumerated()), id: \.offset) { _, entry in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(entry.0)
+                                .font(WalkMateTheme.Fonts.caption)
+                                .foregroundStyle(WalkMateTheme.Colors.accentSoft)
+                            Text(entry.1)
                                 .font(WalkMateTheme.Fonts.body)
                                 .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                                .padding(WalkMateTheme.Layout.cardPadding)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .wmCard()
+                                .fixedSize(horizontal: false, vertical: true)
                         }
+                        .padding(WalkMateTheme.Layout.cardPadding)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .wmCard()
+                        .accessibilityElement(children: .combine)
                     }
                     HStack(spacing: 8) {
                         TextField("写评论", text: $draft)
