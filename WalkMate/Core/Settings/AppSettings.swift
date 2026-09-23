@@ -19,6 +19,8 @@ final class AppSettings {
     var dailyGoalMinutes: Int { didSet { UserDefaults.standard.set(dailyGoalMinutes, forKey: "walkmate.dailyGoalMinutes") } }
     /// 每日成功避障目标（次）
     var dailyGoalObstacles: Int { didSet { UserDefaults.standard.set(dailyGoalObstacles, forKey: "walkmate.dailyGoalObstacles") } }
+    /// 是否已看过首次使用引导
+    var hasSeenGuide: Bool { didSet { UserDefaults.standard.set(hasSeenGuide, forKey: "walkmate.hasSeenGuide") } }
 
     private init() {
         let defaults = UserDefaults.standard
@@ -27,6 +29,7 @@ final class AppSettings {
         textScale = defaults.object(forKey: "walkmate.textScale") as? Double ?? 0.4
         dailyGoalMinutes = defaults.object(forKey: "walkmate.dailyGoalMinutes") as? Int ?? 20
         dailyGoalObstacles = defaults.object(forKey: "walkmate.dailyGoalObstacles") as? Int ?? 15
+        hasSeenGuide = defaults.bool(forKey: "walkmate.hasSeenGuide")
         apply()
     }
 

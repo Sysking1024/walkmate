@@ -20,6 +20,7 @@ struct GrowthDetailView: View {
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
         .wmDetailNavigationBar(title: "成长详情")
+        .wmAnnounce("成长详情。本周每日训练分钟数、累计数据和最近训练记录。左上角返回。")
     }
 
     // MARK: - 本周每日训练分钟

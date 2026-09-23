@@ -36,6 +36,7 @@ struct RouteDetailView: View {
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
         .wmDetailNavigationBar(title: title)
+        .wmAnnounce("\(title)，从\(route.start)到\(route.end)，\(distanceText)，平均 \(route.averageObstacles) 处障碍。下面是分步说明。左上角返回。")
     }
 
     private var distanceText: String {

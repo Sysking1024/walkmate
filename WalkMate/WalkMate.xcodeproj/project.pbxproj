@@ -56,9 +56,11 @@
 		95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 62905020C90431BD7831516A /* sample_erp_2.jpg */; };
 		967CAB27AA49FAE086A45308 /* FrameBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8D205F1339ECE450BD9A03 /* FrameBus.swift */; };
 		970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB665524D4B1FD6014B271D /* InferenceTests.swift */; };
+		987415AF699C856C078F3670 /* PageNarrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B04AC70610924668B73B1BC /* PageNarrator.swift */; };
 		99EFA20E4A674E9BF378FCCD /* StoreRatingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B41C852A2403A14BC1F9823 /* StoreRatingView.swift */; };
 		9B0C7E92BD343CDB16EC88B4 /* CommunityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04D3A2BCAF067391142B571 /* CommunityStore.swift */; };
 		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
+		A540B4901BEC12A1E5D07B11 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C9BA35958ADA9A3450BF5B5 /* OnboardingView.swift */; };
 		A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = AD40245303E20078AC0F4304 /* sample_erp_1.jpg */; };
 		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
 		AC0E6EF4C11E7503117DBD84 /* TrainingGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */; };
@@ -148,6 +150,7 @@
 		0481058FC670F3EFE55ACB35 /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		078AD588D52A975F451A55FC /* SpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRenderer.swift; sourceTree = "<group>"; };
 		0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingGoalView.swift; sourceTree = "<group>"; };
+		0C9BA35958ADA9A3450BF5B5 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompanionConversation.swift; sourceTree = "<group>"; };
 		163B3A52D1818515C19C0071 /* WalkMateRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateRootView.swift; sourceTree = "<group>"; };
 		19EF26DDF8C021273A82D2A1 /* QwenSceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QwenSceneNarrator.swift; sourceTree = "<group>"; };
@@ -156,6 +159,7 @@
 		226F2B37F75FEF3DD4E034F7 /* WalkMateTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateTabBar.swift; sourceTree = "<group>"; };
 		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
 		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
+		2B04AC70610924668B73B1BC /* PageNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageNarrator.swift; sourceTree = "<group>"; };
 		32AB8B2CA6663C3AFB9E8902 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		345A9B31CBA25A47500E06C8 /* TrainingSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSummaryView.swift; sourceTree = "<group>"; };
 		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -319,6 +323,7 @@
 		207725D1A7E0E96C778215A8 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				0C9BA35958ADA9A3450BF5B5 /* OnboardingView.swift */,
 				672394F9BFD0B19B2F96B5D7 /* WalkMateComponents.swift */,
 				163B3A52D1818515C19C0071 /* WalkMateRootView.swift */,
 				226F2B37F75FEF3DD4E034F7 /* WalkMateTabBar.swift */,
@@ -348,6 +353,7 @@
 			isa = PBXGroup;
 			children = (
 				D6B9A860A46380CF609A639D /* AppSettings.swift */,
+				2B04AC70610924668B73B1BC /* PageNarrator.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -862,6 +868,8 @@
 				C386741DDF61B5E77854B400 /* NarrationModels.swift in Sources */,
 				AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */,
 				39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */,
+				A540B4901BEC12A1E5D07B11 /* OnboardingView.swift in Sources */,
+				987415AF699C856C078F3670 /* PageNarrator.swift in Sources */,
 				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
 				7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */,
 				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,

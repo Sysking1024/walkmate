@@ -42,7 +42,10 @@ struct TrainingSessionView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .onAppear { session.start() }
+        .onAppear {
+            session.start()
+            PageNarrator.shared.announce("\(kind.title)训练开始。先按「连接相机」，最下面是「结束训练」。")
+        }
         .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
             session.updateObstacleCount(count)
         }

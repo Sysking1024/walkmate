@@ -150,6 +150,8 @@ enum InfoPage {
 struct InfoPageView: View {
     let page: InfoPage
 
+    @State private var showGuide = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
@@ -169,6 +171,9 @@ struct InfoPageView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .wmCard()
                 }
+                if page == .help {
+                    WMButton(title: "重新听一遍使用引导", height: 61) { showGuide = true }
+                }
             }
             .wmPageInset()
             .padding(.top, 12)
@@ -176,6 +181,10 @@ struct InfoPageView: View {
         }
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
+        .fullScreenCover(isPresented: $showGuide) {
+            OnboardingView { showGuide = false }.preferredColorScheme(.dark)
+        }
         .wmDetailNavigationBar(title: page.title)
+        .wmAnnounce(page.sections.map { "\($0.0)。\($0.1)" }.joined(separator: " "))
     }
 }

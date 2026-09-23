@@ -28,6 +28,7 @@ struct TrainingGoalView: View {
         .scrollIndicators(.hidden)
         .background(WalkMateTheme.Colors.background.ignoresSafeArea())
         .wmDetailNavigationBar(title: "训练目标")
+        .wmAnnounce("训练目标。每日时长 \(settings.dailyGoalMinutes) 分钟，避障 \(settings.dailyGoalObstacles) 次。每项左减右加。左上角返回。")
     }
 
     private var todayMinutes: Int { history.minutesPerDay.last?.minutes ?? 0 }

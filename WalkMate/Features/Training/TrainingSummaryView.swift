@@ -42,6 +42,7 @@ struct TrainingSummaryView: View {
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
+        .wmAnnounce("训练结束。用时 \(result.durationSeconds / 60) 分 \(result.durationSeconds % 60) 秒，避障 \(result.obstaclesAvoided) 次，留下 \(result.moments.count) 个时刻。下面可以查看成长、记录路线，集锦好了可以分享。")
         .task {
             routeSaved = currentRecord?.savedAsRoute ?? false
             await reel.build(from: result.moments)
