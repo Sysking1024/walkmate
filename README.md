@@ -7,7 +7,7 @@
 ## 功能
 
 - **渐进式训练**：室内适应 → 半开放环境（小区路线）→ 户外独立出行，按训练记录解锁
-- **避障**：影石开源 DAP 全景深度估计（Core ML 端侧推理）→ 前向扇区障碍与可通行路线 → 3D 空间音频提示
+- **避障**：影石开源 [DAP](https://github.com/Insta360-Research-Team/DAP) 全景深度估计（Depth Any Panoramas，CVPR 2026，Core ML 端侧推理）→ 前向扇区障碍与可通行路线 → 戴耳机时 3D 空间音频提示，外放时语音报方位与距离
 - **AI 伙伴**：驻足 5 秒或说「walkmate」唤起，通义千问 Qwen3-VL 看图描述周围，Qwen3-TTS 朗读，可口头追问
 - **集锦**：对谈期间录下拼接后的全景预览，训练结束按时刻剪成竖屏短片（字幕、配音、配乐）
 - **社群**：好友成就、无障碍探店（评分、路线、高德步行导航、邀请好友）、大家的旅程
@@ -58,7 +58,7 @@ specs/                  各特性的需求、方案与任务拆解
 3. **密钥**：复制 `WalkMate/Resources/Secrets.example.plist` 为 `Secrets.plist`，填入
    - `QwenAPIKey`、`QwenBaseURL`、`QwenDashScopeURL`：阿里云百炼凭据
    - `BackendBaseURL`：社群后端地址（本机调试用局域网 IP）
-4. **深度模型**：`dap_256x512_int8.mlpackage` 放到 `WalkMate/Resources/Models/`（不入库，找队友要）
+4. **深度模型**：由 [DAP](https://github.com/Insta360-Research-Team/DAP) 转成的 `dap_256x512_int8.mlpackage`，放到 `WalkMate/Resources/Models/`（319 MB，不入库）
 5. **生成工程**：
    ```bash
    cd WalkMate && xcodegen generate

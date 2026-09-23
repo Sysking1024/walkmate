@@ -32,6 +32,10 @@ final class CompanionSession {
     private(set) var moments: [Moment] = []
     /// 当前已连续静止的毫秒数，供界面展示
     private(set) var standstillMs = 0
+    /// 调试：驻足检测的当前读数
+    var motionDebugText: String {
+        String(format: "静止 %.1f 秒 · 波动 %.2f · 均值 %.1f · 自动询问%@ · 阶段 %@", Double(standstillMs) / 1000, detector.lastDeviation, detector.lastMagnitude, Self.autoPromptEnabled ? "开" : "关", String(describing: stage))
+    }
     /// 是否已收到过相机帧
     private(set) var hasFrames = false
     /// 正在等待模型或语音时为 true
@@ -40,6 +44,8 @@ final class CompanionSession {
     private(set) var savedFrameNote: String?
     /// 语音指令是否在听
     private(set) var isListening = false
+    /// 伙伴是否正在说话
+    var isSpeaking: Bool { speech.isSpeaking }
     /// 正在听到的话，供界面展示
     private(set) var heardText = ""
 
@@ -96,6 +102,10 @@ final class CompanionSession {
             isListening = listener.isListening
         }
     }
+
+    /// 别的声音（比如避障播报）要开口时暂停听写，说完恢复
+    func pauseListening() { listener.suspend() }
+    func resumeListening() { listener.resume() }
 
     /// 语音指令：按当前对谈窗口解析并执行
     private func handleVoice(_ text: String) {

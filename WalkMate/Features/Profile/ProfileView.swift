@@ -48,6 +48,8 @@ struct ProfileView: View {
             divider
             sliderRow("字体大小", value: $settings.textScale)
             divider
+            alertModeRow
+            divider
             NavigationLink { TrainingGoalView() } label: { navLabel("训练目标") }
                 .buttonStyle(.plain)
             divider
@@ -67,6 +69,31 @@ struct ProfileView: View {
         case .brief: return "简洁：驻足时伙伴主动询问，描述只说要点"
         case .muted: return "静音：伙伴不主动开口，只在你按「说说这儿」时描述"
         }
+    }
+
+    /// 避障提示方式三选一
+    private var alertModeRow: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("避障提示").font(WalkMateTheme.Fonts.body).foregroundStyle(.white)
+            HStack(spacing: 8) {
+                ForEach(ObstacleAlertMode.allCases, id: \.self) { mode in
+                    Button { settings.obstacleAlertMode = mode } label: {
+                        Text(mode.title)
+                            .font(WalkMateTheme.Fonts.caption)
+                            .foregroundStyle(settings.obstacleAlertMode == mode ? .white : WalkMateTheme.Colors.segmentText)
+                            .frame(maxWidth: .infinity, minHeight: 48)
+                            .background(settings.obstacleAlertMode == mode ? WalkMateTheme.Colors.segmentSelected : WalkMateTheme.Colors.segmentUnselected)
+                            .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(settings.obstacleAlertMode == mode ? [.isButton, .isSelected] : .isButton)
+                }
+            }
+            Text("自动：戴耳机用空间音频，外放时用语音报方位和距离")
+                .font(WalkMateTheme.Fonts.chip)
+                .foregroundStyle(.white.opacity(0.82))
+        }
+        .padding(.vertical, 14)
     }
 
     private var divider: some View { Divider().overlay(WalkMateTheme.Colors.divider) }

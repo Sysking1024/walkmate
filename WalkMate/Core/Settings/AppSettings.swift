@@ -19,6 +19,8 @@ final class AppSettings {
     var dailyGoalMinutes: Int { didSet { UserDefaults.standard.set(dailyGoalMinutes, forKey: "walkmate.dailyGoalMinutes") } }
     /// 每日成功避障目标（次）
     var dailyGoalObstacles: Int { didSet { UserDefaults.standard.set(dailyGoalObstacles, forKey: "walkmate.dailyGoalObstacles") } }
+    /// 避障提示方式：自动 / 耳机空间音频 / 外放语音
+    var obstacleAlertMode: ObstacleAlertMode { didSet { UserDefaults.standard.set(obstacleAlertMode.rawValue, forKey: "walkmate.obstacleAlertMode") } }
     /// 是否已看过首次使用引导
     var hasSeenGuide: Bool { didSet { UserDefaults.standard.set(hasSeenGuide, forKey: "walkmate.hasSeenGuide") } }
 
@@ -30,6 +32,7 @@ final class AppSettings {
         dailyGoalMinutes = defaults.object(forKey: "walkmate.dailyGoalMinutes") as? Int ?? 20
         dailyGoalObstacles = defaults.object(forKey: "walkmate.dailyGoalObstacles") as? Int ?? 15
         hasSeenGuide = defaults.bool(forKey: "walkmate.hasSeenGuide")
+        obstacleAlertMode = ObstacleAlertMode(rawValue: defaults.string(forKey: "walkmate.obstacleAlertMode") ?? "") ?? .auto
         apply()
     }
 

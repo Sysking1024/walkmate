@@ -13,6 +13,8 @@ struct TrainingSessionView: View {
     @State private var session: TrainingSessionModel
 
     @State private var confirmCancel = false
+    @State private var settings = AppSettings.shared
+    @State private var route = AudioRouteMonitor.shared
 
     init(kind: TrainingKind, onFinish: @escaping (TrainingResult) -> Void, onCancel: @escaping () -> Void) {
         self.kind = kind
@@ -47,6 +49,7 @@ struct TrainingSessionView: View {
                 }
 
                 cameraCard
+                alertModeRow
                 CompanionPanel(session: session.companion)
 
                 WMButton(title: "结束训练", height: 61, action: finishTraining)
@@ -66,9 +69,11 @@ struct TrainingSessionView: View {
             AccessibilityFeedback.pageSwitched()
         }
         .onDisappear { StreamPlayerBridge.preferredDisplayType = .sphereStitch }
-        .onChange(of: camera.latestObstacles?.obstacles.count ?? 0) { _, count in
-            session.updateObstacleCount(count)
+        .onChange(of: camera.latestObstacles) { _, data in
+            session.handleObstacles(data)
         }
+        .onChange(of: settings.obstacleAlertMode) { _, _ in session.applyAlertMode() }
+        .onChange(of: route.hasHeadphones) { _, _ in session.applyAlertMode() }
         // 相机一连上就开启队友的空间感知与避障提示音，训练里不用再多按一个键
         .onChange(of: camera.connectionState) { _, state in
             if state == .connected { camera.startPerception() }
@@ -118,7 +123,7 @@ struct TrainingSessionView: View {
         .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.card, style: .continuous))
         .overlay(alignment: .topTrailing) {
             if camera.connectionState == .connected {
-                Text(camera.isPerceiving ? "已连接 · 避障中" : "已连接")
+                Text(camera.isPerceiving ? (session.resolvedAlertMode == .speaker ? "已连接 · 语音避障" : "已连接 · 耳机避障") : "已连接")
                     .font(WalkMateTheme.Fonts.chip)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10).padding(.vertical, 6)
@@ -129,6 +134,38 @@ struct TrainingSessionView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel(camera.connectionState == .connected ? "相机画面，已连接" : "相机画面，\(cameraStatusText)")
+    }
+
+    /// 避障提示方式：一行状态，点一下在 自动 → 耳机 → 外放 之间切换
+    private var alertModeRow: some View {
+        let mode = settings.obstacleAlertMode
+        let resolved = session.resolvedAlertMode == .speaker ? "外放语音" : "耳机空间音频"
+        let text = mode == .auto ? "避障提示：\(resolved)（自动）" : "避障提示：\(mode.title)"
+        return HStack(spacing: 10) {
+            Image(systemName: session.resolvedAlertMode == .speaker ? "speaker.wave.2.fill" : "headphones")
+                .foregroundStyle(WalkMateTheme.Colors.accentSoft)
+            Text(text)
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+            Spacer()
+            Text("切换")
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(Color.white.opacity(0.6))
+        }
+        .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
+        .frame(maxWidth: .infinity, minHeight: 52)
+        .wmCard()
+        .contentShape(Rectangle())
+        .onTapGesture {
+            let all = ObstacleAlertMode.allCases
+            let next = all[(all.firstIndex(of: mode)! + 1) % all.count]
+            settings.obstacleAlertMode = next
+            AccessibilityFeedback.done("避障提示改为\(next.title)")
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(text)
+        .accessibilityHint("轻点两下切换提示方式")
     }
 
     private var cameraStatusText: String {

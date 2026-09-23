@@ -23,6 +23,9 @@ struct StandstillDetector {
     private var samples: [(timestampMs: Int64, magnitude: Float)] = []
     /// 连续静止的起点；正在运动时为 nil
     private var stillSinceMs: Int64?
+    /// 最近一次计算出的加速度波动与均值，供界面调试展示
+    private(set) var lastDeviation: Float = 0
+    private(set) var lastMagnitude: Float = 0
 
     /// 送入一条加速度样本，返回截至此刻已连续静止的毫秒数；正在运动时返回 0。
     mutating func ingest(acceleration: SIMD3<Float>, timestampMs: Int64) -> Int {
@@ -37,6 +40,8 @@ struct StandstillDetector {
         let mean = samples.reduce(0) { $0 + $1.magnitude } / Float(samples.count)
         let variance = samples.reduce(0) { $0 + ($1.magnitude - mean) * ($1.magnitude - mean) } / Float(samples.count)
         let deviation = variance.squareRoot()
+        lastDeviation = deviation
+        lastMagnitude = mean
 
         guard deviation < Self.motionThreshold else {
             stillSinceMs = nil

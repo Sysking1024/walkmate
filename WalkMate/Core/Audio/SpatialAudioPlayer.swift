@@ -47,6 +47,9 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     
     /// 全局单例
     public static let shared = SpatialAudioPlayer()
+
+    /// 为 true 时忽略障碍与导航目标（外放语音提示模式下由语音播报代替）
+    public var isSuppressed = false
     
     // MARK: - 核心音频硬件与节点
     internal let engine: AVAudioEngine
@@ -315,6 +318,7 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     /// 设置危险障碍物目标坐标（触发金属撞击声双音确认警示）
     /// - Parameter position: 障碍物相对三维坐标 (x, y, z)，单位米；传入 nil 则立即停止当前警示
     public func setObstacleTarget(position: SIMD3<Float>?) {
+        let position = isSuppressed ? nil : position
         audioQueue.async { [weak self] in
             guard let self = self else { return }
             
@@ -430,6 +434,7 @@ public final class SpatialAudioPlayer: @unchecked Sendable, SpatialAudioPlayerPr
     /// 设置安全可通行航路点目标坐标（持续以人体自然步频播放领路脚步声）
     /// - Parameter position: 前方安全通道航路点相对三维坐标 (x, y, z)，单位米；传入 nil 则停止脚步导引
     public func setNavigationTarget(position: SIMD3<Float>?) {
+        let position = isSuppressed ? nil : position
         audioQueue.async { [weak self] in
             guard let self = self else { return }
             

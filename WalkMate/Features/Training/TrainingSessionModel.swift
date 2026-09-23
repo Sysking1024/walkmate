@@ -30,13 +30,41 @@ final class TrainingSessionModel {
     private(set) var distanceMeters = 0
     private(set) var obstaclesAvoided = 0
     let companion = CompanionSession()
+    private let announcer = ObstacleVoiceAnnouncer()
+    private let route = AudioRouteMonitor.shared
+    private let settings = AppSettings.shared
+
+    /// 当前实际生效的避障提示方式
+    var resolvedAlertMode: ObstacleAlertMode.Resolved { route.resolve(settings.obstacleAlertMode) }
 
     private var startedAt = Date()
     private var ticker: Timer?
     private let pedometer = CMPedometer()
     private var lastObstacleCount = 0
 
-    init(kind: TrainingKind) { self.kind = kind }
+    init(kind: TrainingKind) {
+        self.kind = kind
+        announcer.canSpeak = { [weak self] in !(self?.companion.isSpeaking ?? false) }
+        announcer.onSpeechStart = { [weak self] in self?.companion.pauseListening() }
+        announcer.onSpeechEnd = { [weak self] in self?.companion.resumeListening() }
+    }
+
+    /// 感知层每帧的障碍数据：计数 + 按当前方式提示
+    func handleObstacles(_ data: ObstacleData?) {
+        updateObstacleCount(data?.obstacles.count ?? 0)
+        applyAlertMode()
+        if resolvedAlertMode == .speaker, let data { announcer.handle(data) }
+    }
+
+    /// 外放语音模式下压住队友的空间音频，耳机模式下放开
+    func applyAlertMode() {
+        let suppressed = resolvedAlertMode == .speaker
+        if SpatialAudioPlayer.shared.isSuppressed != suppressed {
+            SpatialAudioPlayer.shared.isSuppressed = suppressed
+            if suppressed { SpatialAudioPlayer.shared.reset() } else { announcer.stop() }
+            Log.info("避障提示方式：\(suppressed ? "外放语音" : "耳机空间音频")", category: .audio)
+        }
+    }
 
     func start() {
         startedAt = Date()
@@ -53,6 +81,8 @@ final class TrainingSessionModel {
         ticker?.invalidate(); ticker = nil
         pedometer.stopUpdates()
         companion.stop()
+        announcer.stop()
+        SpatialAudioPlayer.shared.isSuppressed = false
         Log.info("训练结束：\(elapsedSeconds) 秒，\(distanceMeters) 米，避障 \(obstaclesAvoided) 次，时刻 \(companion.moments.count) 个", category: .ui)
         return TrainingResult(
             kind: kind,
@@ -69,6 +99,8 @@ final class TrainingSessionModel {
         ticker?.invalidate(); ticker = nil
         pedometer.stopUpdates()
         companion.stop()
+        announcer.stop()
+        SpatialAudioPlayer.shared.isSuppressed = false
         Log.info("训练已取消，不记录", category: .ui)
     }
 
