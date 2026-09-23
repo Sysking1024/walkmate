@@ -110,6 +110,8 @@ targets:
       - TestTarget
     sources:
       - path: ../Tests/ReplayTests
+        excludes:
+          - "Datasets/**"
     dependencies:
       - framework: Frameworks/SSZipArchive.xcframework
 

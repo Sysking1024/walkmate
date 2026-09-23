@@ -68,10 +68,10 @@
 在 Mac 终端运行 `xcodebuild test -only-testing:ReplayTests`，套件加载包含“前方受阻”的样本会话，逐帧模拟灌入既有算法，调整地面容差与通行门限后重新运行，自动化输出对比报告并确认航路点生成率从 $<10\%$ 提升至 $80\%$ 以上。
 
 ### 阶段五测试与实现任务 (Implementation & Test Harness)
-- [ ] T015 [P] [US3] 创建离线回放数据加载驱动器 `Tests/ReplayTests/PerceptionReplayer.swift`（实现 `PerceptionReplayerProtocol`，解析解压会话目录下的 `metadata.json`、`telemetry.jsonl` 与深度/图像快照）
-- [ ] T016 [US3] 编写离线回放测试套件 `Tests/ReplayTests/PerceptionReplayTests.swift`，构建模拟帧输入流，直接灌入既有的 `GroundPlaneEstimator`、`ObstacleDetector` 与 `PassageRoutePlanner`
-- [ ] T017 [US3] 在 `Tests/ReplayTests/PerceptionReplayTests.swift` 中增加算法调参消融对比与统计评估逻辑，计算并输出优化前后的航路点生成率（Passable Rate）与障碍物虚警变化
-- [ ] T018 [P] [US3] 在 `Tests/ReplayTests/Datasets/` 下建立标准测试样本目录规范与说明文档，并配置一组轻量级端到端合成实测回放样本
+- [X] T015 [P] [US3] 创建离线回放数据加载驱动器 `Tests/ReplayTests/PerceptionReplayer.swift`（实现 `PerceptionReplayerProtocol`，解析解压会话目录下的 `metadata.json`、`telemetry.jsonl` 与深度/图像快照）
+- [X] T016 [US3] 编写离线回放测试套件 `Tests/ReplayTests/PerceptionReplayTests.swift`，构建模拟帧输入流，直接灌入既有的 `GroundPlaneEstimator`、`ObstacleDetector` 与 `PassageRoutePlanner`
+- [X] T017 [US3] 在 `Tests/ReplayTests/PerceptionReplayTests.swift` 中增加算法调参消融对比与统计评估逻辑，计算并输出优化前后的航路点生成率（Passable Rate）与障碍物虚警变化
+- [X] T018 [P] [US3] 在 `Tests/ReplayTests/Datasets/` 下建立标准测试样本目录规范与说明文档，并配置一组轻量级端到端合成实测回放样本
 
 ---
 

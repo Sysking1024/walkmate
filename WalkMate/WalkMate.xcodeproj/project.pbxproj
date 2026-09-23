@@ -67,6 +67,7 @@
 		D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */; };
 		D29483E2C3A526662360F9DD /* CompanionConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */; };
 		D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */; };
+		D8E0371F5A8F660333F4503A /* PerceptionReplayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 501281AEE683271F04F9DAC0 /* PerceptionReplayer.swift */; };
 		DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */; };
 		DD3B106550B53C36CABAD84A /* TrainingClipComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB537C9139E5FDBEF33BC9 /* TrainingClipComposer.swift */; };
 		E674D67A1FB36C6446C9B8BE /* SessionManagementSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26A512953EA3BACA4BD6286 /* SessionManagementSheet.swift */; };
@@ -195,6 +196,7 @@
 		456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceleratePreprocessor.swift; sourceTree = "<group>"; };
 		49749C1338C88C68B4DA91C3 /* SceneNarrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneNarrator.swift; sourceTree = "<group>"; };
 		4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayer.swift; sourceTree = "<group>"; };
+		501281AEE683271F04F9DAC0 /* PerceptionReplayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionReplayer.swift; sourceTree = "<group>"; };
 		5ADE5305BBB2B674A75D6813 /* PerceptionDataCollectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionDataCollectorTests.swift; sourceTree = "<group>"; };
 		5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTracker.swift; sourceTree = "<group>"; };
 		62905020C90431BD7831516A /* sample_erp_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sample_erp_2.jpg; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 		7E64AB7109487D9D270CC3EB /* ReplayTests */ = {
 			isa = PBXGroup;
 			children = (
+				501281AEE683271F04F9DAC0 /* PerceptionReplayer.swift */,
 				44241A9977D78EAC65175E1E /* PerceptionReplayTests.swift */,
 			);
 			name = ReplayTests;
@@ -902,6 +905,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F32819A692053026FDA52FE9 /* PerceptionReplayTests.swift in Sources */,
+				D8E0371F5A8F660333F4503A /* PerceptionReplayer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
