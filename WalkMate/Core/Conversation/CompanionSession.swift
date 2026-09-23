@@ -48,6 +48,8 @@ final class CompanionSession {
     private var ticker: Timer?
 
     private static let opener = "要我说说这儿吗？"
+    /// 设置为「静音」时不再主动开口，只响应手动请求
+    static var autoPromptEnabled = true
 
     // MARK: - 生命周期
 
@@ -78,7 +80,7 @@ final class CompanionSession {
         standstillMs = detector.ingest(acceleration: frame.acceleration, timestampMs: frame.timestampMs)
 
         if conversation.handleStandstill(standstillDurationMs: standstillMs, nowMs: nowMs) {
-            beginAsking()
+            if Self.autoPromptEnabled { beginAsking() } else { conversation.handleConsent(.declined, nowMs: nowMs) }
         }
     }
 

@@ -1,21 +1,39 @@
 import SwiftUI
 
-/// 进度页。对应设计稿「进度」。本周记录、里程碑与路线为演示数据。
+/// 进度页。对应设计稿「进度」。本周记录来自本机训练记录；里程碑为演示数据。
 struct GrowthView: View {
+    @State private var history = TrainingHistoryStore.shared
+    @State private var showDetail = false
+
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                WMLogoHeader().padding(.top, 8)
-                WMPageTitle(text: "你的康复成长")
-                weeklyCard
-                WMSectionHeader(title: "我的路线")
-                routeRow(icon: "route_home", title: "家庭路线", detail: "已完成12次")
-                routeRow(icon: "route_neighborhood", title: "小区路线", detail: "已完成2次")
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    WMLogoHeader().padding(.top, 8)
+                    WMPageTitle(text: "你的康复成长")
+                    weeklyCard
+                    WMSectionHeader(title: "我的路线")
+                    NavigationLink {
+                        RouteDetailView(title: "小区路线", route: SeedData.neighborhoodRoute, completedCount: 2)
+                    } label: {
+                        routeRow(icon: "route_neighborhood", title: "小区路线", detail: "已完成 2 次")
+                    }
+                    .buttonStyle(.plain)
+                    NavigationLink {
+                        IndoorRouteView()
+                    } label: {
+                        routeRow(icon: "route_home", title: "室内训练路线", detail: "已完成 \(history.records.count) 次")
+                    }
+                    .buttonStyle(.plain)
+                }
+                .wmPageInset()
+                .wmTabBarClearance()
             }
-            .wmPageInset()
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(isPresented: $showDetail) { GrowthDetailView() }
         }
-        .scrollIndicators(.hidden)
+        .tint(WalkMateTheme.Colors.textPrimary)
     }
 
     private var weeklyCard: some View {
@@ -23,19 +41,24 @@ struct GrowthView: View {
             HStack {
                 Text("本周记录").font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
                 Spacer()
-                HStack(spacing: 4) {
-                    Text("更多")
-                    Image("icon_chevron").resizable().scaledToFit().frame(height: 10)
+                Button { showDetail = true } label: {
+                    HStack(spacing: 4) {
+                        Text("更多")
+                        Image("icon_chevron").resizable().scaledToFit().frame(height: 10)
+                    }
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(0.54))
+                    .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
                 }
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(Color.white.opacity(0.54))
+                .buttonStyle(.plain)
+                .accessibilityLabel("更多，查看成长详情")
             }
             HStack {
-                WMRing(progress: 5 / 7, value: "5", caption: "训练天")
+                WMRing(progress: Double(history.trainingDaysThisWeek) / 7, value: "\(history.trainingDaysThisWeek)", caption: "训练天")
                 Spacer()
-                WMRing(progress: 0.83, value: "68", caption: "避障")
+                WMRing(progress: min(1, Double(history.obstaclesThisWeek) / 80), value: "\(history.obstaclesThisWeek)", caption: "避障")
                 Spacer()
-                WMRing(progress: 0.5, value: "50%", caption: "独立完成")
+                WMRing(progress: history.independentRate, value: "\(Int(history.independentRate * 100))%", caption: "独立完成")
             }
             Text("里程碑").font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
             milestones
@@ -79,21 +102,18 @@ struct GrowthView: View {
     }
 
     private func routeRow(icon: String, title: String, detail: String) -> some View {
-        Button {} label: {
-            HStack(spacing: 16) {
-                Image(icon).resizable().scaledToFit().frame(width: 57, height: 55)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title).font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    Text(detail).font(WalkMateTheme.Fonts.caption).foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.7))
-                }
-                Spacer()
-                Image("icon_chevron_large").resizable().scaledToFit().frame(height: 30).foregroundStyle(WalkMateTheme.Colors.textSecondary)
+        HStack(spacing: 16) {
+            Image(icon).resizable().scaledToFit().frame(width: 57, height: 55)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title).font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                Text(detail).font(WalkMateTheme.Fonts.caption).foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.7))
             }
-            .padding(.horizontal, 20)
-            .frame(maxWidth: .infinity, minHeight: 90, alignment: .leading)
-            .wmCard()
+            Spacer()
+            Image("icon_chevron_large").resizable().scaledToFit().frame(height: 30).foregroundStyle(WalkMateTheme.Colors.textSecondary)
         }
-        .buttonStyle(.plain)
+        .padding(.horizontal, 20)
+        .frame(maxWidth: .infinity, minHeight: 90, alignment: .leading)
+        .wmCard()
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title)，\(detail)")
     }

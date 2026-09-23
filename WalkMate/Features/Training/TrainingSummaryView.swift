@@ -5,10 +5,14 @@ import SwiftUI
 struct TrainingSummaryView: View {
     let result: TrainingResult
     let onDone: () -> Void
+    /// 「查看我的成长」：收起流程并切到进度栏目
+    let onViewGrowth: () -> Void
 
     @State private var reel = HighlightReelBuilder()
     @State private var player: AVPlayer?
     @State private var speech = SpeechRenderer()
+    @State private var history = TrainingHistoryStore.shared
+    @State private var routeSaved = false
 
     var body: some View {
         ScrollView {
@@ -27,17 +31,22 @@ struct TrainingSummaryView: View {
                 achievementSection
 
                 HStack(spacing: 14) {
-                    WMButton(title: "查看我的成长", height: 61, action: onDone)
-                    WMButton(title: "记录路线", height: 61, action: onDone)
+                    WMButton(title: "查看我的成长", height: 61, action: onViewGrowth)
+                    WMButton(title: routeSaved ? "已记录路线" : "记录路线", style: routeSaved ? .subdued : .primary, height: 61, action: saveRoute)
+                        .disabled(routeSaved)
                 }
                 shareButton
             }
             .wmPageInset()
-            .padding(.bottom, 24)
+            .wmTabBarClearance()
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)
-        .task { await reel.build(from: result.moments) }
+        .task {
+            routeSaved = currentRecord?.savedAsRoute ?? false
+            await reel.build(from: result.moments)
+            if case .ready(let url) = reel.state { TrainingHistoryStore.keepAsLatestReel(url) }
+        }
         .fullScreenCover(item: $player) { player in
             VideoPlayer(player: player)
                 .ignoresSafeArea()
@@ -62,7 +71,7 @@ struct TrainingSummaryView: View {
             }
             HStack(spacing: 14) {
                 WMStatTile(label: "成功避障", value: "\(result.obstaclesAvoided)")
-                WMStatTile(label: "独立完成指数", value: "40%", trailing: "8%")
+                WMStatTile(label: "独立完成指数", value: "\(Int(history.independentRate * 100))%")
             }
         }
     }
@@ -214,6 +223,19 @@ struct TrainingSummaryView: View {
                 .disabled(true)
                 .opacity(0.6)
         }
+    }
+
+    /// 训练结束时已写入的记录，按结束时间对上
+    private var currentRecord: TrainingRecord? {
+        history.records.first { $0.finishedAt == result.finishedAt }
+    }
+
+    /// 把这次训练标记为一条路线记录，进度页「室内训练路线」会列出
+    private func saveRoute() {
+        guard let record = currentRecord else { return }
+        history.markAsRoute(record.id)
+        routeSaved = true
+        Log.info("已把训练记录为路线", category: .ui)
     }
 
     private static func dateText(_ date: Date, style: DateFormatter.Style = .long) -> String {

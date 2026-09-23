@@ -2,128 +2,140 @@ import SwiftUI
 
 /// 社群页。对应设计稿「社群」。
 ///
-/// 好友成就、探店、邀约、旅程均为演示数据：产品决定社群首期为静态展示。
-/// 探店卡片上新增「去评分」入口，通往店铺无障碍打分页。
+/// 好友成就、邀约、旅程来自社群动态（后端可达时拉取，否则用内置种子）；
+/// 探店卡片来自店铺数据，评分与「查看路线」都可操作。
 struct CommunityView: View {
-    @State private var storeCategory = 2
-    @State private var showRating = false
     @State private var ratingStore = StoreRatingStore.shared
+    @State private var communityStore = CommunityStore.shared
+    @State private var ratingTarget: StoreSummary?
+    @State private var latestReel: URL?
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 22) {
-                WMLogoHeader().padding(.top, 8)
-                WMPageTitle(text: "好友今日成就榜")
-                achievementCard
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    WMLogoHeader().padding(.top, 8)
+                    WMPageTitle(text: "好友今日成就榜")
+                    achievementCard
 
-                WMPageTitle(text: "无障碍探店")
-                storeCard
-                inviteCard
+                    WMPageTitle(text: "无障碍探店")
+                    ForEach(ratingStore.stores) { store in
+                        storeCard(store)
+                    }
+                    ForEach(communityStore.feed.invitations) { invitation in
+                        inviteCard(invitation)
+                    }
 
-                WMPageTitle(text: "今日旅程")
-                journeyCard
+                    if let journey = communityStore.feed.journeys.first {
+                        WMPageTitle(text: "今日旅程")
+                        journeyCard(journey)
+                    }
+                }
+                .wmPageInset()
+                .wmTabBarClearance()
             }
-            .wmPageInset()
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: StoreSummary.self) { store in
+                RouteDetailView(title: "去\(store.name)", route: store.route)
+            }
         }
-        .scrollIndicators(.hidden)
-        .sheet(isPresented: $showRating) {
-            StoreRatingView(storeName: "影石Insta360", isPresented: $showRating)
+        .tint(WalkMateTheme.Colors.textPrimary)
+        .sheet(item: $ratingTarget) { store in
+            StoreRatingView(store: store) { ratingTarget = nil }
+        }
+        .task {
+            latestReel = TrainingHistoryStore.latestReelURL
+            await communityStore.refresh()
+            await ratingStore.refresh()
         }
     }
 
     // MARK: - 好友今日成就
 
     private var achievementCard: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        let items = communityStore.feed.achievements
+        return VStack(alignment: .leading, spacing: 18) {
             HStack(spacing: 8) {
                 Text("今日成就"); Text("·"); Text("Today’s  Achievement")
             }
             .font(WalkMateTheme.Fonts.body)
             .foregroundStyle(WalkMateTheme.Colors.textPrimary)
 
+            // 设计稿：金冠居中放大，银、铜分列两侧
+            let gold = items.first { $0.crown == "crown_gold" }
+            let others = items.filter { $0.crown != "crown_gold" }
             HStack(alignment: .top) {
-                friend("avatar_momo", crown: "crown_silver", name: "Momo", note: "完成 Level 4 户外训练", size: 64)
+                if let silver = others.first { friend(silver, size: 64) }
                 Spacer()
-                friend("avatar_zixuan", crown: "crown_gold", name: "子璇爸爸", note: "独立出行 3.2 km\n探索 2 个新地点", size: 77)
+                if let gold { friend(gold, size: 77) }
                 Spacer()
-                friend("avatar_liujiajia", crown: "crown_bronze", name: "刘佳佳", note: "第一次独立乘坐地铁", size: 64)
+                if others.count > 1 { friend(others[1], size: 64) }
             }
             .padding(.horizontal, 8)
-
-            WMButton(title: "查看更多好友进展", height: 47) {}
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)
         .wmCard(WalkMateTheme.Gradients.communityCard)
     }
 
-    private func friend(_ avatar: String, crown: String, name: String, note: String, size: CGFloat) -> some View {
+    private func friend(_ item: CommunityFeed.Achievement, size: CGFloat) -> some View {
         VStack(spacing: 6) {
             ZStack(alignment: .top) {
-                WMAvatar(imageName: avatar, size: size).padding(.top, 10)
-                Image(crown).resizable().scaledToFit().frame(width: 22).accessibilityHidden(true)
+                WMAvatar(imageName: item.avatarKey, size: size).padding(.top, 10)
+                if let crown = item.crown {
+                    Image(crown).resizable().scaledToFit().frame(width: 22).accessibilityHidden(true)
+                }
             }
-            Text(name)
+            Text(item.user)
                 .font(WalkMateTheme.Fonts.caption).tracking(1.3)
                 .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-            Text(note)
+            Text(item.note)
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(WalkMateTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
         }
+        .frame(maxWidth: 110)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(name)，\(note.replacingOccurrences(of: "\n", with: "，"))")
+        .accessibilityLabel("\(item.user)，\(item.note)")
     }
 
     // MARK: - 探店
 
-    private var storeCard: some View {
+    private func storeCard(_ store: StoreSummary) -> some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 10) {
-                ForEach(Array(["美食", "娱乐", "购物"].enumerated()), id: \.offset) { index, title in
-                    Button { storeCategory = index } label: {
-                        Text(title)
-                            .font(WalkMateTheme.Fonts.body).tracking(1.6)
-                            .foregroundStyle(storeCategory == index ? .white : WalkMateTheme.Colors.segmentText)
-                            .frame(maxWidth: .infinity, minHeight: 48)
-                            .background(storeCategory == index ? WalkMateTheme.Colors.segmentSelected : WalkMateTheme.Colors.segmentUnselected)
-                            .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(storeCategory == index ? .isSelected : [])
-                }
-            }
-
             HStack(alignment: .top, spacing: 14) {
-                Image("store_insta360")
+                Image(store.coverKey)
                     .resizable().scaledToFill()
                     .frame(width: 92, height: 92)
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
-                        Text("影石Insta360").font(WalkMateTheme.Fonts.body).tracking(1.6)
+                        Text(store.name).font(WalkMateTheme.Fonts.body).tracking(1.6)
                         Spacer()
-                        Text("2.2km").font(.system(size: 10, weight: .medium)).tracking(1)
+                        Text(String(format: "%.1fkm", store.distanceKm)).font(.system(size: 10, weight: .medium)).tracking(1)
                     }
                     .foregroundStyle(.white)
                     HStack(spacing: 6) {
                         Image("icon_star").resizable().scaledToFit().frame(width: 12).foregroundStyle(.white)
-                        Text(String(format: "%.1f", ratingStore.averageScore(for: "影石Insta360", fallback: 4.8)))
-                        Text("\(ratingStore.visitorCount(for: "影石Insta360", fallback: 36))位视障用户去过")
+                        Text(String(format: "%.1f", store.averageScore))
+                        Text("\(store.visitorCount)位视障用户去过")
                     }
                     .font(.system(size: 10, weight: .medium)).tracking(1)
                     .foregroundStyle(.white)
-                    chipRows(ratingStore.topTags(for: "影石Insta360", fallback: ["无障碍入口", "方便独立前往", "店内安静", "无障碍卫生间"]))
+                    chipRows(store.tags)
                 }
             }
             .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(store.name)，\(store.category)，距离 \(String(format: "%.1f", store.distanceKm)) 公里，无障碍评分 \(String(format: "%.1f", store.averageScore))，\(store.visitorCount) 位视障用户去过，\(store.tags.joined(separator: "，"))")
 
             HStack(spacing: 14) {
-                Button("查看路线") {}
-                    .buttonStyle(WhitePillButtonStyle())
-                Button("去评分") { showRating = true }
+                NavigationLink(value: store) {
+                    Text("查看路线")
+                }
+                .buttonStyle(WhitePillButtonStyle())
+                Button("去评分") { ratingTarget = store }
                     .buttonStyle(GreenPillButtonStyle())
             }
         }
@@ -141,27 +153,45 @@ struct CommunityView: View {
         }
     }
 
-    private var inviteCard: some View {
+    // MARK: - 邀约
+
+    private func inviteCard(_ invitation: CommunityFeed.Invitation) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("好友邀你一起探索")
                 .font(WalkMateTheme.Fonts.body)
                 .foregroundStyle(WalkMateTheme.Colors.textPrimary)
             HStack(alignment: .top, spacing: 12) {
-                WMAvatar(imageName: "avatar_momo", size: 64)
+                WMAvatar(imageName: invitation.avatarKey, size: 64)
                 VStack(alignment: .leading, spacing: 4) {
-                    (Text("Momo ").bold() + Text("想邀请你一起去 ") + Text("上野公园").bold())
+                    (Text("\(invitation.from) ").bold() + Text("想邀请你一起去 ") + Text(invitation.place).bold())
                         .font(WalkMateTheme.Fonts.caption).tracking(1.3)
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                    Text("9月25日 星期六 早上9:30出发")
-                    Text("留言：想去感受秋天。")
+                    Text(invitation.time)
+                    if let message = invitation.message { Text("留言：\(message)") }
                 }
                 .font(.system(size: 9, weight: .medium))
                 .foregroundStyle(WalkMateTheme.Colors.textSecondary)
             }
             .accessibilityElement(children: .combine)
-            HStack(spacing: 14) {
-                Button("拒绝") {}.buttonStyle(GhostPillButtonStyle())
-                Button("同意") {}.buttonStyle(GreenPillButtonStyle(opacity: 0.4))
+
+            switch invitation.status {
+            case "accepted":
+                Text("已同意，到时候 \(invitation.place) 见")
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.accentSoft)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+            case "declined":
+                Text("已婉拒这次邀约")
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+            default:
+                HStack(spacing: 14) {
+                    Button("拒绝") { Task { await communityStore.respond(to: invitation.id, accepted: false) } }
+                        .buttonStyle(GhostPillButtonStyle())
+                    Button("同意") { Task { await communityStore.respond(to: invitation.id, accepted: true) } }
+                        .buttonStyle(GreenPillButtonStyle(opacity: 0.4))
+                }
             }
         }
         .padding(WalkMateTheme.Layout.cardPadding)
@@ -171,7 +201,7 @@ struct CommunityView: View {
 
     // MARK: - 今日旅程
 
-    private var journeyCard: some View {
+    private func journeyCard(_ journey: CommunityFeed.Journey) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
                 ZStack(alignment: .bottomLeading) {
@@ -184,28 +214,26 @@ struct CommunityView: View {
                 .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Text("第一次独立去购物")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                        Spacer()
-                        Text("查看全部").font(.system(size: 9, weight: .medium)).foregroundStyle(WalkMateTheme.Colors.textSecondary)
+                    Text(journey.title)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                    Text("360 旅程 · \(journey.duration)")
+                    Text("步行\(Int(journey.distanceKm))km     解锁新区域")
+                    if let note = journey.note {
+                        Text(note)
+                            .font(.system(size: 8))
+                            .foregroundStyle(Color(hex: 0x1B3320))
+                            .padding(8)
+                            .background(WalkMateTheme.Colors.chipBackground)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     }
-                    Text("360 旅程 · 4:28")
-                    Text("步行15km     解锁新区域")
-                    Text("第一次独自去商业中心，有点紧张！\n但是去了之后发现真的很有趣！")
-                        .font(.system(size: 8))
-                        .foregroundStyle(Color(hex: 0x1B3320))
-                        .padding(8)
-                        .background(WalkMateTheme.Colors.chipBackground)
-                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                     HStack(spacing: 10) {
-                        WMAvatar(imageName: "avatar_doris_small", size: 22)
-                        Text("Doris")
+                        WMAvatar(imageName: journey.avatarKey, size: 22)
+                        Text(journey.user)
                         Spacer()
-                        Label("52", image: "icon_like")
-                        Label("12", image: "icon_comment")
-                        Label("5", image: "icon_share")
+                        Label("\(journey.likes)", image: "icon_like")
+                        Label("\(journey.comments)", image: "icon_comment")
+                        Label("\(journey.shares)", image: "icon_share")
                     }
                     .font(.system(size: 10))
                     .foregroundStyle(WalkMateTheme.Colors.textPrimary)
@@ -215,7 +243,19 @@ struct CommunityView: View {
                 .foregroundStyle(WalkMateTheme.Colors.textSecondary)
             }
             .accessibilityElement(children: .combine)
-            WMButton(title: "分享我的旅程", height: 47) {}
+
+            // 只有本机已经剪出过集锦，才有东西可分享
+            if let latestReel {
+                ShareLink(item: latestReel) {
+                    Text("分享我的旅程")
+                        .font(WalkMateTheme.Fonts.body).tracking(1.6)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, minHeight: 47)
+                        .background(WalkMateTheme.Gradients.primaryButton)
+                        .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                }
+                .accessibilityHint("把最近一次训练的集锦发给同伴")
+            }
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)

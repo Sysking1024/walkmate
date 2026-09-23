@@ -2,24 +2,37 @@ import SwiftUI
 
 /// 首页。对应设计稿「home」画面。
 ///
-/// 康复闭环、徽章、同伴进程目前为演示数据（产品决定社群类内容首期用静态数据）。
+/// 康复闭环来自本机训练记录；徽章与同伴进程为演示数据（社群首期用静态数据）。
 struct HomeView: View {
     /// 点击「开始今天的训练」时切换到训练栏目
     let onStartTraining: () -> Void
+    /// 点击「进入社群」时切换到社群栏目
+    let onOpenCommunity: () -> Void
+
+    @State private var history = TrainingHistoryStore.shared
+    @State private var showGrowth = false
+
+    /// 每日训练目标分钟数，闭环里的「完成」按它计算
+    private let dailyGoalMinutes = 20
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                WMLogoHeader().padding(.top, 8)
-                heroCard
-                loopSection
-                badgeSection
-                peerSection
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 24) {
+                    WMLogoHeader().padding(.top, 8)
+                    heroCard
+                    loopSection
+                    badgeSection
+                    peerSection
+                }
+                .wmPageInset()
+                .wmTabBarClearance()
             }
-            .wmPageInset()
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(isPresented: $showGrowth) { GrowthDetailView() }
         }
-        .scrollIndicators(.hidden)
+        .tint(WalkMateTheme.Colors.textPrimary)
     }
 
     private var heroCard: some View {
@@ -52,18 +65,26 @@ struct HomeView: View {
         }
     }
 
+    // MARK: - 今日康复闭环
+
+    private var todayMinutes: Int { history.minutesPerDay.last?.minutes ?? 0 }
+    private var todayObstacles: Int {
+        history.records.filter { Calendar.current.isDateInToday($0.finishedAt) }.reduce(0) { $0 + $1.obstaclesAvoided }
+    }
+    private var todayProgress: Double { min(1, Double(todayMinutes) / Double(dailyGoalMinutes)) }
+
     private var loopSection: some View {
         VStack(spacing: 12) {
-            WMSectionHeader(title: "今日康复闭环", action: "查看成长")
+            WMSectionHeader(title: "今日康复闭环", action: "查看成长") { showGrowth = true }
             VStack(alignment: .leading, spacing: 18) {
                 HStack {
-                    WMRing(progress: 0.8, value: "18", caption: "分钟")
+                    WMRing(progress: todayProgress, value: "\(todayMinutes)", caption: "分钟")
                     Spacer()
-                    WMRing(progress: 0.68, value: "12", caption: "避障")
+                    WMRing(progress: min(1, Double(todayObstacles) / 15), value: "\(todayObstacles)", caption: "避障")
                     Spacer()
-                    WMRing(progress: 0.84, value: "84%", caption: "完成")
+                    WMRing(progress: todayProgress, value: "\(Int(todayProgress * 100))%", caption: "完成")
                 }
-                Text("加油~  已经快完成今日训练项目啦")
+                Text(encouragement)
                     .font(WalkMateTheme.Fonts.body)
                     .foregroundStyle(WalkMateTheme.Colors.textPrimary)
             }
@@ -73,9 +94,16 @@ struct HomeView: View {
         }
     }
 
+    private var encouragement: String {
+        if todayMinutes == 0 { return "今天还没开始，先来一次室内训练吧" }
+        if todayProgress >= 1 { return "今日目标已完成，明天继续" }
+        if todayProgress >= 0.5 { return "加油~  已经快完成今日训练项目啦" }
+        return "已经开始了，再练 \(dailyGoalMinutes - todayMinutes) 分钟就完成今日目标"
+    }
+
     private var badgeSection: some View {
         VStack(spacing: 12) {
-            WMSectionHeader(title: "我的徽章", action: "查看全部")
+            WMSectionHeader(title: "我的徽章")
             HStack(spacing: 8) {
                 badgeTile("badge_obstacles_10", "成功避障十次")
                 badgeTile("badge_first_step", "首次完成训练")
@@ -102,7 +130,7 @@ struct HomeView: View {
 
     private var peerSection: some View {
         VStack(spacing: 12) {
-            WMSectionHeader(title: "同伴进程", action: "进入社群")
+            WMSectionHeader(title: "同伴进程", action: "进入社群", onAction: onOpenCommunity)
             HStack(spacing: 16) {
                 ZStack {
                     Circle().fill(Color.white.opacity(0.25))

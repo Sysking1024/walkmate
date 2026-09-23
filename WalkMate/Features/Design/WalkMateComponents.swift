@@ -32,6 +32,11 @@ extension View {
     func wmPageInset() -> some View {
         padding(.horizontal, WalkMateTheme.Layout.horizontalInset)
     }
+
+    /// 页面滚动内容的底部留白：底栏悬浮在内容之上，最后一个控件要能完整滚出底栏
+    func wmTabBarClearance() -> some View {
+        padding(.bottom, WalkMateTheme.Layout.tabBarHeight + 36)
+    }
 }
 
 /// 页面顶部的 logo

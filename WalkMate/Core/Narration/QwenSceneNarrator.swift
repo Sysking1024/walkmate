@@ -30,7 +30,8 @@ struct QwenSceneNarrator: SceneNarrator {
     private let compressionQuality: CGFloat = 0.45
 
     /// 首次描述的字数上限。约合 10 秒朗读，再长使用者就听不住了。
-    static let descriptionCharacterLimit = 45
+    /// 由设置页的「语音引导」档位调整：详细 60、简洁 40。
+    static var descriptionCharacterLimit = 45
     /// 追问应答的字数上限
     static let answerCharacterLimit = 40
     /// 生成长度的硬上限。只作兜底：实测模型并不稳定遵守提示词里的字数要求，

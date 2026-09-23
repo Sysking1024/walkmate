@@ -5,14 +5,15 @@ import SwiftUI
 /// 无障碍要点：五颗星对读屏是一个可调节元素（上下滑动改分数），
 /// 而不是五个零散按钮；标签是原生切换按钮；所有控件触控目标不小于 48 点。
 struct StoreRatingView: View {
-    let storeName: String
-    @Binding var isPresented: Bool
+    let store: StoreSummary
+    /// 提交成功或点关闭时调用，由外层收起弹层
+    let onClose: () -> Void
 
     @State private var score = 0
     @State private var selectedTags: Set<String> = []
     @State private var comment = ""
     @State private var submitted = false
-    @State private var store = StoreRatingStore.shared
+    @State private var ratingStore = StoreRatingStore.shared
 
     /// 可选的无障碍特性，沿用探店卡片上的标签体系并扩充
     private let tags = ["无障碍入口", "方便独立前往", "店内安静", "无障碍卫生间", "店员友善", "有盲道", "菜单可朗读", "允许导盲犬"]
@@ -22,7 +23,7 @@ struct StoreRatingView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 6) {
-                        WMPageTitle(text: "为\(storeName)打分")
+                        WMPageTitle(text: "为\(store.name)打分")
                         Text("你的体验会帮到下一位独立前往的同伴")
                             .font(WalkMateTheme.Fonts.caption)
                             .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
@@ -42,7 +43,7 @@ struct StoreRatingView: View {
             .background(WalkMateTheme.Colors.background.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("关闭") { isPresented = false }
+                    Button("关闭") { onClose() }
                         .foregroundStyle(WalkMateTheme.Colors.textPrimary)
                         .frame(minWidth: 48, minHeight: 48)
                 }
@@ -173,17 +174,18 @@ struct StoreRatingView: View {
     }
 
     private func submit() {
-        store.add(StoreRating(
-            storeName: storeName,
+        let rating = StoreRating(
+            storeID: store.id,
             score: score,
             tags: Array(selectedTags),
             comment: comment.trimmingCharacters(in: .whitespacesAndNewlines),
             createdAt: Date()
-        ))
+        )
         submitted = true
         Task {
-            try? await Task.sleep(nanoseconds: 900_000_000)
-            isPresented = false
+            await ratingStore.submit(rating)
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            onClose()
         }
     }
 }

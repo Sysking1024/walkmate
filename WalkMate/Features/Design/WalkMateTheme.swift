@@ -120,15 +120,22 @@ enum WalkMateTheme {
     // MARK: - 字体
 
     enum Fonts {
-        static let pageTitle = Font.system(size: 24, weight: .bold)
-        static let sectionTitle = Font.system(size: 20, weight: .bold)
-        static let statValue = Font.system(size: 18, weight: .bold)
-        static let statValueLarge = Font.system(size: 20, weight: .bold)
-        static let body = Font.system(size: 16, weight: .medium)
-        static let caption = Font.system(size: 13, weight: .medium)
-        static let small = Font.system(size: 11, weight: .bold)
-        static let ringCaption = Font.system(size: 10, weight: .medium)
-        static let chip = Font.system(size: 11, weight: .medium)
+        /// 由设置页「字体大小」调整的整体缩放系数
+        static var scale: CGFloat = 1
+
+        private static func scaled(_ size: CGFloat, _ weight: Font.Weight) -> Font {
+            .system(size: (size * scale).rounded(), weight: weight)
+        }
+
+        static var pageTitle: Font { scaled(24, .bold) }
+        static var sectionTitle: Font { scaled(20, .bold) }
+        static var statValue: Font { scaled(18, .bold) }
+        static var statValueLarge: Font { scaled(20, .bold) }
+        static var body: Font { scaled(16, .medium) }
+        static var caption: Font { scaled(13, .medium) }
+        static var small: Font { scaled(11, .bold) }
+        static var ringCaption: Font { scaled(10, .medium) }
+        static var chip: Font { scaled(11, .medium) }
     }
 }
 

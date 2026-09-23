@@ -26,11 +26,12 @@ struct TrainingSessionView: View {
                 WMButton(title: "结束训练", height: 61) {
                     let result = session.finish()
                     if camera.connectionState == .connected { camera.toggleConnection() }
+                    TrainingHistoryStore.shared.record(result)
                     onFinish(result)
                 }
             }
             .wmPageInset()
-            .padding(.bottom, 24)
+            .wmTabBarClearance()
         }
         .scrollIndicators(.hidden)
         .toolbar(.hidden, for: .navigationBar)

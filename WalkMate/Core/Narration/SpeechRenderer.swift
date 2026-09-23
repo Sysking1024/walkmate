@@ -14,7 +14,8 @@ final class SpeechRenderer {
     /// 中文朗读音色。系统内置、离线可用，无需联网也无额外费用。
     private static let voiceIdentifier = "zh-CN"
     /// 朗读语速。系统默认值偏快，放慢一档以便听清方位与距离。
-    private static let speechRate: Float = 0.48
+    /// 由设置页的「语速」滑杆调整。
+    static var speechRate: Float = 0.48
 
     /// 合成器需在整个渲染过程中持有，提前释放会导致回调中断
     private let synthesizer = AVSpeechSynthesizer()
