@@ -14,6 +14,8 @@ struct StoreRatingView: View {
     @State private var comment = ""
     @State private var submitted = false
     @State private var ratingStore = StoreRatingStore.shared
+    /// 是否在修改已有评分
+    private var isUpdating: Bool { ratingStore.myRating(for: store.id) != nil }
 
     /// 可选的无障碍特性，沿用探店卡片上的标签体系并扩充
     private let tags = ["无障碍入口", "方便独立前往", "店内安静", "无障碍卫生间", "店员友善", "有盲道", "菜单可朗读", "允许导盲犬"]
@@ -23,7 +25,7 @@ struct StoreRatingView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 6) {
-                        WMPageTitle(text: "为\(store.name)打分")
+                        WMPageTitle(text: isUpdating ? "修改对\(store.name)的评分" : "为\(store.name)打分")
                         Text("你的体验会帮到下一位独立前往的同伴")
                             .font(WalkMateTheme.Fonts.caption)
                             .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
@@ -31,7 +33,7 @@ struct StoreRatingView: View {
                     scoreCard
                     tagCard
                     commentCard
-                    WMButton(title: submitted ? "已提交，谢谢你" : "提交评分", height: 61, action: submit)
+                    WMButton(title: submitted ? "已提交，谢谢你" : (isUpdating ? "更新评分" : "提交评分"), height: 61, action: submit)
                         .disabled(score == 0 || submitted)
                         .opacity(score == 0 && !submitted ? 0.5 : 1)
                 }
@@ -51,7 +53,14 @@ struct StoreRatingView: View {
             .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
         }
         .preferredColorScheme(.dark)
-        .onAppear { AccessibilityFeedback.screenChanged("为\(store.name)打分") }
+        .onAppear {
+            AccessibilityFeedback.screenChanged(isUpdating ? "修改评分" : "为\(store.name)打分")
+            if let mine = ratingStore.myRating(for: store.id), score == 0 {
+                score = mine.score
+                selectedTags = Set(mine.tags)
+                comment = mine.comment
+            }
+        }
     }
 
     // MARK: - 总体评分

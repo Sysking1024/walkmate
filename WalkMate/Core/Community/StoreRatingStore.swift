@@ -61,10 +61,16 @@ final class StoreRatingStore {
         }
     }
 
-    /// 提交评分：本地立即生效，随后尝试同步
+    /// 提交或更新评分：本地立即生效，随后尝试同步。已评过就沿用原评分 ID，后端按 ID 覆盖。
     func submit(_ rating: StoreRating) async {
-        guard mine[rating.storeID] == nil else { return }
-        applyLocally(rating)
+        var rating = rating
+        if let previous = mine[rating.storeID] {
+            rating.id = previous.id
+            applyLocally(rating, replacing: previous)
+            pending.removeAll { $0.id == previous.id }
+        } else {
+            applyLocally(rating, replacing: nil)
+        }
         mine[rating.storeID] = rating
         if let data = try? JSONEncoder().encode(mine) { UserDefaults.standard.set(data, forKey: mineKey) }
         pending.append(rating)
@@ -73,13 +79,13 @@ final class StoreRatingStore {
         await flushPending()
     }
 
-    /// 用本地评分更新店铺概要，作为后端不可达时的估算
-    private func applyLocally(_ rating: StoreRating) {
+    /// 用本地评分更新店铺概要，作为后端不可达时的估算；更新评分时先把旧分退掉
+    private func applyLocally(_ rating: StoreRating, replacing previous: StoreRating?) {
         guard let index = stores.firstIndex(where: { $0.id == rating.storeID }) else { return }
         var store = stores[index]
-        let total = store.averageScore * Double(store.visitorCount) + Double(rating.score)
-        store.visitorCount += 1
-        store.averageScore = (total / Double(store.visitorCount) * 10).rounded() / 10
+        var total = store.averageScore * Double(store.visitorCount) + Double(rating.score)
+        if let previous { total -= Double(previous.score) } else { store.visitorCount += 1 }
+        store.averageScore = (total / Double(max(1, store.visitorCount)) * 10).rounded() / 10
         var tags = rating.tags
         for tag in store.tags where !tags.contains(tag) { tags.append(tag) }
         store.tags = Array(tags.prefix(4))

@@ -13,6 +13,12 @@ final class CommunityStore {
     private(set) var feed: CommunityFeed = SeedData.feed
     /// 本机分享到社群的旅程，排在最前
     private(set) var sharedJourneys: [CommunityFeed.Journey] = []
+    /// 我发出的邀约（演示：只存本地）
+    private(set) var sentInvitations: [SentInvitation] = {
+        guard let data = UserDefaults.standard.data(forKey: "walkmate.sentInvitations"),
+              let saved = try? JSONDecoder().decode([SentInvitation].self, from: data) else { return [] }
+        return saved
+    }()
     private let sharedFileURL: URL
     /// 本机删掉的旅程 ID（含后端里自己那条），刷新后仍不显示
     private var deletedJourneyIDs: Set<String> = Set(UserDefaults.standard.stringArray(forKey: "walkmate.deletedJourneys") ?? [])
@@ -51,6 +57,22 @@ final class CommunityStore {
         do { try await backend.respond(invitationID: invitationID, accepted: accepted) }
         catch { Log.warning("邀约响应同步失败：\(error)", category: .general) }
     }
+
+    /// 可邀请的好友（演示名单）
+    static let friends: [(name: String, avatarKey: String)] = [
+        ("Momo", "avatar_momo"), ("子璇爸爸", "avatar_zixuan"), ("刘佳佳", "avatar_liujiajia"),
+    ]
+
+    /// 向好友发出去某家店的邀约
+    func invite(friend: String, to store: StoreSummary, time: String) {
+        let invitation = SentInvitation(id: UUID().uuidString, friend: friend, storeId: store.id, storeName: store.name, time: time, createdAt: Date())
+        sentInvitations.removeAll { $0.storeId == store.id && $0.friend == friend }
+        sentInvitations.insert(invitation, at: 0)
+        if let data = try? JSONEncoder().encode(sentInvitations) { UserDefaults.standard.set(data, forKey: "walkmate.sentInvitations") }
+        Log.info("已邀请 \(friend) 去 \(store.name)", category: .ui)
+    }
+
+    func sentInvitations(for storeID: String) -> [SentInvitation] { sentInvitations.filter { $0.storeId == storeID } }
 
     /// 社群里看到的全部旅程：自己分享的在前，其余按后端顺序；同一条不重复
     var journeys: [CommunityFeed.Journey] {
@@ -142,6 +164,16 @@ final class CommunityStore {
         guard let index = feed.invitations.firstIndex(where: { $0.id == id }) else { return }
         feed.invitations[index].status = status
     }
+}
+
+/// 我发出的邀约
+struct SentInvitation: Codable, Identifiable, Equatable {
+    let id: String
+    let friend: String
+    let storeId: String
+    let storeName: String
+    let time: String
+    let createdAt: Date
 }
 
 /// 内置种子数据，与后端 seed.py 保持一致，用于后端不可达时展示

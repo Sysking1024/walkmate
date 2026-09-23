@@ -15,6 +15,7 @@ struct CommunityView: View {
     @State private var commentTarget: CommunityFeed.Journey?
     @State private var deleteTarget: CommunityFeed.Journey?
     @State private var routeTarget: StoreSummary?
+    @State private var inviteTarget: StoreSummary?
 
     var body: some View {
         NavigationStack {
@@ -63,6 +64,9 @@ struct CommunityView: View {
         }
         .sheet(item: $commentTarget) { journey in
             JourneyCommentSheet(journey: journey) { commentTarget = nil }
+        }
+        .sheet(item: $inviteTarget) { store in
+            InviteFriendSheet(store: store) { inviteTarget = nil }
         }
         .alert("删除这条旅程？", isPresented: Binding(get: { deleteTarget != nil }, set: { if !$0 { deleteTarget = nil } })) {
             Button("删除", role: .destructive) {
@@ -168,6 +172,24 @@ struct CommunityView: View {
                 }
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel("查看路线，\(store.name)")
+
+            // 邀好友一起去；已发出的邀约在卡片上列出来
+            let sent = communityStore.sentInvitations(for: store.id)
+            if !sent.isEmpty {
+                Text("已邀请 " + sent.map(\.friend).joined(separator: "、") + "，等待回复")
+                    .font(WalkMateTheme.Fonts.caption)
+                    .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.85))
+            }
+            Text("邀请好友一起去")
+                .font(WalkMateTheme.Fonts.body).tracking(1.6)
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: 48)
+                .background(Color.white.opacity(0.2))
+                .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                .contentShape(Rectangle())
+                .onTapGesture { inviteTarget = store }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel("邀请好友一起去\(store.name)")
         }
         .padding(WalkMateTheme.Layout.cardPadding)
         .frame(maxWidth: .infinity)
@@ -470,3 +492,105 @@ struct JourneyCommentSheet: View {
     }
 }
 
+/// 邀请好友去某家店：选一个人、选个时间，发出即在卡片和首页任务里出现
+struct InviteFriendSheet: View {
+    let store: StoreSummary
+    let onClose: () -> Void
+
+    @State private var community = CommunityStore.shared
+    @State private var friend: String = CommunityStore.friends.first?.name ?? ""
+    @State private var timeIndex = 0
+    @State private var sent = false
+
+    private let times = ["明天上午 9:30", "明天下午 3:00", "周六上午 10:00", "周日下午 2:00"]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 22) {
+                    WMPageTitle(text: "邀请好友一起去")
+                    Text(store.name)
+                        .font(WalkMateTheme.Fonts.body)
+                        .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.85))
+
+                    WMSectionHeader(title: "邀请谁")
+                    VStack(spacing: 0) {
+                        ForEach(Array(CommunityStore.friends.enumerated()), id: \.offset) { index, item in
+                            Button {
+                                friend = item.name
+                            } label: {
+                                HStack(spacing: 14) {
+                                    WMAvatar(imageName: item.avatarKey, size: 44)
+                                    Text(item.name).font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                                    Spacer()
+                                    Image(systemName: friend == item.name ? "checkmark.circle.fill" : "circle")
+                                        .font(.system(size: 24))
+                                        .foregroundStyle(friend == item.name ? WalkMateTheme.Colors.accent : Color.white.opacity(0.4))
+                                }
+                                .padding(.vertical, 10)
+                                .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(friend == item.name ? [.isButton, .isSelected] : .isButton)
+                            if index < CommunityStore.friends.count - 1 { Divider().overlay(WalkMateTheme.Colors.divider) }
+                        }
+                    }
+                    .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
+                    .padding(.vertical, 6)
+                    .wmCard()
+
+                    WMSectionHeader(title: "什么时候")
+                    VStack(spacing: 0) {
+                        ForEach(Array(times.enumerated()), id: \.offset) { index, time in
+                            Button { timeIndex = index } label: {
+                                HStack {
+                                    Text(time).font(WalkMateTheme.Fonts.body).foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                                    Spacer()
+                                    Image(systemName: timeIndex == index ? "checkmark.circle.fill" : "circle")
+                                        .font(.system(size: 24))
+                                        .foregroundStyle(timeIndex == index ? WalkMateTheme.Colors.accent : Color.white.opacity(0.4))
+                                }
+                                .padding(.vertical, 10)
+                                .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityAddTraits(timeIndex == index ? [.isButton, .isSelected] : .isButton)
+                            if index < times.count - 1 { Divider().overlay(WalkMateTheme.Colors.divider) }
+                        }
+                    }
+                    .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
+                    .padding(.vertical, 6)
+                    .wmCard()
+
+                    WMButton(title: sent ? "已发出邀请" : "发出邀请", height: 61) { send() }
+                        .disabled(sent)
+                }
+                .wmPageInset()
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .background(WalkMateTheme.Colors.background.ignoresSafeArea())
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("关闭", action: onClose)
+                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+            }
+            .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
+        }
+        .preferredColorScheme(.dark)
+        .onAppear { AccessibilityFeedback.screenChanged("邀请好友") }
+    }
+
+    private func send() {
+        community.invite(friend: friend, to: store, time: times[timeIndex])
+        sent = true
+        AccessibilityFeedback.done("已邀请 \(friend)，\(times[timeIndex])")
+        Task {
+            try? await Task.sleep(nanoseconds: 700_000_000)
+            onClose()
+        }
+    }
+}

@@ -89,6 +89,10 @@ struct HomeView: View {
             items.append(TaskItem(id: invitation.id, title: "和 \(invitation.from) 去\(invitation.place)", detail: invitation.time, done: false,
                                   store: invitation.storeId.flatMap { ratingStore.store(id: $0) }))
         }
+        for sent in community.sentInvitations {
+            items.append(TaskItem(id: sent.id, title: "约 \(sent.friend) 去\(sent.storeName)", detail: "\(sent.time) · 等待回复", done: false,
+                                  store: ratingStore.store(id: sent.storeId)))
+        }
         return items
     }
 

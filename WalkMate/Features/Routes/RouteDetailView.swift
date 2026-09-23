@@ -63,6 +63,7 @@ struct RouteDetailView: View {
                     .font(WalkMateTheme.Fonts.body)
                     .foregroundStyle(WalkMateTheme.Colors.accentSoft)
                     .frame(maxWidth: .infinity, minHeight: 48)
+                WMButton(title: "修改评分", style: .subdued, height: 48) { showRating = true }
             } else {
                 WMButton(title: "给这家店打分", height: 61) { showRating = true }
             }
