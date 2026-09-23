@@ -4,6 +4,9 @@
 **关联模型**: [data-model.md](../data-model.md)  
 **创建时间**: 2026-09-22  
 
+> [!NOTE]
+> **交付状态说明**：本契约及其对应的代码实现（`CameraPipeline.swift`、`StreamPlayerBridge.swift`、`GyroDataHandler.swift`）**已经完全开发完毕并通过真机联调验证**，属于**已完成的系统基石（Completed Baseline）**。本规范予以完整保留，对外协议保持绝对稳定，供下游空间感知流水线直接挂载消费。
+
 ---
 
 ## 一、模块职责

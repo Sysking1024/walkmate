@@ -8,29 +8,75 @@
 
 /* Begin PBXBuildFile section */
 		0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */; };
+		144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */; };
 		16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */; };
 		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
 		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
+		39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */; };
 		3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; };
 		4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */; };
+		4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */; };
+		5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */; };
 		6A01649963AB2BEAAD6845EC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5498756E59D2F84A66C26DF /* Log.swift */; };
+		6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */; };
 		70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */; };
+		7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */; };
+		7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */; };
 		8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */; };
 		8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB665524D4B1FD6014B271D /* InferenceTests.swift */; };
 		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
+		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
 		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
+		B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */; };
 		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
 		BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */; };
+		BEE51A1E31B39825AC1BEFCB /* DAPEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */; };
 		BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93BE0730790922553537549 /* CameraPipeline.swift */; };
+		C1BA1CE198A17E94F9BB25ED /* GeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */; };
 		C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAAE4606E429E914DCB254E /* GravityAligner.swift */; };
+		C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */; };
+		D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */; };
+		D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */; };
+		E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839DCF58737B54707405439 /* ToolModels.swift */; };
+		E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */; };
 		EA861847E607B54465C201DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044702FEF2781A714A52AF5 /* ContentView.swift */; };
 		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A086075E7EE3E4CB1CA462E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		A4A7647355CB35E31884D378 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		B4D5EC36338B94A819E897E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
 		DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		F1F70F10675D652F63890C59 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
 			proxyType = 1;
@@ -57,24 +103,46 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalProjector.swift; sourceTree = "<group>"; };
 		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
 		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
 		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
+		456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceleratePreprocessor.swift; sourceTree = "<group>"; };
+		5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTracker.swift; sourceTree = "<group>"; };
 		64F024C8A3562A552B6792C3 /* FrameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModels.swift; sourceTree = "<group>"; };
+		6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleDetector.swift; sourceTree = "<group>"; };
 		68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramicStreamView.swift; sourceTree = "<group>"; };
+		6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionEngineTests.swift; sourceTree = "<group>"; };
 		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
-		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassableRouteTests.swift; sourceTree = "<group>"; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
+		857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageRoutePlanner.swift; sourceTree = "<group>"; };
+		8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PerceptionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAPEngine.swift; sourceTree = "<group>"; };
+		91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKit.swift; sourceTree = "<group>"; };
+		9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundPlaneEstimator.swift; sourceTree = "<group>"; };
 		9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorTelemetryCard.swift; sourceTree = "<group>"; };
+		9FB665524D4B1FD6014B271D /* InferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceTests.swift; sourceTree = "<group>"; };
 		A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCoreMedia.xcframework; path = Frameworks/INSCoreMedia.xcframework; sourceTree = "<group>"; };
+		A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryTests.swift; sourceTree = "<group>"; };
 		AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPlayerBridge.swift; sourceTree = "<group>"; };
+		B839DCF58737B54707405439 /* ToolModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolModels.swift; sourceTree = "<group>"; };
+		BAAAE4606E429E914DCB254E /* GravityAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GravityAligner.swift; sourceTree = "<group>"; };
+		BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = InferenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SSZipArchive.xcframework; path = Frameworks/SSZipArchive.xcframework; sourceTree = "<group>"; };
 		C044702FEF2781A714A52AF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C5498756E59D2F84A66C26DF /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraServiceSDK.xcframework; path = Frameworks/INSCameraServiceSDK.xcframework; sourceTree = "<group>"; };
+		D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKitTests.swift; sourceTree = "<group>"; };
 		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
+		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
 		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
 		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
 		E93BE0730790922553537549 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
+		EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ToolkitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +171,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		0BB71713613AB35E434FA834 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				BAAAE4606E429E914DCB254E /* GravityAligner.swift */,
+				9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */,
+				2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */,
+			);
+			path = Geometry;
+			sourceTree = "<group>";
+		};
 		0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -118,10 +196,40 @@
 				61A2FE2B02E2517228A5EA90 /* App */,
 				0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */,
 				67A8893A47EE14F9AD376867 /* Core */,
+				DD8B47801B1216A13BF4A80E /* GeometryTests */,
+				E3E68F02D83D0B632D54A80B /* InferenceTests */,
 				AC713B0EB62E8D8D8F024473 /* Models */,
+				E830EFB4F2958558F6183AE1 /* PerceptionTests */,
+				5B14F6567AE8293A18AA14F6 /* Resources */,
+				4669D27B66744D7C46EBB731 /* ToolkitTests */,
 				00227ACEB3AF1A3A6B6E77A4 /* Frameworks */,
 				C227948D0FFA03756AB7F7D0 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		33999797768AF687EE0FA48B /* Toolkits */ = {
+			isa = PBXGroup;
+			children = (
+				92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */,
+			);
+			path = Toolkits;
+			sourceTree = "<group>";
+		};
+		4669D27B66744D7C46EBB731 /* ToolkitTests */ = {
+			isa = PBXGroup;
+			children = (
+				D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */,
+			);
+			name = ToolkitTests;
+			path = ../Tests/ToolkitTests;
+			sourceTree = "<group>";
+		};
+		5B14F6567AE8293A18AA14F6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7F16D93A0D3989BC4F8D7D2A /* Models */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		61A2FE2B02E2517228A5EA90 /* App */ = {
@@ -146,6 +254,11 @@
 			isa = PBXGroup;
 			children = (
 				69A8918F85B5A915D5308FCE /* Camera */,
+				EAFCF0864CB0AF2D46D01EDC /* Engine */,
+				0BB71713613AB35E434FA834 /* Geometry */,
+				FFCD70091BCC481B3A24592A /* Inference */,
+				E742D9264920FA2B79AC9039 /* Perception */,
+				33999797768AF687EE0FA48B /* Toolkits */,
 				6764D7282FA491C1EDB1EE12 /* Utils */,
 			);
 			path = Core;
@@ -159,6 +272,14 @@
 				AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */,
 			);
 			path = Camera;
+			sourceTree = "<group>";
+		};
+		7F16D93A0D3989BC4F8D7D2A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		8D93F230C575814EA9D06F11 /* Views */ = {
@@ -176,6 +297,7 @@
 				64F024C8A3562A552B6792C3 /* FrameModels.swift */,
 				DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */,
 				26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */,
+				B839DCF58737B54707405439 /* ToolModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -184,14 +306,146 @@
 			isa = PBXGroup;
 			children = (
 				3534C926737FFE25F9FB5992 /* CameraTests.xctest */,
+				91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */,
+				BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */,
+				8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */,
+				EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */,
 				72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
+		DD8B47801B1216A13BF4A80E /* GeometryTests */ = {
+			isa = PBXGroup;
+			children = (
+				A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */,
+			);
+			name = GeometryTests;
+			path = ../Tests/GeometryTests;
+			sourceTree = "<group>";
+		};
+		E3E68F02D83D0B632D54A80B /* InferenceTests */ = {
+			isa = PBXGroup;
+			children = (
+				9FB665524D4B1FD6014B271D /* InferenceTests.swift */,
+			);
+			name = InferenceTests;
+			path = ../Tests/InferenceTests;
+			sourceTree = "<group>";
+		};
+		E742D9264920FA2B79AC9039 /* Perception */ = {
+			isa = PBXGroup;
+			children = (
+				6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */,
+				5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */,
+				857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */,
+			);
+			path = Perception;
+			sourceTree = "<group>";
+		};
+		E830EFB4F2958558F6183AE1 /* PerceptionTests */ = {
+			isa = PBXGroup;
+			children = (
+				3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */,
+				717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */,
+				6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */,
+			);
+			name = PerceptionTests;
+			path = ../Tests/PerceptionTests;
+			sourceTree = "<group>";
+		};
+		EAFCF0864CB0AF2D46D01EDC /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		FFCD70091BCC481B3A24592A /* Inference */ = {
+			isa = PBXGroup;
+			children = (
+				456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */,
+				8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */,
+			);
+			path = Inference;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1E23C07BBAB21D8A1859DACA /* PerceptionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDCC241034E5B35EBDA9D54F /* Build configuration list for PBXNativeTarget "PerceptionTests" */;
+			buildPhases = (
+				15CA529CE1348A0AD4EB0247 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				241792687557202B98BFF774 /* PBXTargetDependency */,
+			);
+			name = PerceptionTests;
+			packageProductDependencies = (
+			);
+			productName = PerceptionTests;
+			productReference = 8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5EE00B7C4A06699B5FF6BD5B /* GeometryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6AE026A97069C0D180D41633 /* Build configuration list for PBXNativeTarget "GeometryTests" */;
+			buildPhases = (
+				F8B2BECBC433A0B6279E6D50 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8510E60ADCD616F63EF3EE2D /* PBXTargetDependency */,
+			);
+			name = GeometryTests;
+			packageProductDependencies = (
+			);
+			productName = GeometryTests;
+			productReference = 91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BE0C96D69F7DFED10AA888AC /* ToolkitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6106C2EBCD79B8BE73E9954 /* Build configuration list for PBXNativeTarget "ToolkitTests" */;
+			buildPhases = (
+				4B9717BD572FBD1F71EAA8FA /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F0B16896E678F380D3FBFF0 /* PBXTargetDependency */,
+			);
+			name = ToolkitTests;
+			packageProductDependencies = (
+			);
+			productName = ToolkitTests;
+			productReference = EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C7ED42344329B2014AA2251C /* InferenceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2F07DBEAAD4582027F01BEE6 /* Build configuration list for PBXNativeTarget "InferenceTests" */;
+			buildPhases = (
+				21DCD0971ECC0BB7FA4DC1FF /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				906CD995AC22A562BE978798 /* PBXTargetDependency */,
+			);
+			name = InferenceTests;
+			packageProductDependencies = (
+			);
+			productName = InferenceTests;
+			productReference = BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		D0C10D6348A3309AC5F5EA63 /* WalkMate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */;
@@ -238,7 +492,24 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					1E23C07BBAB21D8A1859DACA = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					5EE00B7C4A06699B5FF6BD5B = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					BE0C96D69F7DFED10AA888AC = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					C7ED42344329B2014AA2251C = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
 					D0C10D6348A3309AC5F5EA63 = {
+						DevelopmentTeam = X2SP6R5LL3;
 						ProvisioningStyle = Automatic;
 					};
 					D8A983DE875364D7AFB1F969 = {
@@ -263,11 +534,41 @@
 			targets = (
 				D0C10D6348A3309AC5F5EA63 /* WalkMate */,
 				D8A983DE875364D7AFB1F969 /* CameraTests */,
+				C7ED42344329B2014AA2251C /* InferenceTests */,
+				5EE00B7C4A06699B5FF6BD5B /* GeometryTests */,
+				1E23C07BBAB21D8A1859DACA /* PerceptionTests */,
+				BE0C96D69F7DFED10AA888AC /* ToolkitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		15CA529CE1348A0AD4EB0247 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */,
+				D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */,
+				7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21DCD0971ECC0BB7FA4DC1FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B9717BD572FBD1F71EAA8FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9E89F8804D7B03C4ADA2BD97 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -280,17 +581,37 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */,
 				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
 				EA861847E607B54465C201DB /* ContentView.swift in Sources */,
+				BEE51A1E31B39825AC1BEFCB /* DAPEngine.swift in Sources */,
 				F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */,
+				C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */,
+				E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */,
 				16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */,
 				6A01649963AB2BEAAD6845EC /* Log.swift in Sources */,
+				AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */,
+				39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */,
 				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
+				7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */,
 				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,
 				70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */,
+				144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */,
+				5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */,
+				B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */,
 				8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */,
 				0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */,
+				E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */,
 				4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */,
+				6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8B2BECBC433A0B6279E6D50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1BA1CE198A17E94F9BB25ED /* GeometryTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +623,26 @@
 			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
 			targetProxy = DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */;
 		};
+		241792687557202B98BFF774 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = B4D5EC36338B94A819E897E1 /* PBXContainerItemProxy */;
+		};
+		3F0B16896E678F380D3FBFF0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = A4A7647355CB35E31884D378 /* PBXContainerItemProxy */;
+		};
+		8510E60ADCD616F63EF3EE2D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = F1F70F10675D652F63890C59 /* PBXContainerItemProxy */;
+		};
+		906CD995AC22A562BE978798 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = A086075E7EE3E4CB1CA462E2 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -311,7 +652,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",
@@ -336,7 +676,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 4GDD3U4TPV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks",
 					"\"Frameworks\"",
@@ -403,6 +742,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -468,6 +808,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -480,10 +821,126 @@
 			};
 			name = Debug;
 		};
+		4A2131004BFB61C5737AAA9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.GeometryTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		4C2D779A193EFE225CDA5D4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.PerceptionTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		7CFD8D45B7000EAA2E1FCAEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ToolkitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		7DAE7D8FA78E870BB453D99F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.InferenceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		7DF8064381FCA4D3398DCFCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.GeometryTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		C522FDA5A7D391D344A6AAD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.InferenceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
 		C885A89B331082503469E71A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -501,6 +958,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -514,6 +973,44 @@
 			};
 			name = Release;
 		};
+		DF8A36036F68D8ED0FA3F170 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.PerceptionTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		F418CEDFE94933C696597ECE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ToolkitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -522,6 +1019,24 @@
 			buildConfigurations = (
 				3CFA52B84A47505A493FE059 /* Debug */,
 				14B0EB34B99386006416E14E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2F07DBEAAD4582027F01BEE6 /* Build configuration list for PBXNativeTarget "InferenceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DAE7D8FA78E870BB453D99F /* Debug */,
+				C522FDA5A7D391D344A6AAD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6AE026A97069C0D180D41633 /* Build configuration list for PBXNativeTarget "GeometryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DF8064381FCA4D3398DCFCC /* Debug */,
+				4A2131004BFB61C5737AAA9D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -540,6 +1055,24 @@
 			buildConfigurations = (
 				C885A89B331082503469E71A /* Debug */,
 				D586FE602A7D1EE27BA0CE9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B6106C2EBCD79B8BE73E9954 /* Build configuration list for PBXNativeTarget "ToolkitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F418CEDFE94933C696597ECE /* Debug */,
+				7CFD8D45B7000EAA2E1FCAEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EDCC241034E5B35EBDA9D54F /* Build configuration list for PBXNativeTarget "PerceptionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF8A36036F68D8ED0FA3F170 /* Debug */,
+				4C2D779A193EFE225CDA5D4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

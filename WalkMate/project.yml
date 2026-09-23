@@ -10,6 +10,19 @@ settings:
     DEVELOPMENT_TEAM: "X2SP6R5LL3"
     CODE_SIGN_STYLE: Automatic
     ENABLE_BITCODE: NO
+    GENERATE_INFOPLIST_FILE: YES
+
+targetTemplates:
+  TestTarget:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    dependencies:
+      - target: WalkMate
+    settings:
+      base:
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGN_IDENTITY: "-"
 
 targets:
   WalkMate:
@@ -20,6 +33,7 @@ targets:
       - path: App
       - path: Core
       - path: Models
+      - path: Resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: accera.world.walkmate
@@ -47,10 +61,49 @@ targets:
         codeSign: true
 
   CameraTests:
-    type: bundle.unit-test
-    platform: iOS
-    deploymentTarget: "17.0"
+    templates:
+      - TestTarget
     sources:
       - path: ../Tests/CameraTests
-    dependencies:
-      - target: WalkMate
+
+  InferenceTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/InferenceTests
+
+  GeometryTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/GeometryTests
+
+  PerceptionTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/PerceptionTests
+
+  ToolkitTests:
+    templates:
+      - TestTarget
+    sources:
+      - path: ../Tests/ToolkitTests
+
+schemes:
+  WalkMate:
+    build:
+      targets:
+        WalkMate: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - CameraTests
+        - InferenceTests
+        - GeometryTests
+        - PerceptionTests
+        - ToolkitTests
+
+

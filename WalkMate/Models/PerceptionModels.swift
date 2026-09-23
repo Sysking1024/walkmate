@@ -2,46 +2,79 @@
 //  PerceptionModels.swift
 //  WalkMate
 //
-//  Created by Antigravity on 2026-09-22.
+//  Created by Antigravity on 2026-09-22（修订于 2026-09-23）.
 //
 
 import Foundation
 import simd
 
+// MARK: - 障碍物与空间危险源分类
+
+/// 空间障碍物/危险源类型分类
+public enum ObstacleCategory: String, Codable, Sendable {
+    /// 地面凸起障碍物（箱子、椅子、立柱等）
+    case groundObstacle = "groundObstacle"
+    /// 高空悬挂/碰头危险（离地 > 1.4 米的悬空树枝、招牌等）
+    case hangingHazard = "hangingHazard"
+    /// 地面下沉断层（落差 > 15 厘米的下行阶梯、深坑台阶等）
+    case dropOffHazard = "dropOffHazard"
+    /// 动态移动行人或物体
+    case dynamicEntity = "dynamicEntity"
+}
+
+// MARK: - 单个空间障碍物实体
+
 /// 单个空间障碍物在使用者相对坐标系中的空间描述
-public struct SpatialObstacleItem: Codable, Equatable, Sendable {
+public struct ObstacleItem: Codable, Equatable, Sendable, Identifiable {
+    /// 跨帧唯一跟踪标识符（在目标连续移动期间保持稳定）
+    public let id: Int
     /// 三维相对坐标 (x:水平左右, y:垂直高度, z:前后纵深, 单位: 米)
-    /// 严格遵循 iOS 空间音频右手坐标系: +X 为右, -X 为左, +Y 为上, -Z 为前 (纵深前向为负), +Z 为后
+    /// 严格遵循 iOS 空间音频右手坐标系: +X 为右, -X 为左, +Y 为上, -Z 为前向纵深, +Z 为后方
     public let position: SIMD3<Float>
-    /// 空间直线绝对距离 (单位: 米)
+    /// 直线绝对距离 (单位: 米)
     public let distance: Float
-    /// 水平偏转方位角 (单位: 度, 负值为左, 正值为右)
+    /// 水平偏转方位角 (单位: 度, -180° ~ +180°, 0° 为正前方, 负值为左, 正值为右)
     public let azimuth: Float
     /// 垂直仰角 (单位: 度, 负值为低矮, 正值为悬挂)
     public let elevation: Float
-    /// 动态相对接近速率 (米/秒, 计算公式 v_approach = (d_{t-1} - d_t) / Δt, 正值表示迎面逼近, 负值表示远离)
+    /// 物理空间三维包围盒尺寸 (宽、高、深，单位: 米)
+    public let size: SIMD3<Float>
+    /// 障碍物危险源分类
+    public let category: ObstacleCategory
+    /// 相对运动速度矢量 (vx, vy, vz, 单位: 米/秒)
+    public let relativeVelocity: SIMD3<Float>
+    /// 标量动态相对接近速率 (米/秒, 正值表示迎面逼近, 负值表示远离)
     public let approachRate: Float
     /// 综合威胁优先级评分
     public let priorityScore: Float
     /// 威胁级别
     public let threatLevel: ThreatLevel
-    /// 是否为身后危险 (true 表示在用户后方，触发后方空间音频)
+    /// 是否位于使用者后方 (true 表示处于后方视野)
     public let isRearHazard: Bool
     
+    /// 初始化障碍物对象
     public init(
+        id: Int,
         position: SIMD3<Float>,
         distance: Float,
         azimuth: Float,
         elevation: Float,
+        size: SIMD3<Float>,
+        category: ObstacleCategory,
+        relativeVelocity: SIMD3<Float>,
         approachRate: Float,
         priorityScore: Float,
         threatLevel: ThreatLevel,
         isRearHazard: Bool
     ) {
+        self.id = id
         self.position = position
         self.distance = distance
         self.azimuth = azimuth
         self.elevation = elevation
+        self.size = size
+        self.category = category
+        self.relativeVelocity = relativeVelocity
         self.approachRate = approachRate
         self.priorityScore = priorityScore
         self.threatLevel = threatLevel
@@ -49,101 +82,76 @@ public struct SpatialObstacleItem: Codable, Equatable, Sendable {
     }
 }
 
-/// 当前最佳安全通行走廊几何描述
-public struct PassageCorridorGeometry: Codable, Equatable, Sendable {
-    /// 是否存在可通过走廊 (人体宽度 0.6m 约束)
-    public let isPassable: Bool
-    /// 建议行进方位角 (度, 指向通道中心)
-    public let recommendedSteeringAngle: Float
-    /// 通道最窄处的物理净宽 (米, 如 0.9m 门宽)
-    public let clearanceWidth: Float
-    /// 安全可行进纵深距离 (米)
-    public let passableDepth: Float
-    /// 通道中心的三维空间导向锚点坐标 (严格遵循 iOS 空间音频坐标系: targetAnchor.z = -min(passableDepth, 2.0) <= 0; 当 isPassable == false 时统一为 SIMD3<Float>.zero)
-    public let targetAnchor: SIMD3<Float>
-    
-    public init(
-        isPassable: Bool,
-        recommendedSteeringAngle: Float,
-        clearanceWidth: Float,
-        passableDepth: Float,
-        targetAnchor: SIMD3<Float>
-    ) {
-        self.isPassable = isPassable
-        self.recommendedSteeringAngle = recommendedSteeringAngle
-        self.clearanceWidth = clearanceWidth
-        self.passableDepth = passableDepth
-        self.targetAnchor = targetAnchor
-    }
-    
-    /// 默认不可通行走廊
-    public static var blocked: PassageCorridorGeometry {
-        PassageCorridorGeometry(
-            isPassable: false,
-            recommendedSteeringAngle: 0.0,
-            clearanceWidth: 0.0,
-            passableDepth: 0.0,
-            targetAnchor: SIMD3<Float>(0, 0, 0)
-        )
-    }
-}
+// MARK: - 全场景 360° 障碍物集合
 
-/// 前方或后方地面踏空下沉事件
-public struct DropOffHazardEvent: Codable, Equatable, Sendable {
-    /// 距离使用者的水平距离 (米)
-    public let distance: Float
-    /// 危险边缘所在方位角 (度)
-    public let azimuth: Float
-    /// 预估向下落差深度 (米, 通常 > 0.15m 触发)
-    public let dropDepth: Float
-    /// 是否发生在身后 (true 表示后退踩空危险)
-    public let isRearHazard: Bool
-    
-    public init(
-        distance: Float,
-        azimuth: Float,
-        dropDepth: Float,
-        isRearHazard: Bool
-    ) {
-        self.distance = distance
-        self.azimuth = azimuth
-        self.dropDepth = dropDepth
-        self.isRearHazard = isRearHazard
-    }
-}
-
-/// 每帧对外输出的完整空间感知聚合结果 (供上层空间音频消费)
-public struct SpatialPerceptionResult: Codable, Sendable {
-    /// 帧序号
+/// 单帧输出的全场景 360° 障碍物数据聚合体
+public struct ObstacleData: Codable, Equatable, Sendable {
+    /// 对应输入视频帧序号
     public let frameId: Int64
     /// 毫秒时间戳
     public let timestampMs: Int64
-    /// 用户当前运动状态
-    public let motionState: UserMotionState
-    /// 障碍物列表 (按优先级排序，最多 3 项)
-    public let obstacles: [SpatialObstacleItem]
-    /// 安全通行走廊
-    public let corridor: PassageCorridorGeometry
-    /// 跌落风险 (若无则为 nil)
-    public let dropOff: DropOffHazardEvent?
-    /// 传感器遥测指标
-    public let telemetry: SensorTelemetry
+    /// 全量检出的 360° 障碍物列表
+    public let obstacles: [ObstacleItem]
     
+    /// 初始化全场景障碍物集合
     public init(
         frameId: Int64,
         timestampMs: Int64,
-        motionState: UserMotionState,
-        obstacles: [SpatialObstacleItem],
-        corridor: PassageCorridorGeometry,
-        dropOff: DropOffHazardEvent?,
-        telemetry: SensorTelemetry
+        obstacles: [ObstacleItem]
     ) {
         self.frameId = frameId
         self.timestampMs = timestampMs
-        self.motionState = motionState
         self.obstacles = obstacles
-        self.corridor = corridor
-        self.dropOff = dropOff
-        self.telemetry = telemetry
+    }
+}
+
+// MARK: - 可通行路线折线实体
+
+/// 可通行路线上的单个三维路标折线点
+public struct RouteWaypoint: Codable, Equatable, Sendable {
+    /// 相对空间三维坐标 (单位: 米)
+    public let position: SIMD3<Float>
+    /// 该路标点位置处的物理通行净宽 (单位: 米，如 1.2m)
+    public let clearanceWidth: Float
+    
+    /// 初始化路标点
+    public init(position: SIMD3<Float>, clearanceWidth: Float) {
+        self.position = position
+        self.clearanceWidth = clearanceWidth
+    }
+}
+
+/// 当前可通行路线与空间走廊几何描述
+public struct PassableRouteData: Codable, Equatable, Sendable {
+    /// 是否存在安全可通过路线
+    public let isPathAvailable: Bool
+    /// 最大安全可行进纵深 (米)
+    public let safeDepth: Float
+    /// 推荐起步偏航方位角 (度, 指向通道中心)
+    public let recommendedHeading: Float
+    /// 连续路径路标点序列（由近及远排列）
+    public let waypoints: [RouteWaypoint]
+    
+    /// 初始化可通行路线数据
+    public init(
+        isPathAvailable: Bool,
+        safeDepth: Float,
+        recommendedHeading: Float,
+        waypoints: [RouteWaypoint]
+    ) {
+        self.isPathAvailable = isPathAvailable
+        self.safeDepth = safeDepth
+        self.recommendedHeading = recommendedHeading
+        self.waypoints = waypoints
+    }
+    
+    /// 默认不可通行状态
+    public static var blocked: PassableRouteData {
+        PassableRouteData(
+            isPathAvailable: false,
+            safeDepth: 0.0,
+            recommendedHeading: 0.0,
+            waypoints: []
+        )
     }
 }
