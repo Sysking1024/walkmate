@@ -1,3 +1,4 @@
+import AVKit
 import SwiftUI
 
 /// 成长详情：本周每日训练时长、累计数据与最近记录，全部来自本机训练记录。
@@ -11,7 +12,6 @@ struct GrowthDetailView: View {
                 WMPageTitle(text: "成长详情")
                 weeklyChart
                 totals
-                badgeSection
                 recentSection
             }
             .wmPageInset()
@@ -77,35 +77,6 @@ struct GrowthDetailView: View {
         }
     }
 
-    // MARK: - 徽章
-
-    private var badgeSection: some View {
-        VStack(spacing: 12) {
-            WMSectionHeader(title: "我的徽章")
-            HStack(spacing: 8) {
-                badgeTile("badge_obstacles_10", "成功避障十次")
-                badgeTile("badge_first_step", "首次完成训练")
-                badgeTile("badge_meet_friend", "成功和朋友会面")
-            }
-        }
-    }
-
-    private func badgeTile(_ image: String, _ title: String) -> some View {
-        VStack(spacing: 4) {
-            Image(image).resizable().scaledToFit().frame(height: 66)
-            Text(title)
-                .font(WalkMateTheme.Fonts.caption)
-                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
-        }
-        .padding(.horizontal, 6)
-        .frame(maxWidth: .infinity, minHeight: 110)
-        .wmCard(WalkMateTheme.Gradients.badgeTile)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("徽章，\(title)")
-    }
-
     // MARK: - 最近记录
 
     private var recentSection: some View {
@@ -136,6 +107,8 @@ struct GrowthDetailView: View {
 struct TrainingRecordList: View {
     let records: [TrainingRecord]
 
+    @State private var player: AVPlayer?
+
     var body: some View {
         VStack(spacing: 0) {
             ForEach(Array(records.enumerated()), id: \.element.id) { index, record in
@@ -154,6 +127,14 @@ struct TrainingRecordList: View {
                             .font(WalkMateTheme.Fonts.chip)
                             .foregroundStyle(WalkMateTheme.Colors.accentSoft)
                     }
+                    if let url = TrainingHistoryStore.reelURL(for: record) {
+                        Button { player = AVPlayer(url: url) } label: {
+                            Image("icon_play").resizable().scaledToFit().frame(width: 32, height: 32)
+                                .frame(minWidth: 48, minHeight: 48)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("播放这次的集锦")
+                    }
                 }
                 .padding(.vertical, 12)
                 .frame(minHeight: WalkMateTheme.Layout.minimumTapTarget)
@@ -166,6 +147,9 @@ struct TrainingRecordList: View {
         .padding(.horizontal, WalkMateTheme.Layout.cardPadding)
         .padding(.vertical, 6)
         .wmCard()
+        .fullScreenCover(item: $player) { player in
+            ReelPlayerView(player: player) { self.player = nil }
+        }
     }
 
     static func dateText(_ date: Date) -> String {

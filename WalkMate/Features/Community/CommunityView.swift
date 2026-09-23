@@ -1,3 +1,4 @@
+import AVKit
 import SwiftUI
 
 /// 社群页。对应设计稿「社群」。
@@ -7,7 +8,8 @@ import SwiftUI
 struct CommunityView: View {
     @State private var ratingStore = StoreRatingStore.shared
     @State private var communityStore = CommunityStore.shared
-    @State private var latestReel: URL?
+    @State private var history = TrainingHistoryStore.shared
+    @State private var player: AVPlayer?
 
     var body: some View {
         NavigationStack {
@@ -40,8 +42,10 @@ struct CommunityView: View {
             }
         }
         .tint(WalkMateTheme.Colors.textPrimary)
+        .fullScreenCover(item: $player) { player in
+            ReelPlayerView(player: player) { self.player = nil }
+        }
         .task {
-            latestReel = TrainingHistoryStore.latestReelURL
             await communityStore.refresh()
             await ratingStore.refresh()
         }
@@ -190,14 +194,20 @@ struct CommunityView: View {
     private func journeyCard(_ journey: CommunityFeed.Journey) -> some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
-                ZStack(alignment: .bottomLeading) {
-                    Image("journey_thumbnail").resizable().scaledToFill()
-                    WalkMateTheme.Gradients.coverShade
-                    Image("journey_play_badge").resizable().scaledToFit().frame(width: 32).padding(10)
+                Button {
+                    if let url = history.latestReelURL { player = AVPlayer(url: url) }
+                } label: {
+                    ZStack(alignment: .bottomLeading) {
+                        Image("journey_thumbnail").resizable().scaledToFill()
+                        WalkMateTheme.Gradients.coverShade
+                        Image("journey_play_badge").resizable().scaledToFit().frame(width: 32).padding(10)
+                    }
+                    .frame(width: 130, height: 130)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
-                .frame(width: 130, height: 130)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .accessibilityHidden(true)
+                .buttonStyle(.plain)
+                .disabled(history.latestReelURL == nil)
+                .accessibilityLabel("播放旅程视频")
 
                 VStack(alignment: .leading, spacing: 6) {
                     Text(journey.title)
@@ -231,7 +241,7 @@ struct CommunityView: View {
             .accessibilityElement(children: .combine)
 
             // 只有本机已经剪出过集锦，才有东西可分享
-            if let latestReel {
+            if let latestReel = history.latestReelURL {
                 ShareLink(item: latestReel) {
                     Text("分享我的旅程")
                         .font(WalkMateTheme.Fonts.body).tracking(1.6)

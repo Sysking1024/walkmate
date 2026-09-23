@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// 首页：开始训练、今日、本周、我的路线。进度页已并入这里。
+/// 首页：开始训练、今日、本周、我的路线、徽章。进度页已并入这里。
 ///
 /// 读屏顺序：开始训练按钮排第一；今日与本周各是一个元素，一句话读完；路线两行。
 struct HomeView: View {
@@ -20,6 +20,7 @@ struct HomeView: View {
                     todayCard
                     weekCard
                     routeSection
+                    badgeSection
                 }
                 .wmPageInset()
                 .wmTabBarClearance()
@@ -131,6 +132,35 @@ struct HomeView: View {
             }
             .buttonStyle(.plain)
         }
+    }
+
+    // MARK: - 徽章
+
+    private var badgeSection: some View {
+        VStack(spacing: 12) {
+            WMSectionHeader(title: "我的徽章")
+            HStack(spacing: 8) {
+                badgeTile("badge_obstacles_10", "成功避障十次")
+                badgeTile("badge_first_step", "首次完成训练")
+                badgeTile("badge_meet_friend", "成功和朋友会面")
+            }
+        }
+    }
+
+    private func badgeTile(_ image: String, _ title: String) -> some View {
+        VStack(spacing: 4) {
+            Image(image).resizable().scaledToFit().frame(height: 66)
+            Text(title)
+                .font(WalkMateTheme.Fonts.caption)
+                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .padding(.horizontal, 6)
+        .frame(maxWidth: .infinity, minHeight: 110)
+        .wmCard(WalkMateTheme.Gradients.badgeTile)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("徽章，\(title)")
     }
 
     private func routeRow(icon: String, title: String, detail: String) -> some View {

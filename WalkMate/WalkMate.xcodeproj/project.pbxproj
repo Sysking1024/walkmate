@@ -74,6 +74,7 @@
 		C35126847CCB71D40C740C96 /* GrowthDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 416790C1B2A40F17BB58AB03 /* GrowthDetailView.swift */; };
 		C386741DDF61B5E77854B400 /* NarrationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE0005537D4DC4CF8AB43E1 /* NarrationModels.swift */; };
 		C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAAE4606E429E914DCB254E /* GravityAligner.swift */; };
+		C6CF3DCE7C6950E6706BA730 /* demo_highlight.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 03D5859BF64D38F567317BE1 /* demo_highlight.mp4 */; };
 		C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */; };
 		D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */; };
 		D29483E2C3A526662360F9DD /* CompanionConversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBCCD19FD2BEB99355CDC7E /* CompanionConversation.swift */; };
@@ -145,6 +146,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		03D5859BF64D38F567317BE1 /* demo_highlight.mp4 */ = {isa = PBXFileReference; path = demo_highlight.mp4; sourceTree = "<group>"; };
 		0481058FC670F3EFE55ACB35 /* BackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendClient.swift; sourceTree = "<group>"; };
 		078AD588D52A975F451A55FC /* SpeechRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechRenderer.swift; sourceTree = "<group>"; };
 		0C04EC3DC2D57E252009645F /* TrainingGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingGoalView.swift; sourceTree = "<group>"; };
@@ -370,6 +372,14 @@
 			path = Backend;
 			sourceTree = "<group>";
 		};
+		5963BB14B99ECD1C284830FA /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				03D5859BF64D38F567317BE1 /* demo_highlight.mp4 */,
+			);
+			path = Demo;
+			sourceTree = "<group>";
+		};
 		5B14F6567AE8293A18AA14F6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -380,6 +390,7 @@
 				87DCFB588E58E69AF7874CDC /* sample_erp_3.jpg */,
 				E198B93ADEB46CD442FFAE1E /* Secrets.example.plist */,
 				B79A3479AFC700BF195D5D23 /* Secrets.plist */,
+				5963BB14B99ECD1C284830FA /* Demo */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -790,6 +801,7 @@
 				57240136D2DC082CFAA54CD4 /* Secrets.example.plist in Resources */,
 				1246EFA6046078A93D7DB6C1 /* Secrets.plist in Resources */,
 				8479A4E13002BC4EDFBB779E /* bgm.m4a in Resources */,
+				C6CF3DCE7C6950E6706BA730 /* demo_highlight.mp4 in Resources */,
 				A9A40F1452C0F2BA6B10C092 /* sample_erp_1.jpg in Resources */,
 				95F85FCF5E4B2333BC9D7FC2 /* sample_erp_2.jpg in Resources */,
 				DC25F8B871C0BDE0C2C72189 /* sample_erp_3.jpg in Resources */,

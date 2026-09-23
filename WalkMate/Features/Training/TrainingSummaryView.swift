@@ -37,21 +37,10 @@ struct TrainingSummaryView: View {
         .toolbar(.hidden, for: .navigationBar)
         .task {
             await reel.build(from: result.moments)
-            if case .ready(let url) = reel.state { TrainingHistoryStore.keepAsLatestReel(url) }
+            if case .ready(let url) = reel.state { history.attachReel(url, toRecordFinishedAt: result.finishedAt) }
         }
         .fullScreenCover(item: $player) { player in
-            VideoPlayer(player: player)
-                .ignoresSafeArea()
-                .overlay(alignment: .topTrailing) {
-                    Button("关闭") { self.player = nil }
-                        .font(WalkMateTheme.Fonts.body)
-                        .foregroundStyle(.white)
-                        .frame(minWidth: 72, minHeight: 48)
-                        .background(Color.black.opacity(0.5))
-                        .clipShape(Capsule())
-                        .padding()
-                }
-                .onAppear { player.play() }
+            ReelPlayerView(player: player) { self.player = nil }
         }
     }
 
@@ -222,3 +211,28 @@ struct TrainingSummaryView: View {
 }
 
 extension AVPlayer: @retroactive Identifiable {}
+
+/// 全屏集锦播放，右上角一个关闭按钮
+struct ReelPlayerView: View {
+    let player: AVPlayer
+    let onClose: () -> Void
+
+    var body: some View {
+        VideoPlayer(player: player)
+            .ignoresSafeArea()
+            .overlay(alignment: .topTrailing) {
+                Button("关闭", action: onClose)
+                    .font(WalkMateTheme.Fonts.body)
+                    .foregroundStyle(.white)
+                    .frame(minWidth: 72, minHeight: 48)
+                    .background(Color.black.opacity(0.5))
+                    .clipShape(Capsule())
+                    .padding()
+            }
+            .onAppear {
+                SpeechRenderer.activatePlaybackSession()
+                player.play()
+            }
+            .onDisappear { player.pause() }
+    }
+}

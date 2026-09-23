@@ -29,11 +29,14 @@ struct TrainingRecord: Codable, Identifiable {
     let finishedAt: Date
     /// 早期版本由「记录路线」按钮标记，现在每次训练都记为路线，字段保留以兼容旧数据
     var savedAsRoute: Bool
+    /// 这次训练剪出的集锦文件名：在 Documents/reels 下，或随应用内置
+    var reelFileName: String?
 
     init(id: UUID, kind: TrainingKind, durationSeconds: Int, distanceMeters: Int, obstaclesAvoided: Int,
-         moments: [Moment], finishedAt: Date, savedAsRoute: Bool) {
+         moments: [Moment], finishedAt: Date, savedAsRoute: Bool, reelFileName: String? = nil) {
         self.id = id; self.kind = kind; self.durationSeconds = durationSeconds; self.distanceMeters = distanceMeters
         self.obstaclesAvoided = obstaclesAvoided; self.moments = moments; self.finishedAt = finishedAt; self.savedAsRoute = savedAsRoute
+        self.reelFileName = reelFileName
     }
 
     /// 旧记录没有 kind 字段，按室内处理
@@ -47,6 +50,7 @@ struct TrainingRecord: Codable, Identifiable {
         moments = try container.decode([Moment].self, forKey: .moments)
         finishedAt = try container.decode(Date.self, forKey: .finishedAt)
         savedAsRoute = try container.decode(Bool.self, forKey: .savedAsRoute)
+        reelFileName = try container.decodeIfPresent(String.self, forKey: .reelFileName)
     }
 }
 
@@ -79,7 +83,7 @@ final class TrainingHistoryStore {
         let legacyFlag = "walkmate.historySeeded"
         var version = UserDefaults.standard.integer(forKey: versionKey)
         if version == 0, UserDefaults.standard.bool(forKey: legacyFlag) { version = 1 }
-        guard version < 2 else { return }
+        guard version < 3 else { return }
 
         let calendar = Calendar.current
         func day(_ daysAgo: Int, hour: Int, minute: Int = 0) -> Date {
@@ -106,12 +110,17 @@ final class TrainingHistoryStore {
 
         if records.isEmpty {
             records = (history + [today]).map(make)
-        } else if !records.contains(where: { calendar.isDateInToday($0.finishedAt) }) {
+        } else if version < 2, !records.contains(where: { calendar.isDateInToday($0.finishedAt) }) {
             records.append(make(today))
+        }
+        // 实拍剪辑随应用内置，作为两天前那次小区路线的集锦
+        if !records.contains(where: { $0.reelFileName == Self.bundledReelName }),
+           let index = records.firstIndex(where: { $0.kind == .neighborhood && $0.reelFileName == nil }) {
+            records[index].reelFileName = Self.bundledReelName
         }
         records.sort { $0.finishedAt > $1.finishedAt }
         persist()
-        UserDefaults.standard.set(2, forKey: versionKey)
+        UserDefaults.standard.set(3, forKey: versionKey)
         Log.info("演示训练历史已就绪，共 \(records.count) 条", category: .general)
     }
 
@@ -190,18 +199,41 @@ final class TrainingHistoryStore {
         return ("户外独立出行", "已解锁，去真实街道上走走吧")
     }
 
-    /// 最近一次剪出的集锦。总结页生成后复制到这里，社群页据此提供分享。
-    static var latestReelURL: URL? {
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("latest_highlight.mp4")
-        return FileManager.default.fileExists(atPath: url.path) ? url : nil
+    // MARK: - 集锦
+
+    /// 随应用内置的实拍集锦文件名
+    static let bundledReelName = "demo_highlight.mp4"
+
+    private static var reelsDirectory: URL {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("reels", isDirectory: true)
+        try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        return url
     }
 
-    /// 把刚生成的集锦存为最近一次
-    static func keepAsLatestReel(_ source: URL) {
-        let target = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("latest_highlight.mp4")
+    /// 一条记录的集锦地址：先找 Documents/reels，再找应用内置
+    static func reelURL(for record: TrainingRecord) -> URL? {
+        guard let name = record.reelFileName else { return nil }
+        let local = reelsDirectory.appendingPathComponent(name)
+        if FileManager.default.fileExists(atPath: local.path) { return local }
+        let base = (name as NSString).deletingPathExtension
+        return Bundle.main.url(forResource: base, withExtension: (name as NSString).pathExtension)
+    }
+
+    /// 最近一次有集锦的记录，社群页据此提供分享与播放
+    var latestReelURL: URL? {
+        records.lazy.compactMap { Self.reelURL(for: $0) }.first
+    }
+
+    /// 把总结页刚剪出的集锦挂到对应记录上
+    func attachReel(_ source: URL, toRecordFinishedAt finishedAt: Date) {
+        guard let index = records.firstIndex(where: { $0.finishedAt == finishedAt }) else { return }
+        let name = "\(records[index].id.uuidString).mp4"
+        let target = Self.reelsDirectory.appendingPathComponent(name)
         do {
             try? FileManager.default.removeItem(at: target)
             try FileManager.default.copyItem(at: source, to: target)
+            records[index].reelFileName = name
+            persist()
         } catch {
             Log.warning("集锦留存失败：\(error)", category: .recording)
         }
