@@ -12,6 +12,8 @@ struct CommunityView: View {
     @State private var player: AVPlayer?
     /// 本机是否给旅程点过赞，只存本地
     @AppStorage("walkmate.likedJourney") private var likedJourney = false
+    @State private var showComments = false
+    @State private var myComments = JourneyCommentStore.load()
 
     var body: some View {
         NavigationStack {
@@ -46,6 +48,9 @@ struct CommunityView: View {
         .tint(WalkMateTheme.Colors.textPrimary)
         .fullScreenCover(item: $player) { player in
             ReelPlayerView(player: player) { self.player = nil }
+        }
+        .sheet(isPresented: $showComments) {
+            JourneyCommentSheet(comments: $myComments) { showComments = false }
         }
         .task {
             await communityStore.refresh()
@@ -152,24 +157,18 @@ struct CommunityView: View {
             Text("好友邀你一起探索")
                 .font(WalkMateTheme.Fonts.body)
                 .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-            HStack(alignment: .top, spacing: 12) {
-                WMAvatar(imageName: invitation.avatarKey, size: 64)
-                VStack(alignment: .leading, spacing: 4) {
-                    (Text("\(invitation.from) ").bold() + Text("想邀请你一起去 ") + Text(invitation.place).bold())
-                        .font(WalkMateTheme.Fonts.body)
-                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    Text(invitation.time)
-                    if let message = invitation.message { Text("留言：\(message)") }
-                }
-                .font(WalkMateTheme.Fonts.caption)
-                .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.8))
+            HStack(alignment: .center, spacing: 12) {
+                WMAvatar(imageName: invitation.avatarKey, size: 56)
+                (Text("\(invitation.from) ").bold() + Text("想邀请你一起去 ") + Text(invitation.place).bold())
+                    .font(WalkMateTheme.Fonts.body)
+                    .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
 
             switch invitation.status {
             case "accepted":
-                Text("已同意，到时候 \(invitation.place) 见")
+                Text("已同意，\(invitation.time)")
                     .font(WalkMateTheme.Fonts.caption)
                     .foregroundStyle(WalkMateTheme.Colors.accentSoft)
                     .frame(maxWidth: .infinity, minHeight: 48)
@@ -232,11 +231,26 @@ struct CommunityView: View {
                     reactionLabel("icon_like", count: journey.likes + (likedJourney ? 1 : 0), highlighted: likedJourney)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(likedJourney ? "已点赞，\(journey.likes + 1)" : "点赞，\(journey.likes)")
-                reactionLabel("icon_comment", count: journey.comments, highlighted: false)
-                    .accessibilityLabel("评论 \(journey.comments) 条")
-                reactionLabel("icon_share", count: journey.shares, highlighted: false)
-                    .accessibilityLabel("转发 \(journey.shares) 次")
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(likedJourney ? "取消点赞，\(journey.likes + 1) 个赞" : "点赞，\(journey.likes) 个赞")
+
+                Button {
+                    showComments = true
+                } label: {
+                    reactionLabel("icon_comment", count: journey.comments + myComments.count, highlighted: !myComments.isEmpty)
+                }
+                .buttonStyle(.plain)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("评论，\(journey.comments + myComments.count) 条")
+
+                if let reel = history.latestReelURL {
+                    ShareLink(item: reel) {
+                        reactionLabel("icon_share", count: journey.shares, highlighted: false)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("转发，\(journey.shares) 次")
+                }
             }
 
             // 只有本机已经剪出过集锦，才有东西可分享
@@ -311,5 +325,80 @@ struct GhostPillButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity, minHeight: 48)
             .background(Color.white.opacity(configuration.isPressed ? 0.12 : 0.2))
             .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+    }
+}
+
+/// 本机写下的旅程评论，只存本地
+enum JourneyCommentStore {
+    private static let key = "walkmate.journeyComments"
+    static func load() -> [String] { UserDefaults.standard.stringArray(forKey: key) ?? [] }
+    static func save(_ comments: [String]) { UserDefaults.standard.set(comments, forKey: key) }
+}
+
+/// 评论弹层：已有评论列表 + 一个输入框
+struct JourneyCommentSheet: View {
+    @Binding var comments: [String]
+    let onClose: () -> Void
+
+    @State private var draft = ""
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    WMPageTitle(text: "评论")
+                    if comments.isEmpty {
+                        Text("还没有评论，说点什么吧")
+                            .font(WalkMateTheme.Fonts.caption)
+                            .foregroundStyle(WalkMateTheme.Colors.textPrimary.opacity(0.72))
+                    } else {
+                        ForEach(Array(comments.enumerated()), id: \.offset) { _, comment in
+                            Text(comment)
+                                .font(WalkMateTheme.Fonts.body)
+                                .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                                .padding(WalkMateTheme.Layout.cardPadding)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .wmCard()
+                        }
+                    }
+                    HStack(spacing: 8) {
+                        TextField("写评论", text: $draft)
+                            .textFieldStyle(.plain)
+                            .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                            .padding(.horizontal, 14)
+                            .frame(minHeight: 48)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: WalkMateTheme.Radius.button, style: .continuous))
+                            .onSubmit(send)
+                        WMButton(title: "发送", height: 48, action: send)
+                            .frame(width: 88)
+                            .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
+                }
+                .wmPageInset()
+                .padding(.top, 12)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+            .background(WalkMateTheme.Colors.background.ignoresSafeArea())
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("关闭", action: onClose)
+                        .foregroundStyle(WalkMateTheme.Colors.textPrimary)
+                        .frame(minWidth: 48, minHeight: 48)
+                }
+            }
+            .toolbarBackground(WalkMateTheme.Colors.background, for: .navigationBar)
+        }
+        .preferredColorScheme(.dark)
+    }
+
+    private func send() {
+        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return }
+        comments.append(text)
+        JourneyCommentStore.save(comments)
+        draft = ""
+        Log.info("已写下一条旅程评论", category: .ui)
     }
 }
