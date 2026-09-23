@@ -1,2628 +1,1315 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>archiveVersion</key>
-	<string>1</string>
-	<key>classes</key>
-	<dict/>
-	<key>objectVersion</key>
-	<string>77</string>
-	<key>objects</key>
-	<dict>
-		<key>00227ACEB3AF1A3A6B6E77A4</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>DEC3FE6565929F3551BC9BA8</string>
-				<string>C98319D495914B52BB8C05E9</string>
-				<string>A69BC77335AB2F8B77CB12DC</string>
-				<string>C01A9B3BC20A3AFB9A0AC96D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Frameworks</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>02B0EB5786552DCF7D7DBDEF</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
-				<key>CURRENT_PROJECT_VERSION</key>
-				<string>1</string>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>$(SRCROOT)/Frameworks</string>
-					<string>"Frameworks"</string>
-				</array>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>NO</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Info.plist</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-				</array>
-				<key>MARKETING_VERSION</key>
-				<string>1.0.0</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.walkmate</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>038AD9AA51B241BBBF1FF15D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PerceptionAudioIntegrationTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>039DA21F72795A5DEB711681</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
-				<string>AppIcon</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>iPhone Developer</string>
-				<key>CURRENT_PROJECT_VERSION</key>
-				<string>1</string>
-				<key>FRAMEWORK_SEARCH_PATHS</key>
-				<array>
-					<string>$(SRCROOT)/Frameworks</string>
-					<string>"Frameworks"</string>
-				</array>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>NO</string>
-				<key>INFOPLIST_FILE</key>
-				<string>Info.plist</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-				</array>
-				<key>MARKETING_VERSION</key>
-				<string>1.0.0</string>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.walkmate</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>05AC0B66FE0E47EB90899B9A</key>
-		<dict>
-			<key>buildActionMask</key>
-			<integer>2147483647</integer>
-			<key>files</key>
-			<array>
-				<string>9E332E660A1A4D56AE148F31</string>
-				<string>0C67538FEA194FE28D1E9E7F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<integer>0</integer>
-		</dict>
-		<key>0737AA405177117E7B1E657A</key>
-		<dict>
-			<key>fileRef</key>
-			<string>26EA325ABBC16EAF8B5B0DB8</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>0857A63775AE4CCFBA9AF444</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.AudioTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>0868554269CC0D12342596F6</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>DF0A5E68CBF85DAC11A6E27D</string>
-		</dict>
-		<key>0B924EA4D2BE495BB13E8FFF</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ProceduralAudioSynthesizer.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>0BB71713613AB35E434FA834</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>BAAAE4606E429E914DCB254E</string>
-				<string>9C5B47ECC4AC3CB3C1E84A5A</string>
-				<string>2219C27809A6A9A8FCF55F13</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Geometry</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>0C67538FEA194FE28D1E9E7F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>5A7A5C10F1AF48D1977C45AF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>0FECC21DCFD9E4A5F0C28FD2</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>E757621FCFAB319E08F29AEC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>CameraTests</string>
-			<key>path</key>
-			<string>../Tests/CameraTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>144553C487E76185459D0CD3</key>
-		<dict>
-			<key>fileRef</key>
-			<string>92C67811148C89BAE8DE93DB</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>14B0EB34B99386006416E14E</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_ANALYZER_NONNULL</key>
-				<string>YES</string>
-				<key>CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++14</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_WEAK</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_COMMA</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_DOCUMENTATION_COMMENTS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INFINITE_RECURSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_NON_LITERAL_NULL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_LITERAL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER</key>
-				<string>YES</string>
-				<key>CLANG_WARN_RANGE_LOOP_ANALYSIS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_STRICT_PROTOTYPES</key>
-				<string>YES</string>
-				<key>CLANG_WARN_SUSPICIOUS_MOVE</key>
-				<string>YES</string>
-				<key>CLANG_WARN_UNGUARDED_AVAILABILITY</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>CLANG_WARN_UNREACHABLE_CODE</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>DEBUG_INFORMATION_FORMAT</key>
-				<string>dwarf-with-dsym</string>
-				<key>DEVELOPMENT_TEAM</key>
-				<string>X2SP6R5LL3</string>
-				<key>ENABLE_BITCODE</key>
-				<string>NO</string>
-				<key>ENABLE_NS_ASSERTIONS</key>
-				<string>NO</string>
-				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
-				<string>YES</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu11</string>
-				<key>GCC_NO_COMMON_BLOCKS</key>
-				<string>YES</string>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>MTL_ENABLE_DEBUG_INFO</key>
-				<string>NO</string>
-				<key>MTL_FAST_MATH</key>
-				<string>YES</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>SWIFT_COMPILATION_MODE</key>
-				<string>wholemodule</string>
-				<key>SWIFT_OPTIMIZATION_LEVEL</key>
-				<string>-O</string>
-				<key>SWIFT_VERSION</key>
-				<string>5.9</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>15CA529CE1348A0AD4EB0247</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>C76A0A4FF52BEA2664A880BB</string>
-				<string>D09F633698C3014E462A6541</string>
-				<string>7A618372D960B17E03753329</string>
-				<string>6B1991768DAF4AB5A72A4109</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>16CAF0C1EC475430666C997D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6FD685C21B570812E385A8A3</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>1C515E871D527533E2088E72</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>61A2FE2B02E2517228A5EA90</string>
-				<string>0FECC21DCFD9E4A5F0C28FD2</string>
-				<string>67A8893A47EE14F9AD376867</string>
-				<string>DD8B47801B1216A13BF4A80E</string>
-				<string>E3E68F02D83D0B632D54A80B</string>
-				<string>AC713B0EB62E8D8D8F024473</string>
-				<string>E830EFB4F2958558F6183AE1</string>
-				<string>5B14F6567AE8293A18AA14F6</string>
-				<string>4669D27B66744D7C46EBB731</string>
-				<string>00227ACEB3AF1A3A6B6E77A4</string>
-				<string>C227948D0FFA03756AB7F7D0</string>
-				<string>E69F2B383B1C453FACA9173D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>1E23C07BBAB21D8A1859DACA</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>EDCC241034E5B35EBDA9D54F</string>
-			<key>buildPhases</key>
-			<array>
-				<string>15CA529CE1348A0AD4EB0247</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>241792687557202B98BFF774</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>PerceptionTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>PerceptionTests</string>
-			<key>productReference</key>
-			<string>8C5BC5CDB67927B567D6D560</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>21DCD0971ECC0BB7FA4DC1FF</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>970B9AC21ECA941BD2E62AFB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>2219C27809A6A9A8FCF55F13</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SphericalProjector.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>222A0C7B5173CFA9E5EC5B09</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C01A9B3BC20A3AFB9A0AC96D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>239A807E937D16F3E4C77BE7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C98319D495914B52BB8C05E9</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>ATTRIBUTES</key>
-				<array>
-					<string>CodeSignOnCopy</string>
-					<string>RemoveHeadersOnCopy</string>
-				</array>
-			</dict>
-		</dict>
-		<key>241792687557202B98BFF774</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>B4D5EC36338B94A819E897E1</string>
-		</dict>
-		<key>2667789BBEA365B27EE48FEF</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>3CFA52B84A47505A493FE059</string>
-				<string>14B0EB34B99386006416E14E</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>26C29E2664B346ECAE1696A9</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.AudioTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>26EA325ABBC16EAF8B5B0DB8</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>TelemetryModels.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>28F58B7389C106730948E8E1</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DB6B758F83F9EDC0529677EE</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>2AC7466B3A26C5CD34208873</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>WalkMateApp.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>2F07DBEAAD4582027F01BEE6</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>7DAE7D8FA78E870BB453D99F</string>
-				<string>C522FDA5A7D391D344A6AAD1</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>33999797768AF687EE0FA48B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>92C67811148C89BAE8DE93DB</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Toolkits</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>3534C926737FFE25F9FB5992</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>CameraTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>39770EE7FD2C82797A78A542</key>
-		<dict>
-			<key>fileRef</key>
-			<string>5D0ABA74DD3E847A88B6BD9F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>3A2293A6E6BC69AE8DCD6AD4</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ObstacleTrackingTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>3A5660846121C6DC3FC3F1E1</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DEC3FE6565929F3551BC9BA8</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>ATTRIBUTES</key>
-				<array>
-					<string>CodeSignOnCopy</string>
-					<string>RemoveHeadersOnCopy</string>
-				</array>
-			</dict>
-		</dict>
-		<key>3CFA52B84A47505A493FE059</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>ALWAYS_SEARCH_USER_PATHS</key>
-				<string>NO</string>
-				<key>CLANG_ANALYZER_NONNULL</key>
-				<string>YES</string>
-				<key>CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
-				<string>gnu++14</string>
-				<key>CLANG_CXX_LIBRARY</key>
-				<string>libc++</string>
-				<key>CLANG_ENABLE_MODULES</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_ARC</key>
-				<string>YES</string>
-				<key>CLANG_ENABLE_OBJC_WEAK</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING</key>
-				<string>YES</string>
-				<key>CLANG_WARN_BOOL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_COMMA</key>
-				<string>YES</string>
-				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_DOCUMENTATION_COMMENTS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_EMPTY_BODY</key>
-				<string>YES</string>
-				<key>CLANG_WARN_ENUM_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INFINITE_RECURSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_INT_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_NON_LITERAL_NULL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_LITERAL_CONVERSION</key>
-				<string>YES</string>
-				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
-				<string>YES_ERROR</string>
-				<key>CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER</key>
-				<string>YES</string>
-				<key>CLANG_WARN_RANGE_LOOP_ANALYSIS</key>
-				<string>YES</string>
-				<key>CLANG_WARN_STRICT_PROTOTYPES</key>
-				<string>YES</string>
-				<key>CLANG_WARN_SUSPICIOUS_MOVE</key>
-				<string>YES</string>
-				<key>CLANG_WARN_UNGUARDED_AVAILABILITY</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>CLANG_WARN_UNREACHABLE_CODE</key>
-				<string>YES</string>
-				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
-				<string>YES</string>
-				<key>CODE_SIGN_STYLE</key>
-				<string>Automatic</string>
-				<key>COPY_PHASE_STRIP</key>
-				<string>NO</string>
-				<key>DEBUG_INFORMATION_FORMAT</key>
-				<string>dwarf</string>
-				<key>DEVELOPMENT_TEAM</key>
-				<string>X2SP6R5LL3</string>
-				<key>ENABLE_BITCODE</key>
-				<string>NO</string>
-				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
-				<string>YES</string>
-				<key>ENABLE_TESTABILITY</key>
-				<string>YES</string>
-				<key>GCC_C_LANGUAGE_STANDARD</key>
-				<string>gnu11</string>
-				<key>GCC_DYNAMIC_NO_PIC</key>
-				<string>NO</string>
-				<key>GCC_NO_COMMON_BLOCKS</key>
-				<string>YES</string>
-				<key>GCC_OPTIMIZATION_LEVEL</key>
-				<string>0</string>
-				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>DEBUG=1</string>
-				</array>
-				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
-				<string>YES</string>
-				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
-				<string>YES_ERROR</string>
-				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
-				<string>YES_AGGRESSIVE</string>
-				<key>GCC_WARN_UNUSED_FUNCTION</key>
-				<string>YES</string>
-				<key>GCC_WARN_UNUSED_VARIABLE</key>
-				<string>YES</string>
-				<key>GENERATE_INFOPLIST_FILE</key>
-				<string>YES</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>MTL_ENABLE_DEBUG_INFO</key>
-				<string>INCLUDE_SOURCE</string>
-				<key>MTL_FAST_MATH</key>
-				<string>YES</string>
-				<key>ONLY_ACTIVE_ARCH</key>
-				<string>YES</string>
-				<key>PRODUCT_NAME</key>
-				<string>$(TARGET_NAME)</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>SWIFT_ACTIVE_COMPILATION_CONDITIONS</key>
-				<string>DEBUG</string>
-				<key>SWIFT_OPTIMIZATION_LEVEL</key>
-				<string>-Onone</string>
-				<key>SWIFT_VERSION</key>
-				<string>5.9</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>3F0B16896E678F380D3FBFF0</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>A4A7647355CB35E31884D378</string>
-		</dict>
-		<key>3F805AF8623FBC4D80E25ACC</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>43A956306AE07595053BBA8B</string>
-				<string>AE94622F7051A5C86F03DD5E</string>
-				<string>BB0E763D5CAF2C1CD0D4B4F7</string>
-				<string>222A0C7B5173CFA9E5EC5B09</string>
-			</array>
-			<key>isa</key>
-			<string>PBXFrameworksBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>43A956306AE07595053BBA8B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DEC3FE6565929F3551BC9BA8</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>43A9DE64FF371701BF1D23DD</key>
-		<dict>
-			<key>attributes</key>
-			<dict>
-				<key>BuildIndependentTargetsInParallel</key>
-				<string>YES</string>
-				<key>LastUpgradeCheck</key>
-				<string>1430</string>
-				<key>TargetAttributes</key>
-				<dict>
-					<key>1E23C07BBAB21D8A1859DACA</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>5EE00B7C4A06699B5FF6BD5B</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>A06D0019B0034C2FA2DA2C26</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>BE0C96D69F7DFED10AA888AC</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>C7ED42344329B2014AA2251C</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>D0C10D6348A3309AC5F5EA63</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-					<key>D8A983DE875364D7AFB1F969</key>
-					<dict>
-						<key>DevelopmentTeam</key>
-						<string>X2SP6R5LL3</string>
-						<key>ProvisioningStyle</key>
-						<string>Automatic</string>
-					</dict>
-				</dict>
-			</dict>
-			<key>buildConfigurationList</key>
-			<string>2667789BBEA365B27EE48FEF</string>
-			<key>developmentRegion</key>
-			<string>en</string>
-			<key>hasScannedForEncodings</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXProject</string>
-			<key>knownRegions</key>
-			<array>
-				<string>Base</string>
-				<string>en</string>
-			</array>
-			<key>mainGroup</key>
-			<string>1C515E871D527533E2088E72</string>
-			<key>minimizedProjectReferenceProxies</key>
-			<string>1</string>
-			<key>preferredProjectObjectVersion</key>
-			<string>77</string>
-			<key>productRefGroup</key>
-			<string>C227948D0FFA03756AB7F7D0</string>
-			<key>projectDirPath</key>
-			<string></string>
-			<key>projectRoot</key>
-			<string></string>
-			<key>targets</key>
-			<array>
-				<string>D0C10D6348A3309AC5F5EA63</string>
-				<string>D8A983DE875364D7AFB1F969</string>
-				<string>C7ED42344329B2014AA2251C</string>
-				<string>5EE00B7C4A06699B5FF6BD5B</string>
-				<string>1E23C07BBAB21D8A1859DACA</string>
-				<string>BE0C96D69F7DFED10AA888AC</string>
-				<string>A06D0019B0034C2FA2DA2C26</string>
-			</array>
-		</dict>
-		<key>456788E10AA24E6BB55CBC17</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>456937C6404D70179041CDEA</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>AcceleratePreprocessor.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4669D27B66744D7C46EBB731</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>D39932130C8DE438BEA2F5A1</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>ToolkitTests</string>
-			<key>path</key>
-			<string>../Tests/ToolkitTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>4A2131004BFB61C5737AAA9D</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.GeometryTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>4B9717BD572FBD1F71EAA8FA</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>4CB7E18A7B073AD39E96366E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>4BF57B915EE9A1F2E8A97428</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2AC7466B3A26C5CD34208873</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>4C2D779A193EFE225CDA5D4A</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.PerceptionTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>4CB7E18A7B073AD39E96366E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>D39932130C8DE438BEA2F5A1</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>5634C54A85D6BCB995B3E845</key>
-		<dict>
-			<key>fileRef</key>
-			<string>7DA234C4A69A12BB0B7E9D8B</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>5A7A5C10F1AF48D1977C45AF</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SpatialAudioPlayerTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5B14F6567AE8293A18AA14F6</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>7F16D93A0D3989BC4F8D7D2A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Resources</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5D0ABA74DD3E847A88B6BD9F</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ObstacleTracker.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>5EE00B7C4A06699B5FF6BD5B</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>6AE026A97069C0D180D41633</string>
-			<key>buildPhases</key>
-			<array>
-				<string>F8B2BECBC433A0B6279E6D50</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>8510E60ADCD616F63EF3EE2D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>GeometryTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>GeometryTests</string>
-			<key>productReference</key>
-			<string>91C48A7A7AD9F323269DC44A</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>61A2FE2B02E2517228A5EA90</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>C044702FEF2781A714A52AF5</string>
-				<string>2AC7466B3A26C5CD34208873</string>
-				<string>8D93F230C575814EA9D06F11</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>App</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>64F024C8A3562A552B6792C3</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>FrameModels.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6753B6BAAFA234B8CE015071</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ObstacleDetector.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6764D7282FA491C1EDB1EE12</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>C5498756E59D2F84A66C26DF</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Utils</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>67A8893A47EE14F9AD376867</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>69A8918F85B5A915D5308FCE</string>
-				<string>EAFCF0864CB0AF2D46D01EDC</string>
-				<string>0BB71713613AB35E434FA834</string>
-				<string>FFCD70091BCC481B3A24592A</string>
-				<string>E742D9264920FA2B79AC9039</string>
-				<string>33999797768AF687EE0FA48B</string>
-				<string>6764D7282FA491C1EDB1EE12</string>
-				<string>9444369E4CDB4EE0836EF9E9</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Core</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>68B83E7226307B0D42E64749</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PanoramicStreamView.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>69A8918F85B5A915D5308FCE</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>E93BE0730790922553537549</string>
-				<string>6FD685C21B570812E385A8A3</string>
-				<string>AFC5D70F9CA90837F4EFB861</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Camera</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6A01649963AB2BEAAD6845EC</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C5498756E59D2F84A66C26DF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6ADE43BB31268157A37E7E0A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PerceptionEngineTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>6AE026A97069C0D180D41633</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>7DF8064381FCA4D3398DCFCC</string>
-				<string>4A2131004BFB61C5737AAA9D</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>6B1991768DAF4AB5A72A4109</key>
-		<dict>
-			<key>fileRef</key>
-			<string>038AD9AA51B241BBBF1FF15D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6B39BBF056194F6989A0D57B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>DE280BD3DC9A67A27582E0B4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>6DDA6BA5275F427982148A3E</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>AudioTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>6FD685C21B570812E385A8A3</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>GyroDataHandler.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>70740174CBC2B0B0EF351456</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9D484F7669AC3C28255DF1E2</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>717717B98D6D98ABBC3DAB49</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PassableRouteTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>7241CA37807202BBD12C537D</key>
-		<dict>
-			<key>fileRef</key>
-			<string>857CA2856C92E48D5D0F1F71</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>72EA97BFC4E6CD5EE52C1D00</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.application</string>
-			<key>path</key>
-			<string>WalkMate.app</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>7A618372D960B17E03753329</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6ADE43BB31268157A37E7E0A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>7C61993774854191A9AB27EC</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SpatialAudioPlayer.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>7CFD8D45B7000EAA2E1FCAEE</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.ToolkitTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>7DA234C4A69A12BB0B7E9D8B</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SpatialPerceptionEngine.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>7DAE2B22E9EB4A71BFB34C43</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>26C29E2664B346ECAE1696A9</string>
-				<string>0857A63775AE4CCFBA9AF444</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<integer>0</integer>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>7DAE7D8FA78E870BB453D99F</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.InferenceTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>7DF8064381FCA4D3398DCFCC</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.GeometryTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>7F16D93A0D3989BC4F8D7D2A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>DE280BD3DC9A67A27582E0B4</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Models</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>8510332F032E4A5AA1EAE51F</key>
-		<dict>
-			<key>fileRef</key>
-			<string>7C61993774854191A9AB27EC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>8510E60ADCD616F63EF3EE2D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>F1F70F10675D652F63890C59</string>
-		</dict>
-		<key>857CA2856C92E48D5D0F1F71</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PassageRoutePlanner.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>864D891125CC1A0AF8764181</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>02B0EB5786552DCF7D7DBDEF</string>
-				<string>039DA21F72795A5DEB711681</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>8960697F87DC6092AC3C8A3B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>AFC5D70F9CA90837F4EFB861</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>8C5BC5CDB67927B567D6D560</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>PerceptionTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>8C9AD12E801E6CEEB366D80A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>DAPEngine.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>8D93F230C575814EA9D06F11</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>68B83E7226307B0D42E64749</string>
-				<string>9D484F7669AC3C28255DF1E2</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Views</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>8FC3C98E7BD53F7DA523DC97</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C01A9B3BC20A3AFB9A0AC96D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>ATTRIBUTES</key>
-				<array>
-					<string>CodeSignOnCopy</string>
-					<string>RemoveHeadersOnCopy</string>
-				</array>
-			</dict>
-		</dict>
-		<key>906CD995AC22A562BE978798</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>A086075E7EE3E4CB1CA462E2</string>
-		</dict>
-		<key>91C48A7A7AD9F323269DC44A</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>GeometryTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>92C67811148C89BAE8DE93DB</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SpatialAudioKit.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>931196D64D76B501812751CC</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>C885A89B331082503469E71A</string>
-				<string>D586FE602A7D1EE27BA0CE9F</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>9444369E4CDB4EE0836EF9E9</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>0B924EA4D2BE495BB13E8FFF</string>
-				<string>7C61993774854191A9AB27EC</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Audio</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>94F4C9D1F5BC4CB8888AE54A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXTargetDependency</string>
-			<key>target</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>targetProxy</key>
-			<string>456788E10AA24E6BB55CBC17</string>
-		</dict>
-		<key>970B9AC21ECA941BD2E62AFB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9FB665524D4B1FD6014B271D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>9C5B47ECC4AC3CB3C1E84A5A</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>GroundPlaneEstimator.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9D484F7669AC3C28255DF1E2</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SensorTelemetryCard.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>9E332E660A1A4D56AE148F31</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E7B28BFB3B4E40F0A9555F7D</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>9E89F8804D7B03C4ADA2BD97</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>A5240E490DB3A3DE9EC5407C</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>9FB665524D4B1FD6014B271D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>InferenceTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>A06D0019B0034C2FA2DA2C26</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>7DAE2B22E9EB4A71BFB34C43</string>
-			<key>buildPhases</key>
-			<array>
-				<string>05AC0B66FE0E47EB90899B9A</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>94F4C9D1F5BC4CB8888AE54A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>AudioTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>AudioTests</string>
-			<key>productReference</key>
-			<string>6DDA6BA5275F427982148A3E</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>A086075E7EE3E4CB1CA462E2</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>A0FFA486FA774086B6EB3B3B</key>
-		<dict>
-			<key>fileRef</key>
-			<string>0B924EA4D2BE495BB13E8FFF</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>A4A7647355CB35E31884D378</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>A5240E490DB3A3DE9EC5407C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E757621FCFAB319E08F29AEC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>A69BC77335AB2F8B77CB12DC</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.xcframework</string>
-			<key>name</key>
-			<string>INSCoreMedia.xcframework</string>
-			<key>path</key>
-			<string>Frameworks/INSCoreMedia.xcframework</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>A7CD0A514C7E23CAF0A05F9F</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>GeometryTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>AB8683CCE81AE963D9984EBE</key>
-		<dict>
-			<key>fileRef</key>
-			<string>6753B6BAAFA234B8CE015071</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>AC713B0EB62E8D8D8F024473</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>64F024C8A3562A552B6792C3</string>
-				<string>DB6B758F83F9EDC0529677EE</string>
-				<string>26EA325ABBC16EAF8B5B0DB8</string>
-				<string>B839DCF58737B54707405439</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Models</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>AE94622F7051A5C86F03DD5E</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C98319D495914B52BB8C05E9</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>AFC5D70F9CA90837F4EFB861</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>StreamPlayerBridge.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>B26769F0CCF21CFF7F1BAEA2</key>
-		<dict>
-			<key>fileRef</key>
-			<string>2219C27809A6A9A8FCF55F13</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>B4D5EC36338B94A819E897E1</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>B6106C2EBCD79B8BE73E9954</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>F418CEDFE94933C696597ECE</string>
-				<string>7CFD8D45B7000EAA2E1FCAEE</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>B839DCF58737B54707405439</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ToolModels.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>BAAAE4606E429E914DCB254E</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>GravityAligner.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>BAC2D91134D586A3654B27A0</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>InferenceTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>BB0E763D5CAF2C1CD0D4B4F7</key>
-		<dict>
-			<key>fileRef</key>
-			<string>A69BC77335AB2F8B77CB12DC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>BB22D4CD7749D6A467348B14</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>D7A0EA1DC8E35738E0382C86</string>
-				<string>BF283F2AA21B5EA4AD635855</string>
-				<string>EA861847E607B54465C201DB</string>
-				<string>BEE51A1E31B39825AC1BEFCB</string>
-				<string>F02FE56141BC29786E7D3F65</string>
-				<string>C49203B4150592346FCACC93</string>
-				<string>E745A5121F65791F744BAD13</string>
-				<string>16CAF0C1EC475430666C997D</string>
-				<string>6A01649963AB2BEAAD6845EC</string>
-				<string>AB8683CCE81AE963D9984EBE</string>
-				<string>39770EE7FD2C82797A78A542</string>
-				<string>BD61377E2BCEBA351355AC6C</string>
-				<string>7241CA37807202BBD12C537D</string>
-				<string>28F58B7389C106730948E8E1</string>
-				<string>70740174CBC2B0B0EF351456</string>
-				<string>144553C487E76185459D0CD3</string>
-				<string>5634C54A85D6BCB995B3E845</string>
-				<string>B26769F0CCF21CFF7F1BAEA2</string>
-				<string>8960697F87DC6092AC3C8A3B</string>
-				<string>0737AA405177117E7B1E657A</string>
-				<string>E72DF7C9E931F54755180137</string>
-				<string>4BF57B915EE9A1F2E8A97428</string>
-				<string>6B39BBF056194F6989A0D57B</string>
-				<string>A0FFA486FA774086B6EB3B3B</string>
-				<string>8510332F032E4A5AA1EAE51F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>BD61377E2BCEBA351355AC6C</key>
-		<dict>
-			<key>fileRef</key>
-			<string>68B83E7226307B0D42E64749</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>BE0C96D69F7DFED10AA888AC</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>B6106C2EBCD79B8BE73E9954</string>
-			<key>buildPhases</key>
-			<array>
-				<string>4B9717BD572FBD1F71EAA8FA</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>3F0B16896E678F380D3FBFF0</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>ToolkitTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>ToolkitTests</string>
-			<key>productReference</key>
-			<string>EAAC8BC22264AF15F9D1CC05</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>BEE51A1E31B39825AC1BEFCB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>8C9AD12E801E6CEEB366D80A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>BF283F2AA21B5EA4AD635855</key>
-		<dict>
-			<key>fileRef</key>
-			<string>E93BE0730790922553537549</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C01A9B3BC20A3AFB9A0AC96D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.xcframework</string>
-			<key>name</key>
-			<string>SSZipArchive.xcframework</string>
-			<key>path</key>
-			<string>Frameworks/SSZipArchive.xcframework</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C044702FEF2781A714A52AF5</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ContentView.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C1BA1CE198A17E94F9BB25ED</key>
-		<dict>
-			<key>fileRef</key>
-			<string>A7CD0A514C7E23CAF0A05F9F</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C227948D0FFA03756AB7F7D0</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>3534C926737FFE25F9FB5992</string>
-				<string>91C48A7A7AD9F323269DC44A</string>
-				<string>BAC2D91134D586A3654B27A0</string>
-				<string>8C5BC5CDB67927B567D6D560</string>
-				<string>EAAC8BC22264AF15F9D1CC05</string>
-				<string>72EA97BFC4E6CD5EE52C1D00</string>
-				<string>6DDA6BA5275F427982148A3E</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>Products</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C34D2F4BB54BB866FC726DE5</key>
-		<dict>
-			<key>fileRef</key>
-			<string>A69BC77335AB2F8B77CB12DC</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-			<key>settings</key>
-			<dict>
-				<key>ATTRIBUTES</key>
-				<array>
-					<string>CodeSignOnCopy</string>
-					<string>RemoveHeadersOnCopy</string>
-				</array>
-			</dict>
-		</dict>
-		<key>C49203B4150592346FCACC93</key>
-		<dict>
-			<key>fileRef</key>
-			<string>BAAAE4606E429E914DCB254E</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C522FDA5A7D391D344A6AAD1</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.InferenceTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>C5498756E59D2F84A66C26DF</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>Log.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>C76A0A4FF52BEA2664A880BB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>3A2293A6E6BC69AE8DCD6AD4</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>C7ED42344329B2014AA2251C</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>2F07DBEAAD4582027F01BEE6</string>
-			<key>buildPhases</key>
-			<array>
-				<string>21DCD0971ECC0BB7FA4DC1FF</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>906CD995AC22A562BE978798</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>InferenceTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>InferenceTests</string>
-			<key>productReference</key>
-			<string>BAC2D91134D586A3654B27A0</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>C885A89B331082503469E71A</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.CameraTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>C98319D495914B52BB8C05E9</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.xcframework</string>
-			<key>name</key>
-			<string>INSCameraServiceSDK.xcframework</string>
-			<key>path</key>
-			<string>Frameworks/INSCameraServiceSDK.xcframework</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D09F633698C3014E462A6541</key>
-		<dict>
-			<key>fileRef</key>
-			<string>717717B98D6D98ABBC3DAB49</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D0C10D6348A3309AC5F5EA63</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>864D891125CC1A0AF8764181</string>
-			<key>buildPhases</key>
-			<array>
-				<string>BB22D4CD7749D6A467348B14</string>
-				<string>3F805AF8623FBC4D80E25ACC</string>
-				<string>F41A89E7295550BF433AAB7B</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array/>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>WalkMate</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>WalkMate</string>
-			<key>productReference</key>
-			<string>72EA97BFC4E6CD5EE52C1D00</string>
-			<key>productType</key>
-			<string>com.apple.product-type.application</string>
-		</dict>
-		<key>D39932130C8DE438BEA2F5A1</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>SpatialAudioKitTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>D586FE602A7D1EE27BA0CE9F</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.CameraTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Release</string>
-		</dict>
-		<key>D7A0EA1DC8E35738E0382C86</key>
-		<dict>
-			<key>fileRef</key>
-			<string>456937C6404D70179041CDEA</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>D8A983DE875364D7AFB1F969</key>
-		<dict>
-			<key>buildConfigurationList</key>
-			<string>931196D64D76B501812751CC</string>
-			<key>buildPhases</key>
-			<array>
-				<string>9E89F8804D7B03C4ADA2BD97</string>
-			</array>
-			<key>buildRules</key>
-			<array/>
-			<key>dependencies</key>
-			<array>
-				<string>0868554269CC0D12342596F6</string>
-			</array>
-			<key>isa</key>
-			<string>PBXNativeTarget</string>
-			<key>name</key>
-			<string>CameraTests</string>
-			<key>packageProductDependencies</key>
-			<array/>
-			<key>productName</key>
-			<string>CameraTests</string>
-			<key>productReference</key>
-			<string>3534C926737FFE25F9FB5992</string>
-			<key>productType</key>
-			<string>com.apple.product-type.bundle.unit-test</string>
-		</dict>
-		<key>DB6B758F83F9EDC0529677EE</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>PerceptionModels.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DD8B47801B1216A13BF4A80E</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>A7CD0A514C7E23CAF0A05F9F</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>GeometryTests</string>
-			<key>path</key>
-			<string>../Tests/GeometryTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DE280BD3DC9A67A27582E0B4</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>path</key>
-			<string>dap_256x512_int8.mlpackage</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DEC3FE6565929F3551BC9BA8</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.xcframework</string>
-			<key>name</key>
-			<string>INSCameraSDK.xcframework</string>
-			<key>path</key>
-			<string>Frameworks/INSCameraSDK.xcframework</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>DF0A5E68CBF85DAC11A6E27D</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>DF8A36036F68D8ED0FA3F170</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.PerceptionTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>E3E68F02D83D0B632D54A80B</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>9FB665524D4B1FD6014B271D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>InferenceTests</string>
-			<key>path</key>
-			<string>../Tests/InferenceTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E69F2B383B1C453FACA9173D</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>E7B28BFB3B4E40F0A9555F7D</string>
-				<string>5A7A5C10F1AF48D1977C45AF</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>AudioTests</string>
-			<key>path</key>
-			<string>../Tests/AudioTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E72DF7C9E931F54755180137</key>
-		<dict>
-			<key>fileRef</key>
-			<string>B839DCF58737B54707405439</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>E742D9264920FA2B79AC9039</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>6753B6BAAFA234B8CE015071</string>
-				<string>5D0ABA74DD3E847A88B6BD9F</string>
-				<string>857CA2856C92E48D5D0F1F71</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Perception</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E745A5121F65791F744BAD13</key>
-		<dict>
-			<key>fileRef</key>
-			<string>9C5B47ECC4AC3CB3C1E84A5A</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>E757621FCFAB319E08F29AEC</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>CameraPipelineTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E7B28BFB3B4E40F0A9555F7D</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>ProceduralAudioSynthesizerTests.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E830EFB4F2958558F6183AE1</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>3A2293A6E6BC69AE8DCD6AD4</string>
-				<string>717717B98D6D98ABBC3DAB49</string>
-				<string>6ADE43BB31268157A37E7E0A</string>
-				<string>038AD9AA51B241BBBF1FF15D</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>name</key>
-			<string>PerceptionTests</string>
-			<key>path</key>
-			<string>../Tests/PerceptionTests</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>E93BE0730790922553537549</key>
-		<dict>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>sourcecode.swift</string>
-			<key>path</key>
-			<string>CameraPipeline.swift</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>EA861847E607B54465C201DB</key>
-		<dict>
-			<key>fileRef</key>
-			<string>C044702FEF2781A714A52AF5</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>EAAC8BC22264AF15F9D1CC05</key>
-		<dict>
-			<key>includeInIndex</key>
-			<string>0</string>
-			<key>isa</key>
-			<string>PBXFileReference</string>
-			<key>lastKnownFileType</key>
-			<string>wrapper.cfbundle</string>
-			<key>path</key>
-			<string>ToolkitTests.xctest</string>
-			<key>sourceTree</key>
-			<string>BUILT_PRODUCTS_DIR</string>
-		</dict>
-		<key>EAFCF0864CB0AF2D46D01EDC</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>7DA234C4A69A12BB0B7E9D8B</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Engine</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-		<key>EDCC241034E5B35EBDA9D54F</key>
-		<dict>
-			<key>buildConfigurations</key>
-			<array>
-				<string>DF8A36036F68D8ED0FA3F170</string>
-				<string>4C2D779A193EFE225CDA5D4A</string>
-			</array>
-			<key>defaultConfigurationIsVisible</key>
-			<string>0</string>
-			<key>defaultConfigurationName</key>
-			<string>Debug</string>
-			<key>isa</key>
-			<string>XCConfigurationList</string>
-		</dict>
-		<key>F02FE56141BC29786E7D3F65</key>
-		<dict>
-			<key>fileRef</key>
-			<string>64F024C8A3562A552B6792C3</string>
-			<key>isa</key>
-			<string>PBXBuildFile</string>
-		</dict>
-		<key>F1F70F10675D652F63890C59</key>
-		<dict>
-			<key>containerPortal</key>
-			<string>43A9DE64FF371701BF1D23DD</string>
-			<key>isa</key>
-			<string>PBXContainerItemProxy</string>
-			<key>proxyType</key>
-			<string>1</string>
-			<key>remoteGlobalIDString</key>
-			<string>D0C10D6348A3309AC5F5EA63</string>
-			<key>remoteInfo</key>
-			<string>WalkMate</string>
-		</dict>
-		<key>F418CEDFE94933C696597ECE</key>
-		<dict>
-			<key>buildSettings</key>
-			<dict>
-				<key>BUNDLE_LOADER</key>
-				<string>$(TEST_HOST)</string>
-				<key>CODE_SIGNING_ALLOWED</key>
-				<string>YES</string>
-				<key>CODE_SIGN_IDENTITY</key>
-				<string>-</string>
-				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
-				<string>17.0</string>
-				<key>LD_RUNPATH_SEARCH_PATHS</key>
-				<array>
-					<string>$(inherited)</string>
-					<string>@executable_path/Frameworks</string>
-					<string>@loader_path/Frameworks</string>
-				</array>
-				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
-				<string>accera.world.ToolkitTests</string>
-				<key>SDKROOT</key>
-				<string>iphoneos</string>
-				<key>TARGETED_DEVICE_FAMILY</key>
-				<string>1,2</string>
-				<key>TEST_HOST</key>
-				<string>$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate</string>
-			</dict>
-			<key>isa</key>
-			<string>XCBuildConfiguration</string>
-			<key>name</key>
-			<string>Debug</string>
-		</dict>
-		<key>F41A89E7295550BF433AAB7B</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>dstPath</key>
-			<string></string>
-			<key>dstSubfolderSpec</key>
-			<string>10</string>
-			<key>files</key>
-			<array>
-				<string>3A5660846121C6DC3FC3F1E1</string>
-				<string>239A807E937D16F3E4C77BE7</string>
-				<string>C34D2F4BB54BB866FC726DE5</string>
-				<string>8FC3C98E7BD53F7DA523DC97</string>
-			</array>
-			<key>isa</key>
-			<string>PBXCopyFilesBuildPhase</string>
-			<key>name</key>
-			<string>Embed Frameworks</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>F8B2BECBC433A0B6279E6D50</key>
-		<dict>
-			<key>buildActionMask</key>
-			<string>2147483647</string>
-			<key>files</key>
-			<array>
-				<string>C1BA1CE198A17E94F9BB25ED</string>
-			</array>
-			<key>isa</key>
-			<string>PBXSourcesBuildPhase</string>
-			<key>runOnlyForDeploymentPostprocessing</key>
-			<string>0</string>
-		</dict>
-		<key>FFCD70091BCC481B3A24592A</key>
-		<dict>
-			<key>children</key>
-			<array>
-				<string>456937C6404D70179041CDEA</string>
-				<string>8C9AD12E801E6CEEB366D80A</string>
-			</array>
-			<key>isa</key>
-			<string>PBXGroup</string>
-			<key>path</key>
-			<string>Inference</string>
-			<key>sourceTree</key>
-			<string>&lt;group&gt;</string>
-		</dict>
-	</dict>
-	<key>rootObject</key>
-	<string>43A9DE64FF371701BF1D23DD</string>
-</dict>
-</plist>
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		05FCDF059CFCABB7EC8E4013 /* PerceptionAudioIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117593E93A9E84FC113FF610 /* PerceptionAudioIntegrationTests.swift */; };
+		0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */; };
+		0D45CACBD1308EF6FFE6B03D /* SpatialAudioPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98056ACD8F6F25764E72E56 /* SpatialAudioPlayerTests.swift */; };
+		144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */; };
+		16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */; };
+		222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; };
+		239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */; };
+		39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */; };
+		3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */; };
+		44AAB007A33DEB4CD0E7D75F /* PilotViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296297A21A536E58CD824C1E /* PilotViewModelTests.swift */; };
+		4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */; };
+		4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */; };
+		5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */; };
+		6A01649963AB2BEAAD6845EC /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5498756E59D2F84A66C26DF /* Log.swift */; };
+		6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */; };
+		70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */; };
+		7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */; };
+		7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */; };
+		803DD792FFA80D3D24F2C3B8 /* ProceduralAudioSynthesizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */; };
+		85EB196A8D89C11E65E17274 /* ProceduralAudioSynthesizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */; };
+		8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */; };
+		8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB665524D4B1FD6014B271D /* InferenceTests.swift */; };
+		A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */; };
+		AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */; };
+		AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */; };
+		B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */; };
+		BA2E9D4812BDBFD4A554B0E9 /* SpatialAudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */; };
+		BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; };
+		BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */; };
+		BEE51A1E31B39825AC1BEFCB /* DAPEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */; };
+		BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93BE0730790922553537549 /* CameraPipeline.swift */; };
+		C1BA1CE198A17E94F9BB25ED /* GeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */; };
+		C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAAE4606E429E914DCB254E /* GravityAligner.swift */; };
+		C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */; };
+		D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */; };
+		D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */; };
+		E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B839DCF58737B54707405439 /* ToolModels.swift */; };
+		E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */; };
+		EA861847E607B54465C201DB /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C044702FEF2781A714A52AF5 /* ContentView.swift */; };
+		F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64F024C8A3562A552B6792C3 /* FrameModels.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9B1C58329275310E69C5EE94 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		A086075E7EE3E4CB1CA462E2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		A4A7647355CB35E31884D378 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		B4D5EC36338B94A819E897E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		E1B096F94BA4868B5AE126C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+		F1F70F10675D652F63890C59 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43A9DE64FF371701BF1D23DD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0C10D6348A3309AC5F5EA63;
+			remoteInfo = WalkMate;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F41A89E7295550BF433AAB7B /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3A5660846121C6DC3FC3F1E1 /* INSCameraSDK.xcframework in Embed Frameworks */,
+				239A807E937D16F3E4C77BE7 /* INSCameraServiceSDK.xcframework in Embed Frameworks */,
+				C34D2F4BB54BB866FC726DE5 /* INSCoreMedia.xcframework in Embed Frameworks */,
+				8FC3C98E7BD53F7DA523DC97 /* SSZipArchive.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		117593E93A9E84FC113FF610 /* PerceptionAudioIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionAudioIntegrationTests.swift; sourceTree = "<group>"; };
+		2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphericalProjector.swift; sourceTree = "<group>"; };
+		26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryModels.swift; sourceTree = "<group>"; };
+		296297A21A536E58CD824C1E /* PilotViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PilotViewModelTests.swift; sourceTree = "<group>"; };
+		2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkMateApp.swift; sourceTree = "<group>"; };
+		3534C926737FFE25F9FB5992 /* CameraTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CameraTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTrackingTests.swift; sourceTree = "<group>"; };
+		456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceleratePreprocessor.swift; sourceTree = "<group>"; };
+		4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayer.swift; sourceTree = "<group>"; };
+		5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleTracker.swift; sourceTree = "<group>"; };
+		64F024C8A3562A552B6792C3 /* FrameModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrameModels.swift; sourceTree = "<group>"; };
+		6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObstacleDetector.swift; sourceTree = "<group>"; };
+		68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanoramicStreamView.swift; sourceTree = "<group>"; };
+		69505C9D9915A0F4FE14A5FC /* AppTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionEngineTests.swift; sourceTree = "<group>"; };
+		6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GyroDataHandler.swift; sourceTree = "<group>"; };
+		717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassableRouteTests.swift; sourceTree = "<group>"; };
+		717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizerTests.swift; sourceTree = "<group>"; };
+		72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = WalkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialPerceptionEngine.swift; sourceTree = "<group>"; };
+		82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProceduralAudioSynthesizer.swift; sourceTree = "<group>"; };
+		857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassageRoutePlanner.swift; sourceTree = "<group>"; };
+		8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = PerceptionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DAPEngine.swift; sourceTree = "<group>"; };
+		91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = GeometryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKit.swift; sourceTree = "<group>"; };
+		9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroundPlaneEstimator.swift; sourceTree = "<group>"; };
+		9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorTelemetryCard.swift; sourceTree = "<group>"; };
+		9FB665524D4B1FD6014B271D /* InferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceTests.swift; sourceTree = "<group>"; };
+		A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCoreMedia.xcframework; path = Frameworks/INSCoreMedia.xcframework; sourceTree = "<group>"; };
+		A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeometryTests.swift; sourceTree = "<group>"; };
+		A98056ACD8F6F25764E72E56 /* SpatialAudioPlayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioPlayerTests.swift; sourceTree = "<group>"; };
+		AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamPlayerBridge.swift; sourceTree = "<group>"; };
+		B839DCF58737B54707405439 /* ToolModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolModels.swift; sourceTree = "<group>"; };
+		BAAAE4606E429E914DCB254E /* GravityAligner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GravityAligner.swift; sourceTree = "<group>"; };
+		BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = InferenceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SSZipArchive.xcframework; path = Frameworks/SSZipArchive.xcframework; sourceTree = "<group>"; };
+		C044702FEF2781A714A52AF5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C5498756E59D2F84A66C26DF /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraServiceSDK.xcframework; path = Frameworks/INSCameraServiceSDK.xcframework; sourceTree = "<group>"; };
+		D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialAudioKitTests.swift; sourceTree = "<group>"; };
+		D43B9CFB19741A302829B9F6 /* AudioTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AudioTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerceptionModels.swift; sourceTree = "<group>"; };
+		DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */ = {isa = PBXFileReference; path = dap_256x512_int8.mlpackage; sourceTree = "<group>"; };
+		DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = INSCameraSDK.xcframework; path = Frameworks/INSCameraSDK.xcframework; sourceTree = "<group>"; };
+		E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipelineTests.swift; sourceTree = "<group>"; };
+		E93BE0730790922553537549 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
+		EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ToolkitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3F805AF8623FBC4D80E25ACC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				43A956306AE07595053BBA8B /* INSCameraSDK.xcframework in Frameworks */,
+				AE94622F7051A5C86F03DD5E /* INSCameraServiceSDK.xcframework in Frameworks */,
+				BB0E763D5CAF2C1CD0D4B4F7 /* INSCoreMedia.xcframework in Frameworks */,
+				222A0C7B5173CFA9E5EC5B09 /* SSZipArchive.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		00227ACEB3AF1A3A6B6E77A4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DEC3FE6565929F3551BC9BA8 /* INSCameraSDK.xcframework */,
+				C98319D495914B52BB8C05E9 /* INSCameraServiceSDK.xcframework */,
+				A69BC77335AB2F8B77CB12DC /* INSCoreMedia.xcframework */,
+				C01A9B3BC20A3AFB9A0AC96D /* SSZipArchive.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0BB71713613AB35E434FA834 /* Geometry */ = {
+			isa = PBXGroup;
+			children = (
+				BAAAE4606E429E914DCB254E /* GravityAligner.swift */,
+				9C5B47ECC4AC3CB3C1E84A5A /* GroundPlaneEstimator.swift */,
+				2219C27809A6A9A8FCF55F13 /* SphericalProjector.swift */,
+			);
+			path = Geometry;
+			sourceTree = "<group>";
+		};
+		0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */ = {
+			isa = PBXGroup;
+			children = (
+				E757621FCFAB319E08F29AEC /* CameraPipelineTests.swift */,
+			);
+			name = CameraTests;
+			path = ../Tests/CameraTests;
+			sourceTree = "<group>";
+		};
+		1C515E871D527533E2088E72 = {
+			isa = PBXGroup;
+			children = (
+				61A2FE2B02E2517228A5EA90 /* App */,
+				80492A5C45DC9B4857218FC5 /* AppTests */,
+				6126D45C3A95412A3EA42A79 /* AudioTests */,
+				0FECC21DCFD9E4A5F0C28FD2 /* CameraTests */,
+				67A8893A47EE14F9AD376867 /* Core */,
+				DD8B47801B1216A13BF4A80E /* GeometryTests */,
+				E3E68F02D83D0B632D54A80B /* InferenceTests */,
+				AC713B0EB62E8D8D8F024473 /* Models */,
+				E830EFB4F2958558F6183AE1 /* PerceptionTests */,
+				5B14F6567AE8293A18AA14F6 /* Resources */,
+				4669D27B66744D7C46EBB731 /* ToolkitTests */,
+				00227ACEB3AF1A3A6B6E77A4 /* Frameworks */,
+				C227948D0FFA03756AB7F7D0 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		33999797768AF687EE0FA48B /* Toolkits */ = {
+			isa = PBXGroup;
+			children = (
+				92C67811148C89BAE8DE93DB /* SpatialAudioKit.swift */,
+			);
+			path = Toolkits;
+			sourceTree = "<group>";
+		};
+		4669D27B66744D7C46EBB731 /* ToolkitTests */ = {
+			isa = PBXGroup;
+			children = (
+				D39932130C8DE438BEA2F5A1 /* SpatialAudioKitTests.swift */,
+			);
+			name = ToolkitTests;
+			path = ../Tests/ToolkitTests;
+			sourceTree = "<group>";
+		};
+		5B14F6567AE8293A18AA14F6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7F16D93A0D3989BC4F8D7D2A /* Models */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		6126D45C3A95412A3EA42A79 /* AudioTests */ = {
+			isa = PBXGroup;
+			children = (
+				717CF0B29383AEC92FD64ABC /* ProceduralAudioSynthesizerTests.swift */,
+				A98056ACD8F6F25764E72E56 /* SpatialAudioPlayerTests.swift */,
+			);
+			name = AudioTests;
+			path = ../Tests/AudioTests;
+			sourceTree = "<group>";
+		};
+		61A2FE2B02E2517228A5EA90 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				C044702FEF2781A714A52AF5 /* ContentView.swift */,
+				2AC7466B3A26C5CD34208873 /* WalkMateApp.swift */,
+				8D93F230C575814EA9D06F11 /* Views */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		6764D7282FA491C1EDB1EE12 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				C5498756E59D2F84A66C26DF /* Log.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		67A8893A47EE14F9AD376867 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9025344BE56B492AA17FF0EB /* Audio */,
+				69A8918F85B5A915D5308FCE /* Camera */,
+				EAFCF0864CB0AF2D46D01EDC /* Engine */,
+				0BB71713613AB35E434FA834 /* Geometry */,
+				FFCD70091BCC481B3A24592A /* Inference */,
+				E742D9264920FA2B79AC9039 /* Perception */,
+				33999797768AF687EE0FA48B /* Toolkits */,
+				6764D7282FA491C1EDB1EE12 /* Utils */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		69A8918F85B5A915D5308FCE /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				E93BE0730790922553537549 /* CameraPipeline.swift */,
+				6FD685C21B570812E385A8A3 /* GyroDataHandler.swift */,
+				AFC5D70F9CA90837F4EFB861 /* StreamPlayerBridge.swift */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		7F16D93A0D3989BC4F8D7D2A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DE280BD3DC9A67A27582E0B4 /* dap_256x512_int8.mlpackage */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		80492A5C45DC9B4857218FC5 /* AppTests */ = {
+			isa = PBXGroup;
+			children = (
+				296297A21A536E58CD824C1E /* PilotViewModelTests.swift */,
+			);
+			name = AppTests;
+			path = ../Tests/AppTests;
+			sourceTree = "<group>";
+		};
+		8D93F230C575814EA9D06F11 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				68B83E7226307B0D42E64749 /* PanoramicStreamView.swift */,
+				9D484F7669AC3C28255DF1E2 /* SensorTelemetryCard.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9025344BE56B492AA17FF0EB /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				82AE9C607A29AE548A6C6B38 /* ProceduralAudioSynthesizer.swift */,
+				4A84D455C666430C6E86DDE0 /* SpatialAudioPlayer.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		AC713B0EB62E8D8D8F024473 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				64F024C8A3562A552B6792C3 /* FrameModels.swift */,
+				DB6B758F83F9EDC0529677EE /* PerceptionModels.swift */,
+				26EA325ABBC16EAF8B5B0DB8 /* TelemetryModels.swift */,
+				B839DCF58737B54707405439 /* ToolModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C227948D0FFA03756AB7F7D0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				69505C9D9915A0F4FE14A5FC /* AppTests.xctest */,
+				D43B9CFB19741A302829B9F6 /* AudioTests.xctest */,
+				3534C926737FFE25F9FB5992 /* CameraTests.xctest */,
+				91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */,
+				BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */,
+				8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */,
+				EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */,
+				72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DD8B47801B1216A13BF4A80E /* GeometryTests */ = {
+			isa = PBXGroup;
+			children = (
+				A7CD0A514C7E23CAF0A05F9F /* GeometryTests.swift */,
+			);
+			name = GeometryTests;
+			path = ../Tests/GeometryTests;
+			sourceTree = "<group>";
+		};
+		E3E68F02D83D0B632D54A80B /* InferenceTests */ = {
+			isa = PBXGroup;
+			children = (
+				9FB665524D4B1FD6014B271D /* InferenceTests.swift */,
+			);
+			name = InferenceTests;
+			path = ../Tests/InferenceTests;
+			sourceTree = "<group>";
+		};
+		E742D9264920FA2B79AC9039 /* Perception */ = {
+			isa = PBXGroup;
+			children = (
+				6753B6BAAFA234B8CE015071 /* ObstacleDetector.swift */,
+				5D0ABA74DD3E847A88B6BD9F /* ObstacleTracker.swift */,
+				857CA2856C92E48D5D0F1F71 /* PassageRoutePlanner.swift */,
+			);
+			path = Perception;
+			sourceTree = "<group>";
+		};
+		E830EFB4F2958558F6183AE1 /* PerceptionTests */ = {
+			isa = PBXGroup;
+			children = (
+				3A2293A6E6BC69AE8DCD6AD4 /* ObstacleTrackingTests.swift */,
+				717717B98D6D98ABBC3DAB49 /* PassableRouteTests.swift */,
+				117593E93A9E84FC113FF610 /* PerceptionAudioIntegrationTests.swift */,
+				6ADE43BB31268157A37E7E0A /* PerceptionEngineTests.swift */,
+			);
+			name = PerceptionTests;
+			path = ../Tests/PerceptionTests;
+			sourceTree = "<group>";
+		};
+		EAFCF0864CB0AF2D46D01EDC /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				7DA234C4A69A12BB0B7E9D8B /* SpatialPerceptionEngine.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		FFCD70091BCC481B3A24592A /* Inference */ = {
+			isa = PBXGroup;
+			children = (
+				456937C6404D70179041CDEA /* AcceleratePreprocessor.swift */,
+				8C9AD12E801E6CEEB366D80A /* DAPEngine.swift */,
+			);
+			path = Inference;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1E23C07BBAB21D8A1859DACA /* PerceptionTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EDCC241034E5B35EBDA9D54F /* Build configuration list for PBXNativeTarget "PerceptionTests" */;
+			buildPhases = (
+				15CA529CE1348A0AD4EB0247 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				241792687557202B98BFF774 /* PBXTargetDependency */,
+			);
+			name = PerceptionTests;
+			packageProductDependencies = (
+			);
+			productName = PerceptionTests;
+			productReference = 8C5BC5CDB67927B567D6D560 /* PerceptionTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		53D5E9ABDA53910DBCDDE672 /* AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7884E074AC45AE20A3E6C80 /* Build configuration list for PBXNativeTarget "AppTests" */;
+			buildPhases = (
+				9FECEC6EB5B97C0D4F13D312 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				603085E3C11FF5138F09A5C7 /* PBXTargetDependency */,
+			);
+			name = AppTests;
+			packageProductDependencies = (
+			);
+			productName = AppTests;
+			productReference = 69505C9D9915A0F4FE14A5FC /* AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5EE00B7C4A06699B5FF6BD5B /* GeometryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6AE026A97069C0D180D41633 /* Build configuration list for PBXNativeTarget "GeometryTests" */;
+			buildPhases = (
+				F8B2BECBC433A0B6279E6D50 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8510E60ADCD616F63EF3EE2D /* PBXTargetDependency */,
+			);
+			name = GeometryTests;
+			packageProductDependencies = (
+			);
+			productName = GeometryTests;
+			productReference = 91C48A7A7AD9F323269DC44A /* GeometryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BE0C96D69F7DFED10AA888AC /* ToolkitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B6106C2EBCD79B8BE73E9954 /* Build configuration list for PBXNativeTarget "ToolkitTests" */;
+			buildPhases = (
+				4B9717BD572FBD1F71EAA8FA /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3F0B16896E678F380D3FBFF0 /* PBXTargetDependency */,
+			);
+			name = ToolkitTests;
+			packageProductDependencies = (
+			);
+			productName = ToolkitTests;
+			productReference = EAAC8BC22264AF15F9D1CC05 /* ToolkitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C7ED42344329B2014AA2251C /* InferenceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2F07DBEAAD4582027F01BEE6 /* Build configuration list for PBXNativeTarget "InferenceTests" */;
+			buildPhases = (
+				21DCD0971ECC0BB7FA4DC1FF /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				906CD995AC22A562BE978798 /* PBXTargetDependency */,
+			);
+			name = InferenceTests;
+			packageProductDependencies = (
+			);
+			productName = InferenceTests;
+			productReference = BAC2D91134D586A3654B27A0 /* InferenceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CD06BC1458078B937C4FA18C /* AudioTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3BAF0636C31B855A2102577F /* Build configuration list for PBXNativeTarget "AudioTests" */;
+			buildPhases = (
+				CDE5CE79BC688C41C5F21837 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				956E087F2375537794DFD2A3 /* PBXTargetDependency */,
+			);
+			name = AudioTests;
+			packageProductDependencies = (
+			);
+			productName = AudioTests;
+			productReference = D43B9CFB19741A302829B9F6 /* AudioTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D0C10D6348A3309AC5F5EA63 /* WalkMate */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */;
+			buildPhases = (
+				BB22D4CD7749D6A467348B14 /* Sources */,
+				3F805AF8623FBC4D80E25ACC /* Frameworks */,
+				F41A89E7295550BF433AAB7B /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WalkMate;
+			packageProductDependencies = (
+			);
+			productName = WalkMate;
+			productReference = 72EA97BFC4E6CD5EE52C1D00 /* WalkMate.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D8A983DE875364D7AFB1F969 /* CameraTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 931196D64D76B501812751CC /* Build configuration list for PBXNativeTarget "CameraTests" */;
+			buildPhases = (
+				9E89F8804D7B03C4ADA2BD97 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0868554269CC0D12342596F6 /* PBXTargetDependency */,
+			);
+			name = CameraTests;
+			packageProductDependencies = (
+			);
+			productName = CameraTests;
+			productReference = 3534C926737FFE25F9FB5992 /* CameraTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		43A9DE64FF371701BF1D23DD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					1E23C07BBAB21D8A1859DACA = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					53D5E9ABDA53910DBCDDE672 = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					5EE00B7C4A06699B5FF6BD5B = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					BE0C96D69F7DFED10AA888AC = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					C7ED42344329B2014AA2251C = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					CD06BC1458078B937C4FA18C = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					D0C10D6348A3309AC5F5EA63 = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+					D8A983DE875364D7AFB1F969 = {
+						DevelopmentTeam = X2SP6R5LL3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 2667789BBEA365B27EE48FEF /* Build configuration list for PBXProject "WalkMate" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 1C515E871D527533E2088E72;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = C227948D0FFA03756AB7F7D0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D0C10D6348A3309AC5F5EA63 /* WalkMate */,
+				D8A983DE875364D7AFB1F969 /* CameraTests */,
+				C7ED42344329B2014AA2251C /* InferenceTests */,
+				5EE00B7C4A06699B5FF6BD5B /* GeometryTests */,
+				1E23C07BBAB21D8A1859DACA /* PerceptionTests */,
+				BE0C96D69F7DFED10AA888AC /* ToolkitTests */,
+				CD06BC1458078B937C4FA18C /* AudioTests */,
+				53D5E9ABDA53910DBCDDE672 /* AppTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		15CA529CE1348A0AD4EB0247 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C76A0A4FF52BEA2664A880BB /* ObstacleTrackingTests.swift in Sources */,
+				D09F633698C3014E462A6541 /* PassableRouteTests.swift in Sources */,
+				05FCDF059CFCABB7EC8E4013 /* PerceptionAudioIntegrationTests.swift in Sources */,
+				7A618372D960B17E03753329 /* PerceptionEngineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		21DCD0971ECC0BB7FA4DC1FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				970B9AC21ECA941BD2E62AFB /* InferenceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4B9717BD572FBD1F71EAA8FA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4CB7E18A7B073AD39E96366E /* SpatialAudioKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9E89F8804D7B03C4ADA2BD97 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5240E490DB3A3DE9EC5407C /* CameraPipelineTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9FECEC6EB5B97C0D4F13D312 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				44AAB007A33DEB4CD0E7D75F /* PilotViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB22D4CD7749D6A467348B14 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D7A0EA1DC8E35738E0382C86 /* AcceleratePreprocessor.swift in Sources */,
+				BF283F2AA21B5EA4AD635855 /* CameraPipeline.swift in Sources */,
+				EA861847E607B54465C201DB /* ContentView.swift in Sources */,
+				BEE51A1E31B39825AC1BEFCB /* DAPEngine.swift in Sources */,
+				F02FE56141BC29786E7D3F65 /* FrameModels.swift in Sources */,
+				C49203B4150592346FCACC93 /* GravityAligner.swift in Sources */,
+				E745A5121F65791F744BAD13 /* GroundPlaneEstimator.swift in Sources */,
+				16CAF0C1EC475430666C997D /* GyroDataHandler.swift in Sources */,
+				6A01649963AB2BEAAD6845EC /* Log.swift in Sources */,
+				AB8683CCE81AE963D9984EBE /* ObstacleDetector.swift in Sources */,
+				39770EE7FD2C82797A78A542 /* ObstacleTracker.swift in Sources */,
+				BD61377E2BCEBA351355AC6C /* PanoramicStreamView.swift in Sources */,
+				7241CA37807202BBD12C537D /* PassageRoutePlanner.swift in Sources */,
+				28F58B7389C106730948E8E1 /* PerceptionModels.swift in Sources */,
+				85EB196A8D89C11E65E17274 /* ProceduralAudioSynthesizer.swift in Sources */,
+				70740174CBC2B0B0EF351456 /* SensorTelemetryCard.swift in Sources */,
+				144553C487E76185459D0CD3 /* SpatialAudioKit.swift in Sources */,
+				BA2E9D4812BDBFD4A554B0E9 /* SpatialAudioPlayer.swift in Sources */,
+				5634C54A85D6BCB995B3E845 /* SpatialPerceptionEngine.swift in Sources */,
+				B26769F0CCF21CFF7F1BAEA2 /* SphericalProjector.swift in Sources */,
+				8960697F87DC6092AC3C8A3B /* StreamPlayerBridge.swift in Sources */,
+				0737AA405177117E7B1E657A /* TelemetryModels.swift in Sources */,
+				E72DF7C9E931F54755180137 /* ToolModels.swift in Sources */,
+				4BF57B915EE9A1F2E8A97428 /* WalkMateApp.swift in Sources */,
+				6B39BBF056194F6989A0D57B /* dap_256x512_int8.mlpackage in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDE5CE79BC688C41C5F21837 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				803DD792FFA80D3D24F2C3B8 /* ProceduralAudioSynthesizerTests.swift in Sources */,
+				0D45CACBD1308EF6FFE6B03D /* SpatialAudioPlayerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F8B2BECBC433A0B6279E6D50 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1BA1CE198A17E94F9BB25ED /* GeometryTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0868554269CC0D12342596F6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = DF0A5E68CBF85DAC11A6E27D /* PBXContainerItemProxy */;
+		};
+		241792687557202B98BFF774 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = B4D5EC36338B94A819E897E1 /* PBXContainerItemProxy */;
+		};
+		3F0B16896E678F380D3FBFF0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = A4A7647355CB35E31884D378 /* PBXContainerItemProxy */;
+		};
+		603085E3C11FF5138F09A5C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = E1B096F94BA4868B5AE126C3 /* PBXContainerItemProxy */;
+		};
+		8510E60ADCD616F63EF3EE2D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = F1F70F10675D652F63890C59 /* PBXContainerItemProxy */;
+		};
+		906CD995AC22A562BE978798 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = A086075E7EE3E4CB1CA462E2 /* PBXContainerItemProxy */;
+		};
+		956E087F2375537794DFD2A3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0C10D6348A3309AC5F5EA63 /* WalkMate */;
+			targetProxy = 9B1C58329275310E69C5EE94 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		02B0EB5786552DCF7D7DBDEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/Frameworks",
+					"\"Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.walkmate;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		039DA21F72795A5DEB711681 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SRCROOT)/Frameworks",
+					"\"Frameworks\"",
+				);
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.walkmate;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		14B0EB34B99386006416E14E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = X2SP6R5LL3;
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		3CFA52B84A47505A493FE059 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = X2SP6R5LL3;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		49C9A7E1B8BF2BCEC3786E28 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.AudioTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		4A2131004BFB61C5737AAA9D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.GeometryTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		4C2D779A193EFE225CDA5D4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.PerceptionTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		6BEA3DCAB6925AA278F7FBD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.AudioTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		7CFD8D45B7000EAA2E1FCAEE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ToolkitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		7DAE7D8FA78E870BB453D99F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.InferenceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		7DF8064381FCA4D3398DCFCC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.GeometryTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		A8FC53DC8E79BE5BC55EF6FC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.AppTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		B8D3B42E0DA92E380A58D90E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.AppTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		C522FDA5A7D391D344A6AAD1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.InferenceTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		C885A89B331082503469E71A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.CameraTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		D586FE602A7D1EE27BA0CE9F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.CameraTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Release;
+		};
+		DF8A36036F68D8ED0FA3F170 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.PerceptionTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+		F418CEDFE94933C696597ECE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_IDENTITY = "-";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = accera.world.ToolkitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WalkMate.app/WalkMate";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2667789BBEA365B27EE48FEF /* Build configuration list for PBXProject "WalkMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3CFA52B84A47505A493FE059 /* Debug */,
+				14B0EB34B99386006416E14E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2F07DBEAAD4582027F01BEE6 /* Build configuration list for PBXNativeTarget "InferenceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DAE7D8FA78E870BB453D99F /* Debug */,
+				C522FDA5A7D391D344A6AAD1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3BAF0636C31B855A2102577F /* Build configuration list for PBXNativeTarget "AudioTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				49C9A7E1B8BF2BCEC3786E28 /* Debug */,
+				6BEA3DCAB6925AA278F7FBD4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		6AE026A97069C0D180D41633 /* Build configuration list for PBXNativeTarget "GeometryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7DF8064381FCA4D3398DCFCC /* Debug */,
+				4A2131004BFB61C5737AAA9D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		864D891125CC1A0AF8764181 /* Build configuration list for PBXNativeTarget "WalkMate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02B0EB5786552DCF7D7DBDEF /* Debug */,
+				039DA21F72795A5DEB711681 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		931196D64D76B501812751CC /* Build configuration list for PBXNativeTarget "CameraTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C885A89B331082503469E71A /* Debug */,
+				D586FE602A7D1EE27BA0CE9F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B6106C2EBCD79B8BE73E9954 /* Build configuration list for PBXNativeTarget "ToolkitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F418CEDFE94933C696597ECE /* Debug */,
+				7CFD8D45B7000EAA2E1FCAEE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E7884E074AC45AE20A3E6C80 /* Build configuration list for PBXNativeTarget "AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8FC53DC8E79BE5BC55EF6FC /* Debug */,
+				B8D3B42E0DA92E380A58D90E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EDCC241034E5B35EBDA9D54F /* Build configuration list for PBXNativeTarget "PerceptionTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF8A36036F68D8ED0FA3F170 /* Debug */,
+				4C2D779A193EFE225CDA5D4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 43A9DE64FF371701BF1D23DD /* Project object */;
+}
