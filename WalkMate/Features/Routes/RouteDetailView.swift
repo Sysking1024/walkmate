@@ -164,7 +164,7 @@ struct RouteMapView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("路线示意图，从\(route.start)到\(route.end)，沿途 \(route.obstacles.count) 处常见障碍")
+        .accessibilityLabel("路线示意图，从\(route.start)到\(route.end)，平均 \(route.averageObstacles) 处障碍，图上标出 \(route.obstacles.count) 处常见位置")
     }
 
     private func point(_ pair: [Double], _ size: CGSize) -> CGPoint {
