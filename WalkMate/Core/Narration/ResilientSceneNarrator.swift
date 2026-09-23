@@ -22,7 +22,7 @@ struct ResilientSceneNarrator: SceneNarrator {
         do {
             return try await primary.describe(frameData: frameData, offsetMs: offsetMs, frameFileName: frameFileName)
         } catch {
-            Log.warning(.narration, "模型描述失败，退回离线兜底文案：\(error)")
+            Log.warning("模型描述失败，退回离线兜底文案：\(error)", category: .narration)
             return try await fallback.describe(frameData: frameData, offsetMs: offsetMs, frameFileName: frameFileName)
         }
     }

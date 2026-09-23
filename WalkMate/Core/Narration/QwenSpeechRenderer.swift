@@ -29,7 +29,7 @@ struct QwenSpeechRenderer {
             let key = dict["QwenAPIKey"], !key.isEmpty,
             let base = dict["QwenDashScopeURL"], let dashScopeURL = URL(string: base)
         else {
-            Log.warning(.narration, "未找到语音合成凭据，将退回系统音色")
+            Log.warning("未找到语音合成凭据，将退回系统音色", category: .narration)
             return nil
         }
         self.apiKey = key
@@ -57,7 +57,7 @@ struct QwenSpeechRenderer {
         try FileManager.default.moveItem(at: temporaryURL, to: audioURL)
 
         let durationMs = try await measureDurationMs(of: audioURL)
-        Log.info(.narration, "云端语音渲染完成，时长 \(durationMs) 毫秒")
+        Log.info("云端语音渲染完成，时长 \(durationMs) 毫秒", category: .narration)
         return SpeechRenderer.RenderedSpeech(audioURL: audioURL, durationMs: durationMs, text: text)
     }
 
@@ -75,7 +75,7 @@ struct QwenSpeechRenderer {
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             let code = (response as? HTTPURLResponse)?.statusCode ?? -1
-            Log.error(.narration, "语音合成接口返回异常状态码 \(code)")
+            Log.error("语音合成接口返回异常状态码 \(code)", category: .narration)
             throw SpeechRenderError.badStatus(code)
         }
 

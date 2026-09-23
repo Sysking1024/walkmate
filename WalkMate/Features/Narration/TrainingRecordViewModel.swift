@@ -70,7 +70,7 @@ final class TrainingRecordViewModel {
         }
         audioPlayer = player
         player.play()
-        Log.info(.narration, "播放已渲染语音，长度 \(narration.text.count) 字")
+        Log.info("播放已渲染语音，长度 \(narration.text.count) 字", category: .narration)
     }
 
     func stopSpeaking() {
@@ -114,9 +114,9 @@ final class TrainingRecordViewModel {
             )
             clipURL = output
             phase = .ready
-            Log.info(.recording, "训练记录短片已生成，共 \(produced.count) 段描述")
+            Log.info("训练记录短片已生成，共 \(produced.count) 段描述", category: .recording)
         } catch {
-            Log.error(.recording, "短片合成失败：\(error)")
+            Log.error("短片合成失败：\(error)", category: .recording)
             phase = .failed("短片合成出错")
         }
     }
@@ -138,7 +138,7 @@ final class TrainingRecordViewModel {
                         )
                         return (index, narration)
                     } catch {
-                        Log.error(.narration, "第 \(index + 1) 帧描述失败：\(error)")
+                        Log.error("第 \(index + 1) 帧描述失败：\(error)", category: .narration)
                         return nil
                     }
                 }
@@ -192,7 +192,7 @@ final class TrainingRecordViewModel {
                 return try await cloudSpeechRenderer.render(
                     text, to: directory.appendingPathComponent("speech_\(index).wav"))
             } catch {
-                Log.warning(.narration, "云端语音合成失败，退回系统音色：\(error)")
+                Log.warning("云端语音合成失败，退回系统音色：\(error)", category: .narration)
             }
         }
         return try await systemSpeechRenderer.render(
@@ -211,7 +211,7 @@ final class TrainingRecordViewModel {
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
-            Log.warning(.narration, "音频会话配置失败：\(error)")
+            Log.warning("音频会话配置失败：\(error)", category: .narration)
         }
         #endif
     }

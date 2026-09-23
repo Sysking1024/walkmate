@@ -32,7 +32,7 @@ struct FallbackSceneNarrator: SceneNarrator {
     func describe(frameData: Data, offsetMs: Int, frameFileName: String) async throws -> SceneNarration {
         // 按时间偏移轮转选取文案，保证同一次训练内的描述不重复
         let index = abs(offsetMs / 1_000) % Self.presetTexts.count
-        Log.info(.narration, "使用离线兜底文案生成描述，偏移 \(offsetMs) 毫秒")
+        Log.info("使用离线兜底文案生成描述，偏移 \(offsetMs) 毫秒", category: .narration)
         return SceneNarration(
             offsetMs: offsetMs,
             frameFileName: frameFileName,

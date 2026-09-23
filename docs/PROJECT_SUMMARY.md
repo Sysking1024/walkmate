@@ -38,7 +38,7 @@
 ---
 
 ### 阶段三：iOS 原生工程搭建 (`DAP_iOS`)
-1. **现代化工程构建**：使用 `xcodegen` 组织纯原生 SwiftUI + CoreML 工程，Bundle ID 严格锁定为 `accera.insta.dap`。
+1. **现代化工程构建**：使用 `xcodegen` 组织纯原生 SwiftUI + CoreML 工程，Bundle ID 严格锁定为 `accera.world.walkmate`。
 2. **极简高效交互**：
    - **按钮 1【开始测试】**：唤醒 ANE 神经引擎执行前向推理，实时采集推理耗时、端到端延迟、内存消耗、最大/最小物理测距；
    - **按钮 2【导出测试结果】**：通过 iOS 系统 `UIActivityViewController`，一键通过 **AirDrop（隔空投送）** 将彩色深度渲染图（PNG）、完整基准报告（JSON）与原始物理深度矩阵（BIN）传输回 Mac。

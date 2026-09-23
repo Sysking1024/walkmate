@@ -74,7 +74,7 @@ struct QwenSceneNarrator: SceneNarrator {
             let key = dict["QwenAPIKey"], !key.isEmpty,
             let base = dict["QwenBaseURL"], let baseURL = URL(string: base)
         else {
-            Log.warning(.narration, "未找到有效的 Secrets.plist 凭据，将退回离线兜底描述")
+            Log.warning("未找到有效的 Secrets.plist 凭据，将退回离线兜底描述", category: .narration)
             return nil
         }
         self.apiKey = key
@@ -98,12 +98,12 @@ struct QwenSceneNarrator: SceneNarrator {
 
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             let code = (response as? HTTPURLResponse)?.statusCode ?? -1
-            Log.error(.narration, "描述接口返回异常状态码 \(code)")
+            Log.error("描述接口返回异常状态码 \(code)", category: .narration)
             throw NarrationError.badStatus(code)
         }
 
         let text = try parseContent(from: data)
-        Log.info(.narration, "已生成场景描述，偏移 \(offsetMs) 毫秒，长度 \(text.count) 字")
+        Log.info("已生成场景描述，偏移 \(offsetMs) 毫秒，长度 \(text.count) 字", category: .narration)
         return SceneNarration(offsetMs: offsetMs, frameFileName: frameFileName, text: text, source: .model)
     }
 
@@ -149,11 +149,11 @@ struct QwenSceneNarrator: SceneNarrator {
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200 else {
             let code = (response as? HTTPURLResponse)?.statusCode ?? -1
-            Log.error(.narration, "追问接口返回异常状态码 \(code)")
+            Log.error("追问接口返回异常状态码 \(code)", category: .narration)
             throw NarrationError.badStatus(code)
         }
         let text = try parseContent(from: data)
-        Log.info(.narration, "已回答追问，长度 \(text.count) 字")
+        Log.info("已回答追问，长度 \(text.count) 字", category: .narration)
         return text
     }
 
@@ -194,7 +194,7 @@ struct QwenSceneNarrator: SceneNarrator {
         ] as CFDictionary)
         guard CGImageDestinationFinalize(destination) else { return nil }
 
-        Log.debug(.narration, "上传图片已压缩至 \(output.length / 1024) KB")
+        Log.debug("上传图片已压缩至 \(output.length / 1024) KB", category: .narration)
         return output as Data
     }
 

@@ -27,13 +27,14 @@ xcuserdata/
 Packages/
 Package.pins
 
-# 临时文件
+# 临时文件与二进制依赖
 *.swp
 *~
 *.orig
-
-# xcodegen 生成物（由 project.yml 声明式重建）
-WalkMate/WalkMate.xcodeproj/
+tmp/
+WalkMate/Frameworks/
+*.mlpackage
+WalkMate/Resources/Models/*.mlpackage
 
 # 密钥文件，严禁提交
 WalkMate/Resources/Secrets.plist

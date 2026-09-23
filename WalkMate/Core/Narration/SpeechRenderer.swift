@@ -33,7 +33,7 @@ final class SpeechRenderer {
     func speak(_ text: String) {
         let utterance = makeUtterance(text)
         synthesizer.speak(utterance)
-        Log.info(.narration, "开始朗读描述，长度 \(text.count) 字")
+        Log.info("开始朗读描述，长度 \(text.count) 字", category: .narration)
     }
 
     /// 停止当前朗读
@@ -83,7 +83,7 @@ final class SpeechRenderer {
         audioFile = nil
 
         let durationMs = Int(Double(totalFrames) / sampleRate * 1_000)
-        Log.info(.narration, "语音渲染完成，时长 \(durationMs) 毫秒")
+        Log.info("语音渲染完成，时长 \(durationMs) 毫秒", category: .narration)
         return RenderedSpeech(audioURL: audioURL, durationMs: durationMs, text: text)
     }
 

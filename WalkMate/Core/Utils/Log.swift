@@ -1,59 +1,103 @@
+//
+//  Log.swift
+//  WalkMate
+//
+//  Created by Antigravity on 2026-09-22.
+//
+
 import Foundation
 import os
 
-/// 统一业务日志工具。
-///
-/// 遵循宪章原则八与原则九：
-/// - 日志级别（Level）采用行业标准英文枚举，便于自动化脚本与通用 AI 解析；
-/// - 业务消息内容（Message）统一使用中文；
-/// - 全项目严禁使用 `print()` 进行调试输出，一律通过本工具记录。
-enum Log {
-
-    /// 日志子系统标识，与 Bundle ID 保持一致，便于在 Console.app 中定位本应用
-    private static let subsystem = "accera.insta.dap"
-
-    /// 业务模块分类。作为机器可读的过滤字段，与日志级别同理保留英文标识。
-    enum Category: String {
-        /// 相机连接与数据流
-        case camera = "Camera"
-        /// 深度推理与空间感知
-        case perception = "Perception"
-        /// 场景描述与大模型调用
-        case narration = "Narration"
-        /// 记录合成与导出
-        case recording = "Recording"
-        /// 界面与无障碍交互
-        case ui = "UI"
+/// 统一业务结构化日志工具类
+/// 严格遵循宪章原则五、八、九：
+/// 1. 业务日志内容统一使用中文；
+/// 2. 日志级别遵循行业标准英文（DEBUG, INFO, WARNING, ERROR, SEVERE）；
+/// 3. 基于系统 os.Logger 进行封装，严禁在业务代码中使用 print()。
+public enum Log {
+    
+    // 子系统标识，与 App Bundle ID 保持一致
+    private static let subsystem = "accera.world.walkmate"
+    
+    // 按业务分类的专属 Logger 实例
+    private static let cameraLogger = Logger(subsystem: subsystem, category: "Camera")
+    private static let perceptionLogger = Logger(subsystem: subsystem, category: "Perception")
+    private static let uiLogger = Logger(subsystem: subsystem, category: "UI")
+    private static let generalLogger = Logger(subsystem: subsystem, category: "General")
+    private static let narrationLogger = Logger(subsystem: subsystem, category: "Narration")
+    private static let recordingLogger = Logger(subsystem: subsystem, category: "Recording")
+    
+    /// 调试信息（细粒度追踪、瞬时计算状态等）
+    /// - Parameters:
+    ///   - message: 中文业务日志描述
+    ///   - category: 业务分类
+    public static func debug(_ message: String, category: Category = .general) {
+        logger(for: category).debug("[\(category.rawValue)] \(message, privacy: .public)")
     }
-
-    /// 按模块缓存 Logger 实例，避免高频调用时重复构造
-    private static var loggers: [Category: Logger] = [:]
-
-    /// 取得指定模块的底层 Logger
+    
+    /// 关键业务里程碑信息（连接建立、模式切换、推流开启等）
+    /// - Parameters:
+    ///   - message: 中文业务日志描述
+    ///   - category: 业务分类
+    public static func info(_ message: String, category: Category = .general) {
+        logger(for: category).info("[\(category.rawValue)] \(message, privacy: .public)")
+    }
+    
+    /// 业务告警（瞬时丢帧、非阻塞性异常等）
+    /// - Parameters:
+    ///   - message: 中文业务日志描述
+    ///   - category: 业务分类
+    public static func warning(_ message: String, category: Category = .general) {
+        logger(for: category).warning("[\(category.rawValue)] ⚠️ \(message, privacy: .public)")
+    }
+    
+    /// 错误信息（连接失败、解析异常、模型运行错误等）
+    /// - Parameters:
+    ///   - message: 中文业务日志描述
+    ///   - error: 可选关联错误对象
+    ///   - category: 业务分类
+    public static func error(_ message: String, error: Error? = nil, category: Category = .general) {
+        if let error = error {
+            logger(for: category).error("[\(category.rawValue)] ❌ \(message, privacy: .public) | 错误详情: \(error.localizedDescription, privacy: .public)")
+        } else {
+            logger(for: category).error("[\(category.rawValue)] ❌ \(message, privacy: .public)")
+        }
+    }
+    
+    /// 严重故障（硬件死锁、致命资源缺失等）
+    /// - Parameters:
+    ///   - message: 中文业务日志描述
+    ///   - category: 业务分类
+    public static func severe(_ message: String, category: Category = .general) {
+        logger(for: category).fault("[\(category.rawValue)] 🛑 \(message, privacy: .public)")
+    }
+    
+    /// 获取对应分类的 Logger 实例
     private static func logger(for category: Category) -> Logger {
-        if let cached = loggers[category] { return cached }
-        let created = Logger(subsystem: subsystem, category: category.rawValue)
-        loggers[category] = created
-        return created
+        switch category {
+        case .camera:
+            return cameraLogger
+        case .perception:
+            return perceptionLogger
+        case .ui:
+            return uiLogger
+        case .general:
+            return generalLogger
+        case .narration:
+            return narrationLogger
+        case .recording:
+            return recordingLogger
+        }
     }
-
-    /// 调试信息：仅用于开发期定位问题，发布构建不保留
-    static func debug(_ category: Category, _ message: String) {
-        logger(for: category).debug("[DEBUG] \(message, privacy: .public)")
-    }
-
-    /// 常规信息：记录关键业务流转节点（状态切换、设备连接、关键决策）
-    static func info(_ category: Category, _ message: String) {
-        logger(for: category).info("[INFO] \(message, privacy: .public)")
-    }
-
-    /// 警告：业务可继续，但出现了非预期状况
-    static func warning(_ category: Category, _ message: String) {
-        logger(for: category).warning("[WARNING] \(message, privacy: .public)")
-    }
-
-    /// 错误：业务流程中断，需要排障介入
-    static func error(_ category: Category, _ message: String) {
-        logger(for: category).error("[ERROR] \(message, privacy: .public)")
+    
+    /// 日志业务领域分类枚举
+    public enum Category: String {
+        case camera = "相机管道"
+        case perception = "空间感知"
+        case ui = "用户界面"
+        case general = "基础通用"
+        /// 场景描述、伙伴对谈与语音合成
+        case narration = "场景描述"
+        /// 训练记录短片的合成与导出
+        case recording = "记录合成"
     }
 }
