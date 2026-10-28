@@ -4,7 +4,7 @@
 
 A progressive rehabilitation app that helps people with acquired vision loss build confidence in independent travel. An Insta360 X5 panoramic camera acts as the user’s eyes, while the phone provides obstacle detection, scene descriptions, and voice conversations. After each training session, the app automatically creates a highlight video with narration and subtitles for sharing with the rehabilitation community.
 
-An entry for the Insta360 Hackathon, September 2026, Nanjing.
+An entry for the Insta360 Hackathon, September 2026, China Nanjing.
 
 ## Features
 
