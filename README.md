@@ -1,5 +1,7 @@
 # 伴行 WalkMate
 
+简体中文 | [English](README_EN.md)
+
 面向后天失明人群的渐进式独立出行康复训练应用。Insta360 X5 全景相机当眼睛，手机端做避障、场景描述与对谈，训练结束自动剪出带语音与字幕的集锦，分享到康复社群。
 
 影石 Insta360 黑客松参赛作品，2026 年 9 月，南京。
@@ -109,3 +111,8 @@ cat WalkMate/Core/Conversation/VoiceIntent.swift Tests/NarrationTests/VoiceInten
 - 注释、日志、提交信息用中文；日志走 `Log.info(_:category:)`，不用 `print`
 - 触控目标不小于 48 点；卡片合并为一个读屏元素
 - 密钥只放 `Secrets.plist`，不入库
+
+## 作者
+
+于潇雪，林馨
+
