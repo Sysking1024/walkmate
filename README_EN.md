@@ -121,6 +121,6 @@ The commands below are translated for reference; the original spoken commands ar
 - Touch targets must be at least 48 points. Group each card into a single VoiceOver element.
 - Store credentials only in `Secrets.plist` and keep the file out of version control.
 
-## Authors
+## Co-Authors
 
 YU XIAOXUE  LIN XIN

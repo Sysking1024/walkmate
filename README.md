@@ -112,7 +112,7 @@ cat WalkMate/Core/Conversation/VoiceIntent.swift Tests/NarrationTests/VoiceInten
 - 触控目标不小于 48 点；卡片合并为一个读屏元素
 - 密钥只放 `Secrets.plist`，不入库
 
-## 作者
+## 共同作者
 
 于潇雪，林馨
 
